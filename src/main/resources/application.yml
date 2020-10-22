@@ -1,0 +1,7 @@
+pikachu:
+  port: 1111
+  targetIP: 127.0.0.1
+  targetPort: 2222
+  allowClients:
+    - 127.0.0.2
+    - 127.0.0.3
