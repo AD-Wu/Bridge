@@ -9,14 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author AD
  */
 public final class ProxyManager {
-    
+
+    // key=端口，value=代理对象
     private Map<Integer,Proxy> proxies;
     
-   
-    
+
     public ProxyManager(){
         this.proxies = new ConcurrentHashMap<>();
     }
-    
+
     
 }
