@@ -1,4 +1,4 @@
-pikachu:
+bridge:
   port: 1111
   targetIP: 127.0.0.1
   targetPort: 2222

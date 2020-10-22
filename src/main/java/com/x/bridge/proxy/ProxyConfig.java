@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 @ToString
 @Configuration
-@ConfigurationProperties(prefix = "pikachu")
+@ConfigurationProperties(prefix = "bridge")
 public class ProxyConfig {
     
     private int port;

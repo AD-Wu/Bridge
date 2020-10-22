@@ -36,7 +36,13 @@ public class ProxyServerListener implements ISocketListener {
     public void active(ChannelHandlerContext ctx) throws Exception {
         int localPort = SocketHelper.getLocalPort(ctx);
         String remoteIP = SocketHelper.getRemoteIP(ctx);
+        String remoteAddress = SocketHelper.getRemoteAddress(ctx);
+        String localAddress = SocketHelper.getLocalAddress(ctx);
         if(ProxyConfigManager.isAllowClient(localPort,remoteIP)){
+
+        }else{
+            ctx.close();
+            log.info("代理:{},收到非法IP:{}企图建立连接,已关闭",localAddress,remoteAddress);
         }
     }
     
