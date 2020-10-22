@@ -1,4 +1,4 @@
-package com.x.bridge.proxy;
+package com.x.bridge.data;
 
 import lombok.Data;
 import lombok.ToString;
@@ -22,5 +22,11 @@ public class ProxyConfig {
     private String targetIP;
     private int targetPort;
     private Set<String> allowClients;
+    
+    private int connectTimeout;// 超时时间，单位:秒
+    
+    public boolean isAllowClient(String remoteIP){
+        return allowClients.contains(remoteIP);
+    }
     
 }

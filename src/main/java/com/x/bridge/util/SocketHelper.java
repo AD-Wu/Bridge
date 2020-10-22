@@ -1,5 +1,8 @@
 package com.x.bridge.util;
 
+import com.x.bridge.data.ChannelInfo;
+import com.x.doraemon.util.ArrayHelper;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -9,27 +12,20 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public final class SocketHelper {
     
-    public static String getRemoteAddress(ChannelHandlerContext ctx){
-        return ctx.channel().remoteAddress().toString().substring(1);
+    public static ChannelInfo getChannelInfo(ChannelHandlerContext ctx) {
+        String remoteAddress = ctx.channel().remoteAddress().toString().substring(1);
+        String localAddress = ctx.channel().localAddress().toString().substring(1);
+        return new ChannelInfo(remoteAddress, localAddress);
     }
     
-    public static String getLocalAddress(ChannelHandlerContext ctx){
-        return ctx.channel().localAddress().toString().substring(1);
+    public static byte[] readData(ByteBuf buf) {
+        if (buf != null) {
+            int len = buf.readableBytes();
+            byte[] data = new byte[len];
+            buf.readBytes(data);
+            return data;
+        }
+        return ArrayHelper.EMPTY_BYTE;
     }
     
-    public static String getRemoteIP(ChannelHandlerContext ctx){
-        return getRemoteAddress(ctx).split(":")[0];
-    }
-    
-    public static String getLocalIP(ChannelHandlerContext ctx){
-        return getLocalAddress(ctx).split(":")[0];
-    }
-    
-    public static int getRemotePort(ChannelHandlerContext ctx){
-        return Integer.parseInt(getRemoteAddress(ctx).split(":")[1]);
-    }
-    
-    public static int getLocalPort(ChannelHandlerContext ctx){
-        return Integer.parseInt(getLocalAddress(ctx).split(":")[1]);
-    }
 }

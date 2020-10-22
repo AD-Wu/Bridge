@@ -1,5 +1,7 @@
 package com.x.bridge.proxy;
 
+import com.x.bridge.data.ProxyConfig;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -12,13 +14,8 @@ public class ProxyConfigManager {
     
     private static Map<Integer, ProxyConfig> configs;
     
-    public static boolean isAllowClient(int localPort, String remoteIP) {
-        ProxyConfig proxyConfig = configs.get(localPort);
-        Set<String> allowClients = proxyConfig.getAllowClients();
-        if (allowClients == null || allowClients.size() == 0) {
-            return true;
-        }
-        return proxyConfig.getAllowClients().contains(remoteIP);
+    public static ProxyConfig getProxyConfig(int serverPort){
+        return configs.get(serverPort);
     }
     
 }

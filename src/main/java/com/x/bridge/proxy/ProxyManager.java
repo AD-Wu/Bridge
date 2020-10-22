@@ -11,12 +11,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ProxyManager {
 
     // key=端口，value=代理对象
-    private Map<Integer,Proxy> proxies;
+    private static Map<Integer,Proxy> proxies;
     
-
     public ProxyManager(){
         this.proxies = new ConcurrentHashMap<>();
     }
 
+    public static Proxy getProxy(int serverPort){
+        return proxies.get(serverPort);
+    }
+    
     
 }

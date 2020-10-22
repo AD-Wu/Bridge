@@ -1,6 +1,6 @@
 package com.x.bridge.test;
 
-import com.x.bridge.proxy.ProxyConfig;
+import com.x.bridge.data.ProxyConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
