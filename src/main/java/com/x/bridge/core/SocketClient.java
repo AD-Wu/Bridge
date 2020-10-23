@@ -63,6 +63,7 @@ public class SocketClient implements Runnable{
             ChannelFuture future = boot.connect(config.getIp(), config.getPort()).sync();
             connected = true;
             channel = future.channel();
+            listener.onStart(config);
             channel.closeFuture().sync();
         } catch (InterruptedException e) {
             log.error(Strings.getExceptionTrace(e));
@@ -70,6 +71,7 @@ public class SocketClient implements Runnable{
         } finally {
             connected = false;
             worker.shutdownGracefully();
+            listener.onStop(config);
         }
     }
     
