@@ -14,8 +14,11 @@ import com.x.doraemon.util.Strings;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
- * @Desc TODO
+ * @Desc 代理对象
  * @Date 2020/10/22 01:07
  * @Author AD
  */
@@ -30,12 +33,15 @@ public class Proxy {
     private final ProxyConfig config;
 
     private final IBridge bridge;
+    
+    private final ExecutorService runner;
 
     public Proxy(int serverPort, IBridge bridge) {
         this.bridge = bridge;
+        this.runner = Executors.newCachedThreadPool();
         this.config = ProxyConfigManager.getProxyConfig(serverPort);
         this.replierManager = new ReplierManager(serverPort);
-        this.server = new SocketServer(SocketConfig.serverConfig(serverPort),
+        this.server = new SocketServer(new SocketConfig(serverPort),
                 new ProxyServerListener(replierManager));
     }
 
@@ -84,9 +90,9 @@ public class Proxy {
         }
     }
 
-    public void sendToProxy(String remoteAddress, long seq, byte[] data) {
+    public void sendToProxy(String appSocketClient, long seq, byte[] data) {
         ChannelData cd = new ChannelData();
-        cd.setRemoteAddress(remoteAddress);
+        cd.setRemoteAddress(appSocketClient);
         cd.setRecvSeq(seq);
         cd.setTargetIp(config.getTargetIP());
         cd.setTargetPort(config.getTargetPort());

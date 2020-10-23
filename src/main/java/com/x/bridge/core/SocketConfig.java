@@ -1,6 +1,8 @@
 package com.x.bridge.core;
 
+import com.x.doraemon.util.Strings;
 import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -11,11 +13,12 @@ import java.net.UnknownHostException;
  * @Author AD
  */
 @Data
+@Log4j2
 public class SocketConfig {
     
-    private final String ip;
+    private String ip;
     
-    private final int port;
+    private int port;
     
     private int readTimeout = 0;
     
@@ -27,29 +30,22 @@ public class SocketConfig {
     
     private int recvBuf = 65536;
     
-    public static SocketConfig clientConfig(String ip, int port) {
+    public SocketConfig(int port) {
         try {
-            return new SocketConfig(InetAddress.getByName(ip).getHostAddress(), port);
+            this.ip = InetAddress.getLocalHost().getHostAddress();
+            this.port = port < 0 ? 0 : port;
+        } catch (UnknownHostException e) {
+            log.error(Strings.getExceptionTrace(e));
+        }
+    }
+    
+    public SocketConfig(String ip, int port) {
+        try {
+            this.ip = InetAddress.getByName(ip).getHostAddress();
+            this.port = port < 0 ? 0 : port;
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        return null;
-
-    }
-    
-    public static SocketConfig serverConfig(int port) {
-
-        try {
-            return new SocketConfig(InetAddress.getLocalHost().getHostAddress(), port);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    private SocketConfig(String ip, int port) {
-        this.ip = ip;
-        this.port = port<0?0:port;
     }
     
 }

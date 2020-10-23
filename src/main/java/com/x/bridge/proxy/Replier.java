@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * @Desc TODO
+ * @Desc 通道应答对象
  * @Date 2020/10/22 19:03
  * @Author AD
  */
