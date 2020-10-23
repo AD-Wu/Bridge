@@ -63,15 +63,12 @@ public class SocketClient implements Runnable{
             ChannelFuture future = boot.connect(config.getIp(), config.getPort()).sync();
             connected = true;
             channel = future.channel();
-            listener.onStart(config);
             channel.closeFuture().sync();
         } catch (InterruptedException e) {
             log.error(Strings.getExceptionTrace(e));
-            listener.onStartError(e);
         } finally {
             connected = false;
             worker.shutdownGracefully();
-            listener.onStop(config);
         }
     }
     
@@ -79,7 +76,6 @@ public class SocketClient implements Runnable{
         if(connected){
             channel.close();
             connected = false;
-            listener.onStop(config);
         }
     }
 }

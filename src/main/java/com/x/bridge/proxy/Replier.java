@@ -2,7 +2,6 @@ package com.x.bridge.proxy;
 
 import com.x.bridge.data.ChannelInfo;
 import com.x.bridge.util.SocketHelper;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Data;
 
@@ -14,54 +13,54 @@ import java.util.concurrent.atomic.AtomicLong;
  * @Author AD
  */
 @Data
-final class Replier {
-    
+public final class Replier {
+
     private final ChannelHandlerContext ctx;
-    
+
     private final ChannelInfo channelInfo;
-    
+
     private final AtomicLong recvSeq;
-    
+
     private volatile boolean connected;
-    
+
     private volatile boolean connectTimeout;
-    
+
     private final Object connectLock;
-    
-    Replier(ChannelHandlerContext ctx) {
+
+    public Replier(ChannelHandlerContext ctx) {
         this.ctx = ctx;
         this.channelInfo = SocketHelper.getChannelInfo(ctx);
         this.recvSeq = new AtomicLong(-1);
         this.connected = false;
         this.connectLock = new Object();
     }
-    
-    void close() {
+
+    public void close() {
         ctx.close();
     }
-    
-    ChannelInfo getChannelInfo() {
+
+    public ChannelInfo getChannelInfo() {
         return channelInfo;
     }
-    
-    long getRecvSeq() {
+
+    public long getRecvSeq() {
         return recvSeq.get();
     }
-    
-    long recvSeqIncrement(){
+
+    public long recvSeqIncrement() {
         return recvSeq.incrementAndGet();
     }
-    
-    boolean isConnected() {
+
+    public boolean isConnected() {
         return connected;
     }
-    
-    void setConnected(boolean connected) {
+
+    public void setConnected(boolean connected) {
         this.connected = connected;
     }
-    
-    Object getConnectLock(){
+
+    public Object getConnectLock() {
         return connectLock;
     }
-    
+
 }

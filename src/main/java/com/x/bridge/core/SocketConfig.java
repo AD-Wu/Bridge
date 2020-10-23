@@ -2,6 +2,9 @@ package com.x.bridge.core;
 
 import lombok.Data;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * @Desc TODO
  * @Date 2020/10/21 19:49
@@ -25,11 +28,23 @@ public class SocketConfig {
     private int recvBuf = 65536;
     
     public static SocketConfig clientConfig(String ip, int port) {
-        return new SocketConfig(ip, port);
+        try {
+            return new SocketConfig(InetAddress.getByName(ip).getHostAddress(), port);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
     
     public static SocketConfig serverConfig(int port) {
-        return new SocketConfig("localhost", port);
+
+        try {
+            return new SocketConfig(InetAddress.getLocalHost().getHostAddress(), port);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     
     private SocketConfig(String ip, int port) {

@@ -1,6 +1,6 @@
 package com.x.bridge.data;
 
-import com.x.bridge.command.Command;
+import com.x.bridge.command.core.Command;
 import lombok.Data;
 
 /**
@@ -10,7 +10,10 @@ import lombok.Data;
  */
 @Data
 public class ChannelData {
-    private ChannelInfo channelInfo;
+    private String remoteAddress;
+    private int proxyPort;
+    private String targetIp;
+    private int targetPort;
     private long recvSeq;
     private Command cmd;
     private byte[] data;

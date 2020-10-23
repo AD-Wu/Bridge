@@ -25,9 +25,9 @@ public class SocketServer implements Runnable {
     
     private final SocketConfig config;
     
-    private final ISocketListener listener;
+    private final IServerListener listener;
     
-    public SocketServer(SocketConfig config, ISocketListener listener) {
+    public SocketServer(SocketConfig config, IServerListener listener) {
         this.config = config;
         this.listener = listener;
     }
@@ -39,7 +39,7 @@ public class SocketServer implements Runnable {
     
     public void start() {
         if (started) {
-            listener.onStart(config);
+            listener.onServerStart(config);
         } else {
             ServerBootstrap boot = new ServerBootstrap();
             boot.channel(NioServerSocketChannel.class)
@@ -71,12 +71,12 @@ public class SocketServer implements Runnable {
                 ChannelFuture future = boot.bind(config.getPort()).sync();
                 channel = future.channel();
                 started = true;
-                listener.onStart(config);
+                listener.onServerStart(config);
                 channel.closeFuture().sync();// 阻塞当前服务
             } catch (Exception e) {
                 started = false;
                 log.error(Strings.getExceptionTrace(e));
-                listener.onStartError(e);
+                listener.onServerStartError(e);
             } finally {
                 boss.shutdownGracefully();
                 worker.shutdownGracefully();
@@ -88,7 +88,7 @@ public class SocketServer implements Runnable {
         if (started) {
             channel.close();
             started = false;
-            listener.onStop(config);
+            listener.onServerStop(config);
         }
     }
     

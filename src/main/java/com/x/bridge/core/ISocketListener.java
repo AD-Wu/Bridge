@@ -11,12 +11,6 @@ import io.netty.handler.timeout.IdleStateEvent;
  */
 public interface ISocketListener {
     
-    void onStart(SocketConfig config);
-    
-    void onStartError(Throwable e);
-    
-    void onStop(SocketConfig config);
-    
     void active(ChannelHandlerContext ctx) throws Exception;
     
     void inActive(ChannelHandlerContext ctx) throws Exception;

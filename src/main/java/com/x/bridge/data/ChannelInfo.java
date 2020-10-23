@@ -1,10 +1,6 @@
 package com.x.bridge.data;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import lombok.Data;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.util.StringJoiner;
 
@@ -14,7 +10,6 @@ import java.util.StringJoiner;
  * @Author AD
  */
 @Getter
-@ToString
 public final class ChannelInfo {
     
     private final String remoteAddress;
@@ -39,5 +34,12 @@ public final class ChannelInfo {
         this.localIP = locals[0];
         this.localPort = Integer.parseInt(locals[1]);
     }
-    
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ChannelInfo.class.getSimpleName() + "[", "]")
+                .add("remoteAddress='" + remoteAddress + "'")
+                .add("localAddress='" + localAddress + "'")
+                .toString();
+    }
 }

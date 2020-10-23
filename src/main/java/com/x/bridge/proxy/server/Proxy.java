@@ -1,14 +1,17 @@
-package com.x.bridge.proxy;
+package com.x.bridge.proxy.server;
 
-import com.x.bridge.command.Command;
+import com.x.bridge.command.core.Command;
 import com.x.bridge.core.SocketConfig;
 import com.x.bridge.core.SocketServer;
 import com.x.bridge.data.ChannelData;
 import com.x.bridge.data.IBridge;
 import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.data.ReplierManager;
+import com.x.bridge.proxy.ProxyConfigManager;
+import com.x.bridge.proxy.Replier;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;
+import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -17,16 +20,17 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
+@Data
 public class Proxy {
-    
+
     private final SocketServer server;
-    
+
     private final ReplierManager replierManager;
-    
+
     private final ProxyConfig config;
-    
+
     private final IBridge bridge;
-    
+
     public Proxy(int serverPort, IBridge bridge) {
         this.bridge = bridge;
         this.config = ProxyConfigManager.getProxyConfig(serverPort);
@@ -34,21 +38,23 @@ public class Proxy {
         this.server = new SocketServer(SocketConfig.serverConfig(serverPort),
                 new ProxyServerListener(replierManager));
     }
-    
+
     boolean connectRequest(Replier replier) {
         ChannelData cd = new ChannelData();
-        cd.setChannelInfo(replier.getChannelInfo());
+        cd.setRemoteAddress(replier.getChannelInfo().getRemoteAddress());
         cd.setRecvSeq(replier.getRecvSeq());
+        cd.setTargetIp(config.getTargetIP());
+        cd.setTargetPort(config.getTargetPort());
         cd.setCmd(Command.ConnectRequest);
         cd.setData(ArrayHelper.EMPTY_BYTE);
-        
+
         Object lock = replier.getConnectLock();
         try {
             synchronized (lock) {
                 bridge.send(cd);
                 lock.wait(config.getConnectTimeout() * 1000);
             }
-            if(replier.isConnectTimeout()){
+            if (replier.isConnectTimeout()) {
                 log.info("连接超时，配置时间:{}秒，连接关闭");
                 return false;
             }
@@ -58,11 +64,13 @@ public class Proxy {
             return false;
         }
     }
-    
+
     void disconnect(Replier replier) {
         ChannelData cd = new ChannelData();
-        cd.setChannelInfo(replier.getChannelInfo());
+        cd.setRemoteAddress(replier.getChannelInfo().getRemoteAddress());
         cd.setRecvSeq(replier.getRecvSeq());
+        cd.setTargetIp(config.getTargetIP());
+        cd.setTargetPort(config.getTargetPort());
         cd.setCmd(Command.Disconnect);
         cd.setData(ArrayHelper.EMPTY_BYTE);
         try {
@@ -71,11 +79,13 @@ public class Proxy {
             log.error(Strings.getExceptionTrace(e));
         }
     }
-    
-    void receive(Replier replier, byte[] data) {
+
+    void sendToProxy(String remoteAddress, long seq, byte[] data) {
         ChannelData cd = new ChannelData();
-        cd.setChannelInfo(replier.getChannelInfo());
-        cd.setRecvSeq(replier.getRecvSeq());
+        cd.setRemoteAddress(remoteAddress);
+        cd.setRecvSeq(seq);
+        cd.setTargetIp(config.getTargetIP());
+        cd.setTargetPort(config.getTargetPort());
         cd.setCmd(Command.SendData);
         cd.setData(data);
         try {
@@ -84,5 +94,16 @@ public class Proxy {
             log.error(Strings.getExceptionTrace(e));
         }
     }
-    
+
+    void recvFromProxy(ChannelData cd){
+        String remote = cd.getRemoteAddress();
+        Command cmd = cd.getCmd();
+        byte[] data = cd.getData();
+        long seq = cd.getRecvSeq();
+        Replier replier = replierManager.getReplier(remote);
+        if(replier!=null){
+
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.x.bridge.command;
+package com.x.bridge.command.core;
 
 /**
  * @Desc TODO
@@ -21,5 +21,5 @@ public enum Command {
     public int getCmd() {
         return cmd;
     }
-    
+
 }
