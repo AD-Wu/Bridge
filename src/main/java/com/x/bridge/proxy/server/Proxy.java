@@ -39,7 +39,7 @@ public class Proxy {
                 new ProxyServerListener(replierManager));
     }
 
-    boolean connectRequest(Replier replier) {
+     public boolean connectRequest(Replier replier) {
         ChannelData cd = new ChannelData();
         cd.setRemoteAddress(replier.getChannelInfo().getRemoteAddress());
         cd.setRecvSeq(replier.getRecvSeq());
@@ -65,7 +65,11 @@ public class Proxy {
         }
     }
 
-    void disconnect(Replier replier) {
+    public void connectSuccess(Replier replier){
+
+    }
+
+    public void disconnect(Replier replier) {
         ChannelData cd = new ChannelData();
         cd.setRemoteAddress(replier.getChannelInfo().getRemoteAddress());
         cd.setRecvSeq(replier.getRecvSeq());
@@ -80,7 +84,7 @@ public class Proxy {
         }
     }
 
-    void sendToProxy(String remoteAddress, long seq, byte[] data) {
+    public void sendToProxy(String remoteAddress, long seq, byte[] data) {
         ChannelData cd = new ChannelData();
         cd.setRemoteAddress(remoteAddress);
         cd.setRecvSeq(seq);
@@ -95,7 +99,7 @@ public class Proxy {
         }
     }
 
-    void recvFromProxy(ChannelData cd){
+    public void recvFromProxy(ChannelData cd){
         String remote = cd.getRemoteAddress();
         Command cmd = cd.getCmd();
         byte[] data = cd.getData();

@@ -1,9 +1,9 @@
 package com.x.bridge.proxy.client;
 
 import com.x.bridge.core.ISocketListener;
-import com.x.bridge.data.ChannelInfo;
 import com.x.bridge.data.ReplierManager;
-import com.x.bridge.util.SocketHelper;
+import com.x.bridge.proxy.Replier;
+import com.x.bridge.proxy.server.Proxy;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -27,12 +27,17 @@ public class ProxyClientListener implements ISocketListener {
 
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
-        //Replier replier = new Replier(ctx);
-        //replier.recvSeqIncrement();
-
-        ChannelInfo channelInfo = SocketHelper.getChannelInfo(ctx);
-        System.out.println("通道激活");
-        System.out.println(channelInfo);
+        // 生成应答对象
+        Replier replier = new Replier(ctx);
+        // 接收数据（从建立连接开始，seq就开始递增）
+        replier.received();
+        // 设置当前会话连接状态
+        replier.setConnected(true);
+        // 获取代理对象，通知另一端代理（服务端）连接成功
+        Proxy proxy = replierManager.getProxy();
+        proxy.connectSuccess(replier);
+        // 管理应答对象
+        replierManager.addReplier(this.proxyKey, replier);
 
     }
 

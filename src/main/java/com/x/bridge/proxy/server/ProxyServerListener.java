@@ -47,7 +47,7 @@ public class ProxyServerListener implements IServerListener {
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         Replier replier = new Replier(ctx);
-        replier.recvSeqIncrement();
+        replier.received();
         ChannelInfo ch = replier.getChannelInfo();
         ProxyConfig cfg = ProxyConfigManager.getProxyConfig(ch.getLocalPort());
         if (cfg.isAllowClient(ch.getRemoteIP())) {
@@ -74,7 +74,7 @@ public class ProxyServerListener implements IServerListener {
         if (replier != null) {
             if (replier.isConnected()) {
                 Proxy proxy = ProxyManager.getProxyServer(ch.getLocalPort());
-                replier.recvSeqIncrement();
+                replier.received();
                 proxy.disconnect(replier);
                 replier.close();
                 log.info("连接:{} 关闭，通知另一端代理关闭", remote);
@@ -90,7 +90,7 @@ public class ProxyServerListener implements IServerListener {
         String remoteAddress = ch.getRemoteAddress();
         Replier replier = replierManager.getReplier(remoteAddress);
         if (replier != null) {
-            replier.recvSeqIncrement();
+            replier.received();
             Proxy proxy = ProxyManager.getProxyServer(ch.getLocalPort());
             byte[] data = SocketHelper.readData(buf);
             proxy.sendToProxy(remoteAddress, replier.getRecvSeq(), data);

@@ -47,7 +47,7 @@ public final class Replier {
         return recvSeq.get();
     }
 
-    public long recvSeqIncrement() {
+    public long received() {
         return recvSeq.incrementAndGet();
     }
 
