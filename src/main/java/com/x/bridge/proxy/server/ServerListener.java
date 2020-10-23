@@ -21,11 +21,11 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public class ProxyServerListener implements IServerListener {
+public final class ServerListener implements IServerListener {
 
     private final ReplierManager replierManager;
 
-    public ProxyServerListener(ReplierManager replierManager) {
+    public ServerListener(ReplierManager replierManager) {
         this.replierManager = replierManager;
     }
 
@@ -52,17 +52,18 @@ public class ProxyServerListener implements IServerListener {
         ProxyConfig cfg = ProxyConfigManager.getProxyConfig(ch.getLocalPort());
         if (cfg.isAllowClient(ch.getRemoteIP())) {
             Proxy proxy = ProxyManager.getProxy(ch.getLocalPort());
+            replierManager.addReplier(ch.getRemoteAddress(), replier);
             if (!proxy.connectRequest(replier)) {
+                replierManager.removeReplier(ch.getRemoteAddress());
                 replier.close();
-                log.info("另一端代理与目标服务器:{}连接建立失败，当前连接:{} 将关闭", ch.getRemoteAddress());
+                log.info("另一端代理与目标服务器:[{}]连接建立失败，当前连接:[{}]将关闭", ch.getRemoteAddress());
             } else {
                 replier.setConnected(true);
-                replierManager.addReplier(ch.getRemoteAddress(), replier);
                 log.info("连接:{} 建立成功", ch.getRemoteAddress());
             }
         } else {
             replier.close();
-            log.info("代理:{},收到非法IP:{}企图建立连接,已关闭", ch.getLocalAddress(), ch.getRemoteAddress());
+            log.info("非法客户端:[{}]企图建立与代理:[{}]建立连接,已关闭", ch.getLocalAddress(), ch.getRemoteAddress());
         }
     }
 

@@ -2,6 +2,8 @@ package com.x.bridge.proxy;
 
 import com.x.bridge.data.ChannelInfo;
 import com.x.bridge.util.SocketHelper;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Data;
 
@@ -35,9 +37,20 @@ public final class Replier {
         this.channelInfo = SocketHelper.getChannelInfo(ctx);
         this.recvSeq = new AtomicLong(-1);
         this.connected = false;
+        this.connectTimeout = true;
         this.connectLock = new Object();
     }
-
+    
+    public void sendData(byte[] data){
+        ByteBuf buf = ByteBufAllocator.DEFAULT.buffer();
+        buf.writeBytes(data);
+        ctx.writeAndFlush(buf);
+    }
+    
+    public long received() {
+        return recvSeq.incrementAndGet();
+    }
+    
     public void close() {
         ctx.close();
     }
@@ -48,10 +61,6 @@ public final class Replier {
 
     public long getRecvSeq() {
         return recvSeq.get();
-    }
-
-    public long received() {
-        return recvSeq.incrementAndGet();
     }
 
     public boolean isConnected() {

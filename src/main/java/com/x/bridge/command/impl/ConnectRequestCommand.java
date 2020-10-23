@@ -22,6 +22,7 @@ public class ConnectRequestCommand implements ICommand {
         Proxy proxy = ProxyManager.getProxy(cd.getProxyPort());
         // 获取应答管理者
         ReplierManager replierManager = proxy.getReplierManager();
+        // 获取应答者
         Replier replier = replierManager.getReplier(appSocket);
         // 未建立建立
         if (replier == null) {
@@ -31,7 +32,8 @@ public class ConnectRequestCommand implements ICommand {
                     new ClientListener(appSocket, replierManager));
             proxy.getRunner().execute(client);
         } else {
-            log.info("代理服务器:{},连接:{}已存在，不再重新建立", cd.getProxyPort(), cd.getAppSocketClient());
+            log.info("代理服务器:{},连接:{}已存在，不再重新建立",
+                    cd.getProxyPort(), cd.getAppSocketClient());
         }
     }
 }

@@ -42,7 +42,7 @@ public class Proxy {
         this.config = ProxyConfigManager.getProxyConfig(serverPort);
         this.replierManager = new ReplierManager(serverPort);
         this.server = new SocketServer(new SocketConfig(serverPort),
-                new ProxyServerListener(replierManager));
+                new ServerListener(replierManager));
     }
 
      public boolean connectRequest(Replier replier) {

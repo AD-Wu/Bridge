@@ -2,7 +2,7 @@ package com.x.bridge.core;
 
 import com.x.bridge.data.ReplierManager;
 import com.x.bridge.proxy.client.ClientListener;
-import com.x.bridge.proxy.server.ProxyServerListener;
+import com.x.bridge.proxy.server.ServerListener;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,7 +12,7 @@ public class Test {
     public static void main(String[] args) throws InterruptedException {
         ExecutorService threads = Executors.newCachedThreadPool();
         ReplierManager replierManager = new ReplierManager(1111);
-        SocketServer server = new SocketServer(new SocketConfig(1111),new ProxyServerListener(replierManager));
+        SocketServer server = new SocketServer(new SocketConfig(1111),new ServerListener(replierManager));
         threads.execute(server);
 
         TimeUnit.SECONDS.sleep(2);
