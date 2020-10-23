@@ -16,12 +16,16 @@ public class ConnectRequestCommand implements ICommand {
     
     @Override
     public void execute(ChannelData cd) {
-        
+        // 获取应用客户端地址
         String remote = cd.getRemoteAddress();
+        // 获取代理
         Proxy proxy = ProxyManager.getProxyServer(cd.getProxyPort());
+        // 获取应答管理者
         ReplierManager replierManager = proxy.getReplierManager();
         Replier replier = replierManager.getReplier(remote);
+        // 未建立建立
         if (replier == null) {
+            // 创建socket客户端连接目标服务器
             SocketClient client = new SocketClient(
                     new SocketConfig(cd.getTargetIp(), cd.getTargetPort()),
                     new ClientListener(remote, replierManager));
