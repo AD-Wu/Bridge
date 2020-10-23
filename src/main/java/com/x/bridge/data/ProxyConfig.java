@@ -18,9 +18,8 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "bridge")
 public class ProxyConfig {
     
-    private int port;
-    private String targetIP;
-    private int targetPort;
+    private String proxyAddress;
+    private String targetAddress;
     private Set<String> allowClients;
     
     private int connectTimeout;// 超时时间，单位:秒

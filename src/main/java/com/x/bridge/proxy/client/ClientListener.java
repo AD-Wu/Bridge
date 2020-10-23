@@ -32,7 +32,7 @@ public final class ClientListener implements ISocketListener {
         // 生成应答对象
         Replier replier = new Replier(appSocketClient, ctx);
         // 接收数据（从建立连接开始，seq就开始递增）
-        replier.received();
+        replier.receive();
         // 设置当前会话连接状态
         replier.setConnected(true);
         // 获取代理对象，通知另一端代理（服务端）连接成功
@@ -49,7 +49,7 @@ public final class ClientListener implements ISocketListener {
         // 移除应答对象
         Replier replier = replierManager.removeReplier(appSocketClient);
         // 接收数据，seq递增
-        replier.received();
+        replier.receive();
         // 关闭应答对象
         replier.close();
         // 设置连接关闭状态
@@ -68,7 +68,7 @@ public final class ClientListener implements ISocketListener {
         // 获取应答对象
         Replier replier = replierManager.getReplier(appSocketClient);
         // 接收数据，seq递增
-        replier.received();
+        replier.receive();
         // 获取代理对象，转发来自服务端端数据
         Proxy proxy = replierManager.getProxy();
         byte[] data = SocketHelper.readData(buf);

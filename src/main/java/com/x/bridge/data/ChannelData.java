@@ -10,11 +10,28 @@ import lombok.Data;
  */
 @Data
 public class ChannelData {
+    
     private String appSocketClient;
-    private int proxyPort;
-    private String targetIp;
-    private int targetPort;
+    
+    private String proxyAddress;
+    
+    private String targetAddress;
+    
     private long recvSeq;
+    
     private Command cmd;
+    
     private byte[] data;
+    
+    private String targetIP;
+    
+    private int targetPort;
+    
+    public void setTargetAddress(String targetAddress) {
+        this.targetAddress = targetAddress;
+        String[] targets = targetAddress.split(":");
+        this.targetIP = targets[0];
+        this.targetPort = Integer.parseInt(targets[1]);
+    }
+    
 }

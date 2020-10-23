@@ -5,7 +5,6 @@ import com.x.bridge.core.SocketConfig;
 import com.x.bridge.data.ChannelInfo;
 import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.data.ReplierManager;
-import com.x.bridge.proxy.ProxyConfigManager;
 import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.Replier;
 import com.x.bridge.util.SocketHelper;
@@ -48,10 +47,10 @@ public final class ServerListener implements IServerListener {
     public void active(ChannelHandlerContext ctx) throws Exception {
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
         Replier replier = new Replier(ch.getRemoteAddress(),ctx);
-        replier.received();
-        ProxyConfig cfg = ProxyConfigManager.getProxyConfig(ch.getLocalPort());
+        replier.receive();
+        Proxy proxy = ProxyManager.getProxy(ch.getLocalAddress());
+        ProxyConfig cfg = proxy.getConfig();
         if (cfg.isAllowClient(ch.getRemoteIP())) {
-            Proxy proxy = ProxyManager.getProxy(ch.getLocalPort());
             replierManager.addReplier(ch.getRemoteAddress(), replier);
             if (!proxy.connectRequest(replier)) {
                 replierManager.removeReplier(ch.getRemoteAddress());
@@ -59,7 +58,7 @@ public final class ServerListener implements IServerListener {
                 log.info("另一端代理与目标服务器:[{}]连接建立失败，当前连接:[{}]将关闭", ch.getRemoteAddress());
             } else {
                 replier.setConnected(true);
-                log.info("连接:{} 建立成功", ch.getRemoteAddress());
+                log.info("连接:[{}] 建立成功", ch.getRemoteAddress());
             }
         } else {
             replier.close();
@@ -74,8 +73,8 @@ public final class ServerListener implements IServerListener {
         Replier replier = replierManager.removeReplier(remote);
         if (replier != null) {
             if (replier.isConnected()) {
-                Proxy proxy = ProxyManager.getProxy(ch.getLocalPort());
-                replier.received();
+                Proxy proxy = ProxyManager.getProxy(ch.getLocalAddress());
+                replier.receive();
                 proxy.disconnect(replier);
                 replier.close();
                 log.info("连接:{} 关闭，通知另一端代理关闭", remote);
@@ -91,8 +90,8 @@ public final class ServerListener implements IServerListener {
         String remoteAddress = ch.getRemoteAddress();
         Replier replier = replierManager.getReplier(remoteAddress);
         if (replier != null) {
-            replier.received();
-            Proxy proxy = ProxyManager.getProxy(ch.getLocalPort());
+            replier.receive();
+            Proxy proxy = ProxyManager.getProxy(ch.getLocalAddress());
             byte[] data = SocketHelper.readData(buf);
             proxy.sendToProxy(remoteAddress, replier.getRecvSeq(), data);
             log.info("代理:{} 接收来自客户端:{} 的数据，序号:{},数据长度:{}",

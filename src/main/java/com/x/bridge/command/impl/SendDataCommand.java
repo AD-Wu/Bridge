@@ -14,14 +14,14 @@ public class SendDataCommand implements ICommand {
         // 获取应用客户端地址
         String appSocket = cd.getAppSocketClient();
         // 获取代理
-        Proxy proxy = ProxyManager.getProxy(cd.getProxyPort());
+        Proxy proxy = ProxyManager.getProxy(cd.getProxyAddress());
         // 获取应答管理者
         ReplierManager replierManager = proxy.getReplierManager();
         // 获取应答者
         Replier replier = replierManager.getReplier(appSocket);
         if (replier != null) {
             // 获取发送数据
-            replier.sendData(cd.getData());
+            replier.send(cd.getRecvSeq(),cd.getData());
         }
     }
     

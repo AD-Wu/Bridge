@@ -9,6 +9,7 @@ import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.data.ReplierManager;
 import com.x.bridge.proxy.ProxyConfigManager;
 import com.x.bridge.proxy.Replier;
+import com.x.bridge.util.AppHelper;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;
 import lombok.Data;
@@ -36,12 +37,12 @@ public class Proxy {
     
     private final ExecutorService runner;
 
-    public Proxy(int serverPort, IBridge bridge) {
+    public Proxy(String proxyAddress, IBridge bridge) {
         this.bridge = bridge;
         this.runner = Executors.newCachedThreadPool();
-        this.config = ProxyConfigManager.getProxyConfig(serverPort);
-        this.replierManager = new ReplierManager(serverPort);
-        this.server = new SocketServer(new SocketConfig(serverPort),
+        this.config = ProxyConfigManager.getProxyConfig(proxyAddress);
+        this.replierManager = new ReplierManager(proxyAddress);
+        this.server = new SocketServer(new SocketConfig(AppHelper.getPort(proxyAddress)),
                 new ServerListener(replierManager));
     }
 
@@ -49,8 +50,7 @@ public class Proxy {
         ChannelData cd = new ChannelData();
         cd.setAppSocketClient(replier.getChannelInfo().getRemoteAddress());
         cd.setRecvSeq(replier.getRecvSeq());
-        cd.setTargetIp(config.getTargetIP());
-        cd.setTargetPort(config.getTargetPort());
+        cd.setTargetAddress(config.getTargetAddress());
         cd.setCmd(Command.ConnectRequest);
         cd.setData(ArrayHelper.EMPTY_BYTE);
 
@@ -79,8 +79,7 @@ public class Proxy {
         ChannelData cd = new ChannelData();
         cd.setAppSocketClient(replier.getChannelInfo().getRemoteAddress());
         cd.setRecvSeq(replier.getRecvSeq());
-        cd.setTargetIp(config.getTargetIP());
-        cd.setTargetPort(config.getTargetPort());
+        cd.setTargetAddress(config.getTargetAddress());
         cd.setCmd(Command.Disconnect);
         cd.setData(ArrayHelper.EMPTY_BYTE);
         try {
@@ -94,8 +93,7 @@ public class Proxy {
         ChannelData cd = new ChannelData();
         cd.setAppSocketClient(appSocketClient);
         cd.setRecvSeq(seq);
-        cd.setTargetIp(config.getTargetIP());
-        cd.setTargetPort(config.getTargetPort());
+        cd.setTargetAddress(config.getTargetAddress());
         cd.setCmd(Command.SendData);
         cd.setData(data);
         try {

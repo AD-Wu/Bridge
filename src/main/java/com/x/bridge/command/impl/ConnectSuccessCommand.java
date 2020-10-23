@@ -14,7 +14,7 @@ public class ConnectSuccessCommand implements ICommand {
         // 获取应用客户端地址
         String appSocket = cd.getAppSocketClient();
         // 获取代理
-        Proxy proxy = ProxyManager.getProxy(cd.getProxyPort());
+        Proxy proxy = ProxyManager.getProxy(cd.getProxyAddress());
         // 获取应答管理者
         ReplierManager replierManager = proxy.getReplierManager();
         // 获取应答者
@@ -24,7 +24,8 @@ public class ConnectSuccessCommand implements ICommand {
             Object connectLock = replier.getConnectLock();
             // 通知连接建立成功
             synchronized (connectLock) {
-                replier.setConnected(false);
+                replier.setConnected(true);
+                replier.setConnectTimeout(false);
                 connectLock.notify();
             }
         }

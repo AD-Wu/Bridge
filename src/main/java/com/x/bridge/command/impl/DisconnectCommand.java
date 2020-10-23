@@ -6,7 +6,9 @@ import com.x.bridge.data.ReplierManager;
 import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.Replier;
 import com.x.bridge.proxy.server.Proxy;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class DisconnectCommand implements ICommand {
     
     @Override
@@ -14,7 +16,7 @@ public class DisconnectCommand implements ICommand {
         // 获取应用客户端地址
         String appSocket = cd.getAppSocketClient();
         // 获取代理
-        Proxy proxy = ProxyManager.getProxy(cd.getProxyPort());
+        Proxy proxy = ProxyManager.getProxy(cd.getProxyAddress());
         // 获取应答管理者
         ReplierManager replierManager = proxy.getReplierManager();
         // 移除应答者

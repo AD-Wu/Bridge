@@ -19,7 +19,7 @@ public class ConnectRequestCommand implements ICommand {
         // 获取应用客户端地址
         String appSocket = cd.getAppSocketClient();
         // 获取代理
-        Proxy proxy = ProxyManager.getProxy(cd.getProxyPort());
+        Proxy proxy = ProxyManager.getProxy(cd.getProxyAddress());
         // 获取应答管理者
         ReplierManager replierManager = proxy.getReplierManager();
         // 获取应答者
@@ -28,12 +28,12 @@ public class ConnectRequestCommand implements ICommand {
         if (replier == null) {
             // 创建socket客户端连接目标服务器
             SocketClient client = new SocketClient(
-                    new SocketConfig(cd.getTargetIp(), cd.getTargetPort()),
+                    new SocketConfig(cd.getTargetIP(), cd.getTargetPort()),
                     new ClientListener(appSocket, replierManager));
             proxy.getRunner().execute(client);
         } else {
-            log.info("代理服务器:{},连接:{}已存在，不再重新建立",
-                    cd.getProxyPort(), cd.getAppSocketClient());
+            log.info("代理服务器:[{}],连接:[{}]已存在，不再重新建立",
+                    cd.getProxyAddress(), cd.getAppSocketClient());
         }
     }
 }

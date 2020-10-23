@@ -14,15 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author AD
  */
 @Data
-public class ReplierManager {
+public final class ReplierManager {
     
-    private final int serverPort;
     private final Proxy proxy;
     private final Map<String, Replier> repliers;
     
-    public ReplierManager(int serverPort){
-        this.serverPort = serverPort;
-        this.proxy = ProxyManager.getProxy(serverPort);
+    public ReplierManager(String proxyAddress){
+        this.proxy = ProxyManager.getProxy(proxyAddress);
         this.repliers = new ConcurrentHashMap<>();
     }
     

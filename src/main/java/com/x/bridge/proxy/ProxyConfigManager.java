@@ -3,7 +3,6 @@ package com.x.bridge.proxy;
 import com.x.bridge.data.ProxyConfig;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @Desc TODO
@@ -12,10 +11,10 @@ import java.util.Set;
  */
 public class ProxyConfigManager {
     
-    private static Map<Integer, ProxyConfig> configs;
+    private static Map<String, ProxyConfig> configs;
     
-    public static ProxyConfig getProxyConfig(int serverPort){
-        return configs.get(serverPort);
+    public static ProxyConfig getProxyConfig(String proxyAddress){
+        return configs.get(proxyAddress);
     }
     
 }
