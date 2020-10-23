@@ -6,9 +6,9 @@ import com.x.bridge.core.SocketConfig;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.Replier;
+import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.client.ClientListener;
-import com.x.bridge.proxy.server.Proxy;
+import com.x.bridge.proxy.core.Proxy;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2

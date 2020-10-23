@@ -1,4 +1,4 @@
-package com.x.bridge.proxy;
+package com.x.bridge.proxy.core;
 
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.util.SocketHelper;

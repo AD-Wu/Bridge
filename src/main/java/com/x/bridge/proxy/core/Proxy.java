@@ -1,14 +1,13 @@
-package com.x.bridge.proxy.server;
+package com.x.bridge.proxy.core;
 
 import com.x.bridge.command.core.Command;
 import com.x.bridge.core.SocketConfig;
 import com.x.bridge.core.SocketServer;
 import com.x.bridge.proxy.data.ChannelData;
-import com.x.bridge.proxy.IBridge;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.ProxyConfigManager;
-import com.x.bridge.proxy.Replier;
+import com.x.bridge.proxy.server.ServerListener;
 import com.x.bridge.util.AppHelper;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;

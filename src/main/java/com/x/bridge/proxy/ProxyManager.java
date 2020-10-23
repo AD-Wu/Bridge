@@ -1,6 +1,6 @@
 package com.x.bridge.proxy;
 
-import com.x.bridge.proxy.server.Proxy;
+import com.x.bridge.proxy.core.Proxy;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

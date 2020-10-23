@@ -4,8 +4,8 @@ import com.x.bridge.command.core.ICommand;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.Replier;
-import com.x.bridge.proxy.server.Proxy;
+import com.x.bridge.proxy.core.Replier;
+import com.x.bridge.proxy.core.Proxy;
 
 public class ConnectSuccessCommand implements ICommand {
     

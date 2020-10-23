@@ -1,6 +1,7 @@
 package com.x.bridge.proxy;
 
-import com.x.bridge.proxy.server.Proxy;
+import com.x.bridge.proxy.core.Proxy;
+import com.x.bridge.proxy.core.Replier;
 import lombok.Data;
 
 import java.util.Map;

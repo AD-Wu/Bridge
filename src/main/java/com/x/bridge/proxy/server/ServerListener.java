@@ -2,11 +2,12 @@ package com.x.bridge.proxy.server;
 
 import com.x.bridge.core.IServerListener;
 import com.x.bridge.core.SocketConfig;
+import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.Replier;
+import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.util.SocketHelper;
 import com.x.doraemon.util.Strings;
 import io.netty.buffer.ByteBuf;
