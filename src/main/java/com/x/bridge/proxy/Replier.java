@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Data
 public final class Replier {
 
+    private final String appSocketClient;
+
     private final ChannelHandlerContext ctx;
 
     private final ChannelInfo channelInfo;
@@ -27,7 +29,8 @@ public final class Replier {
 
     private final Object connectLock;
 
-    public Replier(ChannelHandlerContext ctx) {
+    public Replier(String appSocketClient, ChannelHandlerContext ctx) {
+        this.appSocketClient = appSocketClient;
         this.ctx = ctx;
         this.channelInfo = SocketHelper.getChannelInfo(ctx);
         this.recvSeq = new AtomicLong(-1);

@@ -17,18 +17,18 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ProxyClientListener implements ISocketListener {
 
-    private final String proxyKey;
+    private final String appSocketClient;
     private final ReplierManager replierManager;
 
-    public ProxyClientListener(String proxyKey, ReplierManager replierManager) {
-        this.proxyKey = proxyKey;
+    public ProxyClientListener(String appSocketClient, ReplierManager replierManager) {
+        this.appSocketClient = appSocketClient;
         this.replierManager = replierManager;
     }
 
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         // 生成应答对象
-        Replier replier = new Replier(ctx);
+        Replier replier = new Replier(appSocketClient, ctx);
         // 接收数据（从建立连接开始，seq就开始递增）
         replier.received();
         // 设置当前会话连接状态
@@ -37,7 +37,7 @@ public class ProxyClientListener implements ISocketListener {
         Proxy proxy = replierManager.getProxy();
         proxy.connectSuccess(replier);
         // 管理应答对象
-        replierManager.addReplier(this.proxyKey, replier);
+        replierManager.addReplier(this.appSocketClient, replier);
 
     }
 

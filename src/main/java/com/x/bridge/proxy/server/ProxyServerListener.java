@@ -46,9 +46,9 @@ public class ProxyServerListener implements IServerListener {
 
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
-        Replier replier = new Replier(ctx);
+        ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
+        Replier replier = new Replier(ch.getRemoteAddress(),ctx);
         replier.received();
-        ChannelInfo ch = replier.getChannelInfo();
         ProxyConfig cfg = ProxyConfigManager.getProxyConfig(ch.getLocalPort());
         if (cfg.isAllowClient(ch.getRemoteIP())) {
             Proxy proxy = ProxyManager.getProxyServer(ch.getLocalPort());
