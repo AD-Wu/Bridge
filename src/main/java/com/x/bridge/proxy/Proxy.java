@@ -48,6 +48,10 @@ public class Proxy {
                 bridge.send(cd);
                 lock.wait(config.getConnectTimeout() * 1000);
             }
+            if(replier.isConnectTimeout()){
+                log.info("连接超时，配置时间:{}秒，连接关闭");
+                return false;
+            }
             return replier.isConnected();
         } catch (Exception e) {
             log.error(Strings.getExceptionTrace(e));

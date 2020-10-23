@@ -4,6 +4,7 @@ import com.x.bridge.data.ChannelInfo;
 import com.x.bridge.util.SocketHelper;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.Data;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -12,6 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @Date 2020/10/22 19:03
  * @Author AD
  */
+@Data
 final class Replier {
     
     private final ChannelHandlerContext ctx;
@@ -21,6 +23,8 @@ final class Replier {
     private final AtomicLong recvSeq;
     
     private volatile boolean connected;
+    
+    private volatile boolean connectTimeout;
     
     private final Object connectLock;
     
