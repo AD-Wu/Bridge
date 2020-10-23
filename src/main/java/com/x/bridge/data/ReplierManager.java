@@ -22,7 +22,7 @@ public class ReplierManager {
     
     public ReplierManager(int serverPort){
         this.serverPort = serverPort;
-        this.proxy = ProxyManager.getProxyServer(serverPort);
+        this.proxy = ProxyManager.getProxy(serverPort);
         this.repliers = new ConcurrentHashMap<>();
     }
     

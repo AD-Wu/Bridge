@@ -17,21 +17,21 @@ public class ConnectRequestCommand implements ICommand {
     @Override
     public void execute(ChannelData cd) {
         // 获取应用客户端地址
-        String remote = cd.getRemoteAddress();
+        String appSocket = cd.getAppSocketClient();
         // 获取代理
-        Proxy proxy = ProxyManager.getProxyServer(cd.getProxyPort());
+        Proxy proxy = ProxyManager.getProxy(cd.getProxyPort());
         // 获取应答管理者
         ReplierManager replierManager = proxy.getReplierManager();
-        Replier replier = replierManager.getReplier(remote);
+        Replier replier = replierManager.getReplier(appSocket);
         // 未建立建立
         if (replier == null) {
             // 创建socket客户端连接目标服务器
             SocketClient client = new SocketClient(
                     new SocketConfig(cd.getTargetIp(), cd.getTargetPort()),
-                    new ClientListener(remote, replierManager));
+                    new ClientListener(appSocket, replierManager));
             proxy.getRunner().execute(client);
         } else {
-            log.info("代理服务器:{},连接:{}已存在，不再重新建立", cd.getProxyPort(), cd.getRemoteAddress());
+            log.info("代理服务器:{},连接:{}已存在，不再重新建立", cd.getProxyPort(), cd.getAppSocketClient());
         }
     }
 }

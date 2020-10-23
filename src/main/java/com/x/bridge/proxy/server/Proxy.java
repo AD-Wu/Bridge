@@ -47,7 +47,7 @@ public class Proxy {
 
      public boolean connectRequest(Replier replier) {
         ChannelData cd = new ChannelData();
-        cd.setRemoteAddress(replier.getChannelInfo().getRemoteAddress());
+        cd.setAppSocketClient(replier.getChannelInfo().getRemoteAddress());
         cd.setRecvSeq(replier.getRecvSeq());
         cd.setTargetIp(config.getTargetIP());
         cd.setTargetPort(config.getTargetPort());
@@ -77,7 +77,7 @@ public class Proxy {
 
     public void disconnect(Replier replier) {
         ChannelData cd = new ChannelData();
-        cd.setRemoteAddress(replier.getChannelInfo().getRemoteAddress());
+        cd.setAppSocketClient(replier.getChannelInfo().getRemoteAddress());
         cd.setRecvSeq(replier.getRecvSeq());
         cd.setTargetIp(config.getTargetIP());
         cd.setTargetPort(config.getTargetPort());
@@ -92,7 +92,7 @@ public class Proxy {
 
     public void sendToProxy(String appSocketClient, long seq, byte[] data) {
         ChannelData cd = new ChannelData();
-        cd.setRemoteAddress(appSocketClient);
+        cd.setAppSocketClient(appSocketClient);
         cd.setRecvSeq(seq);
         cd.setTargetIp(config.getTargetIP());
         cd.setTargetPort(config.getTargetPort());
@@ -106,7 +106,7 @@ public class Proxy {
     }
 
     public void recvFromProxy(ChannelData cd){
-        String remote = cd.getRemoteAddress();
+        String remote = cd.getAppSocketClient();
         Command cmd = cd.getCmd();
         byte[] data = cd.getData();
         long seq = cd.getRecvSeq();

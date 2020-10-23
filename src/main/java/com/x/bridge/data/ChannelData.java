@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 public class ChannelData {
-    private String remoteAddress;
+    private String appSocketClient;
     private int proxyPort;
     private String targetIp;
     private int targetPort;

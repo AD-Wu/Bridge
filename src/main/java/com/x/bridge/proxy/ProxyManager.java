@@ -17,7 +17,7 @@ public final class ProxyManager {
     
     private ProxyManager() {}
     
-    public static Proxy getProxyServer(int serverPort) {
+    public static Proxy getProxy(int serverPort) {
         return proxies.get(serverPort);
     }
     

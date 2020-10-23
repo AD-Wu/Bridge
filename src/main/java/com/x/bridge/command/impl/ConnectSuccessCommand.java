@@ -5,9 +5,9 @@ import com.x.bridge.data.ChannelData;
 
 public class ConnectSuccessCommand implements ICommand {
     
-
     @Override
     public void execute(ChannelData cd) {
-
+        String appSocket = cd.getAppSocketClient();
+        
     }
 }
