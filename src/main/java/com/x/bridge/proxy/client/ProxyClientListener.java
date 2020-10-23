@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public class ProxyClientListener implements ISocketListener {
+public final class ProxyClientListener implements ISocketListener {
 
     private final String appSocketClient;
     private final ReplierManager replierManager;
