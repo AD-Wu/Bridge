@@ -1,4 +1,4 @@
-package com.x.bridge.data;
+package com.x.bridge.proxy.data;
 
 import com.x.bridge.command.core.Command;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.x.bridge.core;
 
-import com.x.bridge.data.ReplierManager;
+import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.client.ClientListener;
 import com.x.bridge.proxy.server.ServerListener;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class Test {
     public static void main(String[] args) throws InterruptedException {
         ExecutorService threads = Executors.newCachedThreadPool();
-        ReplierManager replierManager = new ReplierManager(1111);
+        ReplierManager replierManager = new ReplierManager("localhost:1111");
         SocketServer server = new SocketServer(new SocketConfig(1111),new ServerListener(replierManager));
         threads.execute(server);
 

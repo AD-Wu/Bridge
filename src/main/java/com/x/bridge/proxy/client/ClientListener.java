@@ -1,7 +1,7 @@
 package com.x.bridge.proxy.client;
 
 import com.x.bridge.core.ISocketListener;
-import com.x.bridge.data.ReplierManager;
+import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.Replier;
 import com.x.bridge.proxy.server.Proxy;
 import com.x.bridge.util.SocketHelper;

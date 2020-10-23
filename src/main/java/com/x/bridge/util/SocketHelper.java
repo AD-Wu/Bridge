@@ -1,6 +1,6 @@
 package com.x.bridge.util;
 
-import com.x.bridge.data.ChannelInfo;
+import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.doraemon.util.ArrayHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

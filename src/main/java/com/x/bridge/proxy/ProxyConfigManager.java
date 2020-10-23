@@ -1,6 +1,6 @@
 package com.x.bridge.proxy;
 
-import com.x.bridge.data.ProxyConfig;
+import com.x.bridge.proxy.data.ProxyConfig;
 
 import java.util.Map;
 

@@ -1,7 +1,5 @@
-package com.x.bridge.data;
+package com.x.bridge.proxy;
 
-import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.Replier;
 import com.x.bridge.proxy.server.Proxy;
 import lombok.Data;
 
@@ -9,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020/10/22 19:44
  * @Author AD
  */

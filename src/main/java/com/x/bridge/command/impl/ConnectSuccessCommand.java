@@ -1,8 +1,8 @@
 package com.x.bridge.command.impl;
 
 import com.x.bridge.command.core.ICommand;
-import com.x.bridge.data.ChannelData;
-import com.x.bridge.data.ReplierManager;
+import com.x.bridge.proxy.data.ChannelData;
+import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.Replier;
 import com.x.bridge.proxy.server.Proxy;
