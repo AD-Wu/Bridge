@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "bridge")
-public class ProxyConfigManager {
+public class ProxyConfigs {
     
     private static Map<String, ProxyConfig> nameMap;
     
@@ -33,18 +33,14 @@ public class ProxyConfigManager {
         nameMap = new ConcurrentHashMap<>();
         for (ProxyConfig config : configs) {
             nameMap.put(config.getName(), config);
-            if(config.getProxyAddress()!=null){
+            if (config.getProxyAddress() != null) {
                 proxyAddressMap.put(config.getProxyAddress(), config);
             }
         }
     }
     
-    public static ProxyConfig getProxyConfig(String proxyName) {
+    public static ProxyConfig get(String proxyName) {
         return nameMap.get(proxyName);
-    }
-    
-    public static ProxyConfig getProxyConfigByProxyAddress(String proxyAddress){
-        return proxyAddressMap.get(proxyAddress);
     }
     
 }

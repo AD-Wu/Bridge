@@ -3,9 +3,9 @@ package com.x.bridge.proxy.core;
 import com.x.bridge.command.core.Command;
 import com.x.bridge.command.core.Commands;
 import com.x.bridge.command.core.ICommand;
+import com.x.bridge.core.IService;
 import com.x.bridge.proxy.BridgeManager;
 import com.x.bridge.proxy.MessageType;
-import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.doraemon.util.ArrayHelper;
@@ -14,13 +14,18 @@ import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
- * @Desc TODO
+ * @Desc 代理对象，服务端即socket server，客户端即socket会话管理
  * @Date 2020/10/24 18:00
  * @Author AD
  */
 @Data
-public class Proxy {
+public class Proxy implements IService {
     
     protected final ProxyConfig config;
     
@@ -28,7 +33,9 @@ public class Proxy {
     
     protected final IBridge bridge;
     
-    protected final ReplierManager replierManager;
+    protected final Map<String, Replier> repliers;
+    
+    protected final ExecutorService runner;
     
     protected final Logger log = LogManager.getLogger(this.getClass());
     
@@ -36,15 +43,32 @@ public class Proxy {
         this.config = config;
         this.serverModel = serverModel;
         this.bridge = BridgeManager.getBridge(config.getBridge());
-        this.replierManager = new ReplierManager(config.getName());
+        this.repliers = new ConcurrentHashMap<>();
+        this.runner = Executors.newCachedThreadPool();
     }
     
-    public void disconnect(Replier replier,MessageType type) {
+    public void addReplier(String remoteAddress, Replier replier) {
+        repliers.put(remoteAddress, replier);
+    }
+    
+    public Replier getReplier(String remoteAddress) {
+        return repliers.get(remoteAddress);
+    }
+    
+    public Replier removeReplier(String remoteAddress) {
+        return repliers.remove(remoteAddress);
+    }
+    
+    public void disconnect(Replier replier, MessageType type) {
+        String target = MessageType.ClientToServer == type ?
+                replier.getChannelInfo().getRemoteAddress() :
+                config.getTargetAddress();
         ChannelData cd = ChannelData.builder()
+                .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
                 .proxyAddress(replier.getProxyAddress())
-                .targetAddress(config.getTargetAddress())
+                .targetAddress(target)
                 .messageType(type.getCode())
                 .command(Command.Disconnect.getCmd())
                 .data(ArrayHelper.EMPTY_BYTE)
@@ -57,11 +81,15 @@ public class Proxy {
     }
     
     public void send(Replier replier, MessageType type, byte[] data) {
+        String target = MessageType.ClientToServer == type ?
+                replier.getChannelInfo().getRemoteAddress() :
+                config.getTargetAddress();
         ChannelData cd = ChannelData.builder()
+                .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
                 .proxyAddress(replier.getProxyAddress())
-                .targetAddress(config.getTargetAddress())
+                .targetAddress(target)
                 .messageType(type.getCode())
                 .command(Command.SendData.getCmd())
                 .data(data)
@@ -86,16 +114,37 @@ public class Proxy {
         }
     }
     
-    public ProxyConfig getConfig() {
-        return config;
+    @Override
+    public void start() throws Exception {
+        runner.execute(() -> {
+            try {
+                bridge.start();
+                proxyStart();
+            } catch (Exception e) {
+                try {
+                    stop();
+                } catch (Exception exception) {
+                    log.error(Strings.getExceptionTrace(e));
+                }
+                log.error(Strings.getExceptionTrace(e));
+            }
+        });
     }
     
-    public IBridge getBridge() {
-        return bridge;
+    @Override
+    public void stop() throws Exception {
+        runner.execute(() -> {
+            try {
+                bridge.stop();
+                proxyStop();
+            } catch (Exception e) {
+                log.error(Strings.getExceptionTrace(e));
+            }
+        });
     }
     
-    public ReplierManager getReplierManager() {
-        return replierManager;
-    }
+    protected void proxyStart() throws Exception {}
+    
+    protected void proxyStop() throws Exception  {}
     
 }

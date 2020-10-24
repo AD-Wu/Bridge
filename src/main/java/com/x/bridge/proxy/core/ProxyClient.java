@@ -8,26 +8,21 @@ import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020/10/24 17:50
  * @Author AD
  */
 @Log4j2
 public class ProxyClient extends Proxy {
     
-    private final ExecutorService runner;
-    
-    public ProxyClient(ProxyConfig config,boolean serverModel) {
-        super(config,false);
-        this.runner = Executors.newCachedThreadPool();
+    public ProxyClient(ProxyConfig config) {
+        super(config, false);
     }
     
     public void connectSuccess(Replier replier) {
         ChannelData cd = ChannelData.builder()
+                .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
                 .targetAddress(replier.getChannelInfo().getRemoteAddress())
@@ -42,8 +37,9 @@ public class ProxyClient extends Proxy {
         }
     }
     
-    public void connectFailed(Replier replier){
+    public void connectFailed(Replier replier) {
         ChannelData cd = ChannelData.builder()
+                .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
                 .targetAddress(replier.getChannelInfo().getRemoteAddress())
@@ -58,8 +54,14 @@ public class ProxyClient extends Proxy {
         }
     }
     
-    public ExecutorService getRunner() {
-        return runner;
+    @Override
+    protected void proxyStart() throws Exception {
+    
     }
     
+    @Override
+    protected void proxyStop() throws Exception {
+    
+    }
+   
 }

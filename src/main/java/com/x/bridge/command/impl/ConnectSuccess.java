@@ -2,12 +2,11 @@ package com.x.bridge.command.impl;
 
 import com.x.bridge.command.core.ICommand;
 import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.core.ProxyServer;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.data.ChannelData;
 
-public class ConnectSuccessCommand implements ICommand {
+public class ConnectSuccess implements ICommand {
     
     @Override
     public void execute(ChannelData cd)throws Exception {
@@ -15,10 +14,8 @@ public class ConnectSuccessCommand implements ICommand {
         String appSocket = cd.getAppSocketClient();
         // 获取代理
         ProxyServer server = ProxyManager.getProxyServer(cd.getProxyName());
-        // 获取应答管理者
-        ReplierManager replierManager = server.getReplierManager();
         // 获取应答者
-        Replier replier = replierManager.getReplier(appSocket);
+        Replier replier = server.getReplier(appSocket);
         if (replier != null) {
             // 获取应答者连接建立锁
             Object connectLock = replier.getConnectLock();

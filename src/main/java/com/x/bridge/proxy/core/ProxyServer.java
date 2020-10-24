@@ -1,7 +1,6 @@
 package com.x.bridge.proxy.core;
 
 import com.x.bridge.command.core.Command;
-import com.x.bridge.core.IService;
 import com.x.bridge.core.SocketConfig;
 import com.x.bridge.core.SocketServer;
 import com.x.bridge.proxy.MessageType;
@@ -13,40 +12,47 @@ import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020/10/24 17:35
  * @Author AD
  */
 @Log4j2
-public class ProxyServer extends Proxy implements IService {
-    
-    private final ExecutorService runner;
+public class ProxyServer extends Proxy  {
     
     private final SocketServer server;
     
-    public ProxyServer(ProxyConfig config, boolean serverModel) {
+    public ProxyServer(ProxyConfig config) {
         super(config, true);
-        this.runner = Executors.newSingleThreadExecutor();
         int port = AppHelper.getPort(config.getProxyAddress());
-        this.server = new SocketServer(new SocketConfig(port), new ServerListener(replierManager));
+        this.server = new SocketServer(new SocketConfig(port), new ServerListener(this));
     }
     
     @Override
-    public void start() throws Exception {
+    public void proxyStart() throws Exception {
         runner.execute(server);
     }
     
     @Override
-    public void stop() throws Exception {
-        server.stop();
+    public void proxyStop() throws Exception {
+        runner.execute(()->{
+            server.stop();
+            runner.shutdown();
+            for (Replier replier : repliers.values()) {
+                replier.close();
+            }
+            repliers.clear();
+        });
+        
+    }
+    
+    public boolean isAccept(String socket){
+        return config.isAllowClient(socket);
     }
     
     public boolean connectRequest(Replier replier) {
         ChannelData cd = ChannelData.builder()
+                .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
                 .proxyAddress(replier.getChannelInfo().getLocalAddress())

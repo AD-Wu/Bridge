@@ -3,14 +3,9 @@ package com.x.bridge.proxy.server;
 import com.x.bridge.core.IServerListener;
 import com.x.bridge.core.SocketConfig;
 import com.x.bridge.proxy.MessageType;
-import com.x.bridge.proxy.ProxyConfigManager;
-import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.core.ProxyServer;
-import com.x.bridge.proxy.data.ChannelInfo;
-import com.x.bridge.proxy.data.ProxyConfig;
-import com.x.bridge.proxy.ReplierManager;
-import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.core.Replier;
+import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.util.SocketHelper;
 import com.x.doraemon.util.Strings;
 import io.netty.buffer.ByteBuf;
@@ -26,10 +21,10 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public final class ServerListener implements IServerListener {
     
-    private final ReplierManager replierManager;
+    private final ProxyServer server;
     
-    public ServerListener(ReplierManager replierManager) {
-        this.replierManager = replierManager;
+    public ServerListener(ProxyServer proxyServer) {
+        this.server = proxyServer;
     }
     
     @Override
@@ -50,24 +45,17 @@ public final class ServerListener implements IServerListener {
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
-        Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(),ctx);
+        Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(), ctx);
         replier.receive();
-        ProxyConfig config = ProxyConfigManager.getProxyConfigByProxyAddress(ch.getLocalAddress());
-        if (config.isAllowClient(ch.getRemoteIP())) {
-            replierManager.addReplier(ch.getRemoteAddress(), replier);
-            Proxy proxy = ProxyManager.getProxyServer(config.getName());
-            if(proxy.isServerModel()){
-                ProxyServer server = (ProxyServer) proxy;
-                if (!server.connectRequest(replier)) {
-                    replierManager.removeReplier(ch.getRemoteAddress());
-                    replier.close();
-                    log.info("另一端代理与目标服务器:[{}]连接建立失败，当前连接:[{}]将关闭", ch.getRemoteAddress());
-                } else {
-                    replier.setConnected(true);
-                    log.info("连接:[{}] 建立成功", ch.getRemoteAddress());
-                }
-            }else{
-                log.error("代理模型出错，代理客户端禁止接收socket客户端的连接请求");
+        if (server.isAccept(ch.getRemoteIP())) {
+            server.addReplier(ch.getRemoteAddress(), replier);
+            if (!server.connectRequest(replier)) {
+                server.removeReplier(ch.getRemoteAddress());
+                replier.close();
+                log.info("另一端代理与目标服务器:[{}]连接建立失败，当前连接:[{}]将关闭", ch.getRemoteAddress());
+            } else {
+                replier.setConnected(true);
+                log.info("连接:[{}] 建立成功", ch.getRemoteAddress());
             }
             
         } else {
@@ -80,13 +68,11 @@ public final class ServerListener implements IServerListener {
     public void inActive(ChannelHandlerContext ctx) throws Exception {
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
         String remote = ch.getRemoteAddress();
-        Replier replier = replierManager.removeReplier(remote);
+        Replier replier = server.removeReplier(remote);
         if (replier != null) {
             if (replier.isConnected()) {
-                ProxyConfig cfg = ProxyConfigManager.getProxyConfigByProxyAddress(ch.getLocalAddress());
-                Proxy proxy = ProxyManager.getProxyServer(cfg.getName());
                 replier.receive();
-                proxy.disconnect(replier,MessageType.ServerToClient);
+                server.disconnect(replier, MessageType.ServerToClient);
                 replier.close();
                 log.info("连接:{} 关闭，通知另一端代理关闭", remote);
             } else {
@@ -99,13 +85,11 @@ public final class ServerListener implements IServerListener {
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
         String remote = ch.getRemoteAddress();
-        Replier replier = replierManager.getReplier(remote);
+        Replier replier = server.getReplier(remote);
         if (replier != null) {
             replier.receive();
-            ProxyConfig cfg = ProxyConfigManager.getProxyConfigByProxyAddress(ch.getLocalAddress());
-            Proxy proxy = ProxyManager.getProxyServer(cfg.getName());
             byte[] data = SocketHelper.readData(buf);
-            proxy.send(replier, MessageType.ServerToClient,data);
+            server.send(replier, MessageType.ServerToClient, data);
             log.info("代理:[{}] 接收来自客户端:[{}] 的数据，序号:{},数据长度:{}",
                     ch.getLocalAddress(), remote, replier.getRecvSeq(), data.length);
         }

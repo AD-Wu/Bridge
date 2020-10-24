@@ -2,14 +2,13 @@ package com.x.bridge.command.impl;
 
 import com.x.bridge.command.core.ICommand;
 import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.core.ProxyServer;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.data.ChannelData;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class ConnectFailedCommand implements ICommand {
+public class ConnectFailed implements ICommand {
     
     @Override
     public void execute(ChannelData cd) throws Exception{
@@ -17,10 +16,8 @@ public class ConnectFailedCommand implements ICommand {
         String appSocket = cd.getAppSocketClient();
         // 获取代理
         ProxyServer server = ProxyManager.getProxyServer(cd.getProxyName());
-        // 获取应答管理者
-        ReplierManager replierManager = server.getReplierManager();
         // 移除应答者
-        Replier replier = replierManager.removeReplier(appSocket);
+        Replier replier = server.removeReplier(appSocket);
         if (replier != null) {
             // 获取应答者连接建立锁
             Object connectLock = replier.getConnectLock();

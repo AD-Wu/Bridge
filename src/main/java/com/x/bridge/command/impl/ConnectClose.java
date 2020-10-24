@@ -3,14 +3,13 @@ package com.x.bridge.command.impl;
 import com.x.bridge.command.core.ICommand;
 import com.x.bridge.proxy.MessageType;
 import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.ReplierManager;
 import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.data.ChannelData;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class DisconnectCommand implements ICommand {
+public class ConnectClose implements ICommand {
     
     @Override
     public void execute(ChannelData cd) throws Exception {
@@ -23,14 +22,12 @@ public class DisconnectCommand implements ICommand {
         if (MessageType.ClientToServer.getCode() == messageType) {
             proxy = ProxyManager.getProxyServer(cd.getProxyName());
         } else if (MessageType.ServerToClient.getCode() == messageType) {
-            proxy = ProxyManager.getProxyClient(cd.getProxyAddress());
+            proxy = ProxyManager.getProxyClient(cd.getProxyName());
         } else {
             throw new RuntimeException("消息类型错误，当前消息类型代码:" + messageType);
         }
-        // 获取应答管理者
-        ReplierManager replierManager = proxy.getReplierManager();
         // 移除应答者
-        Replier replier = replierManager.removeReplier(appSocket);
+        Replier replier = proxy.removeReplier(appSocket);
         // 关闭通道
         if (replier != null) {
             replier.close();
