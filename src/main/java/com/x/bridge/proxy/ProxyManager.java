@@ -1,9 +1,8 @@
 package com.x.bridge.proxy;
 
-import com.x.bridge.proxy.core.IBridge;
-import com.x.bridge.proxy.core.Proxy;
+import com.x.bridge.proxy.core.ProxyClient;
+import com.x.bridge.proxy.core.ProxyServer;
 import com.x.bridge.proxy.data.ProxyConfig;
-import com.x.doraemon.util.Strings;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,27 +14,31 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ProxyManager {
     
-    // key=代理地址，value=代理对象
-    private static Map<String, Proxy> proxies = new ConcurrentHashMap<>();
+    private static Map<String, ProxyServer> servers = new ConcurrentHashMap<>();
+    
+    private static Map<String, ProxyClient> clients = new ConcurrentHashMap<>();
     
     private ProxyManager() {}
     
-    public static void startProxy(ProxyConfig config) {
-        String proxyAddress = config.getProxyAddress();
-        IBridge bridge = BridgeManager.getBridge(config.getBridge());
-        if (Strings.isNotNull(proxyAddress)) {
-            new Proxy(proxyAddress, bridge, true);
-        }else{
-            new Proxy(proxyAddress, bridge, false);
-        }
+    public static void startProxyServer(ProxyConfig config) throws Exception {
+        // ProxyServer server = new ProxyServer(config);
+        // server.start();
     }
     
-    public static Proxy getProxy(String proxyName) {
-        return proxies.get(proxyName);
+    public static ProxyServer getProxyServer(String proxyName) {
+        return servers.get(proxyName);
     }
     
-    public static void addProxy(String proxyName, Proxy proxy) {
-        proxies.put(proxyName, proxy);
+    public static void addProxyServer(String proxyName, ProxyServer server) {
+        servers.put(proxyName, server);
+    }
+    
+    public static ProxyClient getProxyClient(String proxyAddress) {
+        return clients.get(proxyAddress);
+    }
+    
+    public static void addProxyClient(String proxyAddress, ProxyClient client) {
+        clients.put(proxyAddress, client);
     }
     
 }

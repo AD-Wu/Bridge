@@ -19,7 +19,7 @@ public final class ReplierManager {
     private final Map<String, Replier> repliers;
     
     public ReplierManager(String proxyName){
-        this.proxy = ProxyManager.getProxy(proxyName);
+        this.proxy = ProxyManager.getProxyServer(proxyName);
         this.repliers = new ConcurrentHashMap<>();
     }
     

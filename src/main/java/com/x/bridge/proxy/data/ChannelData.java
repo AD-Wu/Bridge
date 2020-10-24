@@ -24,6 +24,8 @@ public class ChannelData {
     
     private int command;
     
+    private int messageType;
+    
     private byte[] data;
     
 }

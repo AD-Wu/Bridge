@@ -1,9 +1,11 @@
 package com.x.bridge.proxy.client;
 
 import com.x.bridge.core.ISocketListener;
+import com.x.bridge.proxy.MessageType;
 import com.x.bridge.proxy.ReplierManager;
-import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.core.Proxy;
+import com.x.bridge.proxy.core.ProxyClient;
+import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.util.SocketHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -38,13 +40,19 @@ public final class ClientListener implements ISocketListener {
         replier.receive();
         // 设置当前会话连接状态
         replier.setConnected(true);
-        // 获取代理对象，通知另一端代理（服务端）连接成功
+        // 获取代理客户端，通知另一端代理（服务端）连接成功
         Proxy proxy = replierManager.getProxy();
-        proxy.connectSuccess(replier);
-        // 管理应答对象
-        replierManager.addReplier(this.appSocketClient, replier);
-        // 日志记录
-        log.info("应用客户端:[{}]连接建立成功", appSocketClient);
+        if (!proxy.isServerModel()) {
+            ProxyClient client = (ProxyClient) proxy;
+            client.connectSuccess(replier);
+            // 管理应答对象
+            replierManager.addReplier(this.appSocketClient, replier);
+            // 日志记录
+            log.info("应用客户端:[{}]连接建立成功", appSocketClient);
+        } else {
+            log.error("代理模型出错，代理服务端禁止通知连接成功");
+        }
+        
     }
     
     @Override
@@ -59,7 +67,7 @@ public final class ClientListener implements ISocketListener {
         replier.setConnected(false);
         // 获取代理对象，通知另一端（服务端）关闭连接
         Proxy proxy = replierManager.getProxy();
-        proxy.disconnect(replier);
+        proxy.disconnect(replier, MessageType.ClientToServer);
         // 日志记录
         log.info("应用服务器:[{}]主动关闭客户端连接,通知服务端代理关闭应用客户端连接:[{}]",
                 replier.getChannelInfo().getRemoteAddress(), appSocketClient);
@@ -75,7 +83,7 @@ public final class ClientListener implements ISocketListener {
         // 获取代理对象，转发来自服务端端数据
         Proxy proxy = replierManager.getProxy();
         byte[] data = SocketHelper.readData(buf);
-        proxy.sendToProxy(replier, data);
+        proxy.send(replier, MessageType.ClientToServer, data);
         // 日志记录
         log.info("客户端:[[]]收到来自应用服务器:[{}]的数据，序号:{},数据长度:{}",
                 appSocketClient, replier.getChannelInfo().getRemoteAddress(),
