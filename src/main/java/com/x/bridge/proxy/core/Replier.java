@@ -21,6 +21,8 @@ public final class Replier {
     
     private final String appSocketClient;
     
+    private final String proxyAddress;
+    
     private final ChannelHandlerContext ctx;
     
     private final ChannelInfo channelInfo;
@@ -33,8 +35,9 @@ public final class Replier {
     
     private final Object connectLock;
     
-    public Replier(String appSocketClient, ChannelHandlerContext ctx) {
+    public Replier(String appSocketClient, String proxyAddress, ChannelHandlerContext ctx) {
         this.appSocketClient = appSocketClient;
+        this.proxyAddress = proxyAddress;
         this.ctx = ctx;
         this.channelInfo = SocketHelper.getChannelInfo(ctx);
         this.recvSeq = new AtomicLong(-1);
@@ -48,7 +51,7 @@ public final class Replier {
         buf.writeBytes(data);
         ctx.writeAndFlush(buf);
         log.info("成功发送数据至:[{}]，序号:{},长度:{}",
-                channelInfo.getRemoteAddress(),sendSeq, data.length);
+                channelInfo.getRemoteAddress(), sendSeq, data.length);
     }
     
     public long receive() {

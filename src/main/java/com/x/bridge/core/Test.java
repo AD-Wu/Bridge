@@ -16,7 +16,8 @@ public class Test {
         threads.execute(server);
 
         TimeUnit.SECONDS.sleep(2);
-        SocketClient client = new SocketClient(new SocketConfig("localhost", 1111), new ClientListener("localhost", replierManager));
+        SocketClient client = new SocketClient(new SocketConfig("localhost", 1111),
+                new ClientListener("localhost", "localhost:1111",replierManager));
         threads.execute(client);
 
         TimeUnit.SECONDS.sleep(3);

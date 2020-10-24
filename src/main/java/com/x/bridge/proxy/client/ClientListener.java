@@ -20,17 +20,20 @@ public final class ClientListener implements ISocketListener {
     
     private final String appSocketClient;
     
+    private final String proxyAddress;
+    
     private final ReplierManager replierManager;
     
-    public ClientListener(String appSocketClient, ReplierManager replierManager) {
+    public ClientListener(String appSocketClient, String proxyAddress, ReplierManager replierManager) {
         this.appSocketClient = appSocketClient;
+        this.proxyAddress = proxyAddress;
         this.replierManager = replierManager;
     }
     
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         // 生成应答对象
-        Replier replier = new Replier(appSocketClient, ctx);
+        Replier replier = new Replier(appSocketClient, proxyAddress, ctx);
         // 接收数据（从建立连接开始，seq就开始递增）
         replier.receive();
         // 设置当前会话连接状态
@@ -72,7 +75,7 @@ public final class ClientListener implements ISocketListener {
         // 获取代理对象，转发来自服务端端数据
         Proxy proxy = replierManager.getProxy();
         byte[] data = SocketHelper.readData(buf);
-        proxy.sendToProxy(appSocketClient, replier.getRecvSeq(), data);
+        proxy.sendToProxy(replier, data);
         // 日志记录
         log.info("客户端:[[]]收到来自应用服务器:[{}]的数据，序号:{},数据长度:{}",
                 appSocketClient, replier.getChannelInfo().getRemoteAddress(),

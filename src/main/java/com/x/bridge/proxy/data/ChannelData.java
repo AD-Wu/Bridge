@@ -1,6 +1,6 @@
 package com.x.bridge.proxy.data;
 
-import com.x.bridge.command.core.Command;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -9,6 +9,7 @@ import lombok.Data;
  * @Author AD
  */
 @Data
+@Builder
 public class ChannelData {
     
     private String appSocketClient;
@@ -19,19 +20,8 @@ public class ChannelData {
     
     private long recvSeq;
     
-    private Command cmd;
+    private int command;
     
     private byte[] data;
-    
-    private String targetIP;
-    
-    private int targetPort;
-    
-    public void setTargetAddress(String targetAddress) {
-        this.targetAddress = targetAddress;
-        String[] targets = targetAddress.split(":");
-        this.targetIP = targets[0];
-        this.targetPort = Integer.parseInt(targets[1]);
-    }
     
 }

@@ -22,32 +22,32 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public final class ServerListener implements IServerListener {
-
+    
     private final ReplierManager replierManager;
-
+    
     public ServerListener(ReplierManager replierManager) {
         this.replierManager = replierManager;
     }
-
+    
     @Override
     public void onServerStart(SocketConfig config) {
         log.info("服务启动:[{}:{}]", config.getIp(), config.getPort());
     }
-
+    
     @Override
     public void onServerStartError(Throwable e) {
         log.error("服务启动异常:{}", Strings.getExceptionTrace(e));
     }
-
+    
     @Override
     public void onServerStop(SocketConfig config) {
         log.info("服务关闭:[{}:{}]", config.getIp(), config.getPort());
     }
-
+    
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
-        Replier replier = new Replier(ch.getRemoteAddress(),ctx);
+        Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(),ctx);
         replier.receive();
         Proxy proxy = ProxyManager.getProxy(ch.getLocalAddress());
         ProxyConfig cfg = proxy.getConfig();
@@ -66,7 +66,7 @@ public final class ServerListener implements IServerListener {
             log.info("非法客户端:[{}]企图建立与代理:[{}]建立连接,已关闭", ch.getLocalAddress(), ch.getRemoteAddress());
         }
     }
-
+    
     @Override
     public void inActive(ChannelHandlerContext ctx) throws Exception {
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
@@ -84,30 +84,30 @@ public final class ServerListener implements IServerListener {
             }
         }
     }
-
+    
     @Override
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
-        String remoteAddress = ch.getRemoteAddress();
-        Replier replier = replierManager.getReplier(remoteAddress);
+        String remote = ch.getRemoteAddress();
+        Replier replier = replierManager.getReplier(remote);
         if (replier != null) {
             replier.receive();
             Proxy proxy = ProxyManager.getProxy(ch.getLocalAddress());
             byte[] data = SocketHelper.readData(buf);
-            proxy.sendToProxy(remoteAddress, replier.getRecvSeq(), data);
-            log.info("代理:{} 接收来自客户端:{} 的数据，序号:{},数据长度:{}",
-                    ch.getLocalAddress(), remoteAddress, replier.getRecvSeq(), data.length);
+            proxy.sendToProxy(replier, data);
+            log.info("代理:[{}] 接收来自客户端:[{}] 的数据，序号:{},数据长度:{}",
+                    ch.getLocalAddress(), remote, replier.getRecvSeq(), data.length);
         }
     }
-
+    
     @Override
     public void timeout(ChannelHandlerContext ctx, IdleStateEvent event) throws Exception {
-
+    
     }
-
+    
     @Override
     public void error(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-
+    
     }
-
+    
 }

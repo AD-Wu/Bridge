@@ -9,6 +9,7 @@ import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.client.ClientListener;
 import com.x.bridge.proxy.core.Proxy;
+import com.x.bridge.util.AppHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -27,9 +28,11 @@ public class ConnectRequestCommand implements ICommand {
         // 未建立建立
         if (replier == null) {
             // 创建socket客户端连接目标服务器
+            String ip = AppHelper.getIP(cd.getTargetAddress());
+            int port = AppHelper.getPort(cd.getTargetAddress());
             SocketClient client = new SocketClient(
-                    new SocketConfig(cd.getTargetIP(), cd.getTargetPort()),
-                    new ClientListener(appSocket, replierManager));
+                    new SocketConfig(ip, port),
+                    new ClientListener(appSocket, cd.getProxyAddress(),replierManager));
             proxy.getRunner().execute(client);
         } else {
             log.info("代理服务器:[{}],连接:[{}]已存在，不再重新建立",
