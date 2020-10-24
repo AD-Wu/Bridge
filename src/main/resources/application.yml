@@ -1,7 +1,18 @@
 bridge:
-  port: 1111
-  targetIP: 127.0.0.1
-  targetPort: 2222
-  allowClients:
-    - 127.0.0.2
-    - 127.0.0.3
+  configs:
+    - name: A
+      bridge: queue
+      proxyAddress: 127.0.0.1:1111
+      targetAddress: 127.0.0.1:2222
+      connectTimeout: 10
+      allowClients:
+        - 127.0.0.2
+        - 127.0.0.3
+    - name: B
+      bridge: queue
+      proxyAddress: 127.0.0.1:333
+      targetAddress: 127.0.0.1:444
+      connectTimeout: 10
+      allowClients:
+        - 127.0.0.4
+        - 127.0.0.5

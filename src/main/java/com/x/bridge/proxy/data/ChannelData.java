@@ -12,6 +12,8 @@ import lombok.Data;
 @Builder
 public class ChannelData {
     
+    private String proxyName;
+    
     private String appSocketClient;
     
     private String proxyAddress;

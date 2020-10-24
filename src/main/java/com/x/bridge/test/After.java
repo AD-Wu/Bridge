@@ -1,6 +1,6 @@
 package com.x.bridge.test;
 
-import com.x.bridge.proxy.data.ProxyConfig;
+import com.x.bridge.proxy.ProxyConfigManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 public class After implements InitializingBean {
     
     @Autowired
-    private ProxyConfig config;
+    private ProxyConfigManager configs;
     
     @Override
     public void afterPropertiesSet() throws Exception {
-        System.out.println(config);
+        System.out.println(configs);
     }
     
 }

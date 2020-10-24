@@ -2,6 +2,7 @@ package com.x.bridge.proxy.server;
 
 import com.x.bridge.core.IServerListener;
 import com.x.bridge.core.SocketConfig;
+import com.x.bridge.proxy.ProxyConfigManager;
 import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.proxy.data.ProxyConfig;
@@ -49,10 +50,10 @@ public final class ServerListener implements IServerListener {
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
         Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(),ctx);
         replier.receive();
-        Proxy proxy = ProxyManager.getProxy(ch.getLocalAddress());
-        ProxyConfig cfg = proxy.getConfig();
-        if (cfg.isAllowClient(ch.getRemoteIP())) {
+        ProxyConfig config = ProxyConfigManager.getProxyConfigByProxyAddress(ch.getLocalAddress());
+        if (config.isAllowClient(ch.getRemoteIP())) {
             replierManager.addReplier(ch.getRemoteAddress(), replier);
+            Proxy proxy = ProxyManager.getProxy(config.getName());
             if (!proxy.connectRequest(replier)) {
                 replierManager.removeReplier(ch.getRemoteAddress());
                 replier.close();
@@ -74,7 +75,8 @@ public final class ServerListener implements IServerListener {
         Replier replier = replierManager.removeReplier(remote);
         if (replier != null) {
             if (replier.isConnected()) {
-                Proxy proxy = ProxyManager.getProxy(ch.getLocalAddress());
+                ProxyConfig cfg = ProxyConfigManager.getProxyConfigByProxyAddress(ch.getLocalAddress());
+                Proxy proxy = ProxyManager.getProxy(cfg.getName());
                 replier.receive();
                 proxy.disconnect(replier);
                 replier.close();
@@ -92,7 +94,8 @@ public final class ServerListener implements IServerListener {
         Replier replier = replierManager.getReplier(remote);
         if (replier != null) {
             replier.receive();
-            Proxy proxy = ProxyManager.getProxy(ch.getLocalAddress());
+            ProxyConfig cfg = ProxyConfigManager.getProxyConfigByProxyAddress(ch.getLocalAddress());
+            Proxy proxy = ProxyManager.getProxy(cfg.getName());
             byte[] data = SocketHelper.readData(buf);
             proxy.sendToProxy(replier, data);
             log.info("代理:[{}] 接收来自客户端:[{}] 的数据，序号:{},数据长度:{}",

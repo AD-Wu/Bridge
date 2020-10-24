@@ -1,8 +1,6 @@
 package com.x.bridge.proxy.data;
 
 import lombok.Data;
-import lombok.ToString;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Set;
@@ -13,11 +11,11 @@ import java.util.Set;
  * @Author AD
  */
 @Data
-@ToString
 @Configuration
-@ConfigurationProperties(prefix = "bridge")
 public class ProxyConfig {
     
+    private String name;
+    private String bridge;
     private String proxyAddress;
     private String targetAddress;
     private Set<String> allowClients;

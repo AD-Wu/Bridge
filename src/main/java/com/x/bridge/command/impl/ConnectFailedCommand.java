@@ -16,7 +16,7 @@ public class ConnectFailedCommand implements ICommand {
         // 获取应用客户端地址
         String appSocket = cd.getAppSocketClient();
         // 获取代理
-        Proxy proxy = ProxyManager.getProxy(cd.getProxyAddress());
+        Proxy proxy = ProxyManager.getProxy(cd.getProxyName());
         // 获取应答管理者
         ReplierManager replierManager = proxy.getReplierManager();
         // 移除应答者

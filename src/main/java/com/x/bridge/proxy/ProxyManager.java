@@ -1,6 +1,9 @@
 package com.x.bridge.proxy;
 
+import com.x.bridge.proxy.core.IBridge;
 import com.x.bridge.proxy.core.Proxy;
+import com.x.bridge.proxy.data.ProxyConfig;
+import com.x.doraemon.util.Strings;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,8 +20,22 @@ public final class ProxyManager {
     
     private ProxyManager() {}
     
-    public static Proxy getProxy(String proxyAddress) {
-        return proxies.get(proxyAddress);
+    public static void startProxy(ProxyConfig config) {
+        String proxyAddress = config.getProxyAddress();
+        IBridge bridge = BridgeManager.getBridge(config.getBridge());
+        if (Strings.isNotNull(proxyAddress)) {
+            new Proxy(proxyAddress, bridge, true);
+        }else{
+            new Proxy(proxyAddress, bridge, false);
+        }
+    }
+    
+    public static Proxy getProxy(String proxyName) {
+        return proxies.get(proxyName);
+    }
+    
+    public static void addProxy(String proxyName, Proxy proxy) {
+        proxies.put(proxyName, proxy);
     }
     
 }

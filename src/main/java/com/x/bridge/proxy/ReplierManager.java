@@ -18,8 +18,8 @@ public final class ReplierManager {
     private final Proxy proxy;
     private final Map<String, Replier> repliers;
     
-    public ReplierManager(String proxyAddress){
-        this.proxy = ProxyManager.getProxy(proxyAddress);
+    public ReplierManager(String proxyName){
+        this.proxy = ProxyManager.getProxy(proxyName);
         this.repliers = new ConcurrentHashMap<>();
     }
     
