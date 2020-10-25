@@ -25,6 +25,7 @@ public class ProxyClient extends Proxy {
                 .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
+                .proxyAddress(replier.getChannelInfo().getLocalAddress())
                 .targetAddress(replier.getChannelInfo().getRemoteAddress())
                 .command(Command.ConnectSuccess)
                 .messageType(MessageType.ClientToServer)

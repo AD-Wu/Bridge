@@ -8,6 +8,7 @@ import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.bridge.util.AppHelper;
 import com.x.doraemon.util.ArrayHelper;
+import com.x.doraemon.util.Strings;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -61,25 +62,19 @@ public class ProxyServer extends Proxy  {
                 .build();
         Object lock = replier.getConnectLock();
         try {
-            bridge.send(cd);
+            synchronized (lock) {
+                bridge.send(cd);
+                lock.wait(config.getConnectTimeout() * 1000);
+            }
+            if (replier.isConnectTimeout()) {
+                log.info("连接超时，配置时间:{}秒，连接关闭",config.getConnectTimeout());
+                return false;
+            }
+            return replier.isConnected();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(Strings.getExceptionTrace(e));
+            return false;
         }
-        return true;
-        // try {
-        //     synchronized (lock) {
-        //         bridge.send(cd);
-        //         lock.wait(config.getConnectTimeout() * 1000);
-        //     }
-        //     if (replier.isConnectTimeout()) {
-        //         log.info("连接超时，配置时间:{}秒，连接关闭",config.getConnectTimeout());
-        //         return false;
-        //     }
-        //     return replier.isConnected();
-        // } catch (Exception e) {
-        //     log.error(Strings.getExceptionTrace(e));
-        //     return false;
-        // }
     }
     
 }

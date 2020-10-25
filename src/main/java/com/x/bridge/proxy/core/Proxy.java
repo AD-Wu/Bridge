@@ -85,11 +85,14 @@ public class Proxy implements IService {
         String target = MessageType.ClientToServer == type ?
                 replier.getChannelInfo().getRemoteAddress() :
                 config.getTargetAddress();
+        String proxyAddress = MessageType.ClientToServer == type ?
+                replier.getChannelInfo().getLocalAddress() :
+                config.getTargetAddress();
         ChannelData cd = ChannelData.builder()
                 .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
-                .proxyAddress(replier.getProxyAddress())
+                .proxyAddress(proxyAddress)
                 .targetAddress(target)
                 .messageType(type)
                 .command(Command.SendData)
@@ -119,9 +122,7 @@ public class Proxy implements IService {
     public void start() throws Exception {
         runner.execute(() -> {
             try {
-                if (!bridge.isStart()) {
-                    bridge.start();
-                }
+                bridge.start();
                 proxyStart();
             } catch (Exception e) {
                 try {
@@ -138,9 +139,7 @@ public class Proxy implements IService {
     public void stop() throws Exception {
         runner.execute(() -> {
             try {
-                if (bridge.isStart()) {
-                    bridge.stop();
-                }
+                bridge.stop();
                 proxyStop();
             } catch (Exception e) {
                 log.error(Strings.getExceptionTrace(e));

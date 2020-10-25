@@ -34,6 +34,11 @@ public final class ClientListener implements ISocketListener {
     public void active(ChannelHandlerContext ctx) throws Exception {
         // 生成应答对象
         Replier replier = new Replier(appSocketClient, proxyAddress, ctx);
+        // 获取通道信息
+        ChannelInfo ch = replier.getChannelInfo();
+        // 日志记录
+        log.info("连接建立,客户端:[{}]，代理(客户端):[{}]，服务端:[{}]",
+                appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
         // 接收数据（从建立连接开始，seq就开始递增）
         replier.receive();
         // 设置当前会话连接状态
@@ -42,10 +47,8 @@ public final class ClientListener implements ISocketListener {
         proxyClient.connectSuccess(replier);
         // 管理应答对象
         proxyClient.addReplier(appSocketClient, replier);
-        // 获取通道信息
-        ChannelInfo ch = replier.getChannelInfo();
-        // 日志记录
-        log.info("连接建立,客户端:[{}]，代理(客户端):[{}]，服务端:[{}]", appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
+       
+        
         
     }
     
@@ -53,37 +56,42 @@ public final class ClientListener implements ISocketListener {
     public void inActive(ChannelHandlerContext ctx) throws Exception {
         // 移除应答对象
         Replier replier = proxyClient.removeReplier(appSocketClient);
-        // 接收数据，seq递增
-        replier.receive();
-        // 关闭应答对象
-        replier.close();
-        // 设置连接关闭状态
-        replier.setConnected(false);
-        // 通知另一端（服务端）关闭连接
-        proxyClient.disconnect(replier, MessageType.ClientToServer);
-        // 获取通道信息
-        ChannelInfo ch = replier.getChannelInfo();
-        // 日志记录
-        log.info("连接关闭，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，通知代理(服务端)关闭",
-                appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
-        
+        // 如果是应用在代理服务端主动断开，先执行Disconnect命令，此时会为空
+        if (replier != null) {
+            // 接收数据，seq递增
+            replier.receive();
+            // 关闭应答对象
+            replier.close();
+            // 设置连接关闭状态
+            replier.setConnected(false);
+            // 获取通道信息
+            ChannelInfo ch = replier.getChannelInfo();
+            // 日志记录
+            log.info("连接关闭，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，通知代理(服务端)关闭",
+                    appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
+            // 通知另一端（服务端）关闭连接
+            proxyClient.disconnect(replier, MessageType.ClientToServer);
+        }
     }
     
     @Override
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         // 获取应答对象
         Replier replier = proxyClient.getReplier(appSocketClient);
-        // 接收数据，seq递增
-        replier.receive();
-        // 转发来自目标服务端的数据
-        byte[] data = SocketHelper.readData(buf);
-        proxyClient.send(replier, MessageType.ClientToServer, data);
-        // 获取通道信息
-        ChannelInfo ch = replier.getChannelInfo();
-        // 日志记录
-        log.info("接收数据，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，序号:{},数据长度:{}",
-                appSocketClient, ch.getLocalAddress(),ch.getRemoteAddress(),
-                replier.getRecvSeq(), data.length);
+        if (replier != null) {
+            // 接收数据，seq递增
+            replier.receive();
+            // 转发来自目标服务端的数据
+            byte[] data = SocketHelper.readData(buf);
+            // 获取通道信息
+            ChannelInfo ch = replier.getChannelInfo();
+            // 日志记录
+            log.info("接收数据，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，序号:[{}],数据长度:[{}]",
+                    appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress(),
+                    replier.getRecvSeq(), data.length);
+            // 发送数据
+            proxyClient.send(replier, MessageType.ClientToServer, data);
+        }
     }
     
     @Override

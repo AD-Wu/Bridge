@@ -28,7 +28,7 @@ public final class BridgeManager {
         Iterator<IBridge> it = load.iterator();
         while (it.hasNext()) {
             IBridge b = it.next();
-            bridges.put(b.bridgeName(), b);
+            bridges.put(b.name(), b);
         }
         for (ProxyConfig config : roxyConfigs.getConfigs()) {
             configs.put(config.getName(), config);

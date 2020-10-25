@@ -9,11 +9,9 @@ import com.x.bridge.core.IService;
  */
 public interface IBridge<ChannelData> extends IService {
     
+    String name();
+    
     void send(ChannelData data) throws Exception;
-    
-    boolean isStart();
-    
-    String bridgeName();
     
     IBridge newInstance();
     

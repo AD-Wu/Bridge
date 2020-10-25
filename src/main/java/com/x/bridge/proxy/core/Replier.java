@@ -50,7 +50,7 @@ public final class Replier {
         ByteBuf buf = ByteBufAllocator.DEFAULT.buffer();
         buf.writeBytes(data);
         ctx.writeAndFlush(buf);
-        log.info("成功发送数据至:[{}]，序号:{},长度:{}",
+        log.info("成功发送数据至:[{}]，序号:[{}],长度:[{}]",
                 channelInfo.getRemoteAddress(), sendSeq, data.length);
     }
     

@@ -12,7 +12,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * @Desc TODO
+ * @Desc 代理服务端监听器
  * @Date 2020/10/22 01:09
  * @Author AD
  */
@@ -123,7 +123,7 @@ public final class ServerListener implements IServerListener {
             // 读取数据
             byte[] data = SocketHelper.readData(buf);
             // 日志记录
-            log.info("接收数据，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:{},数据长度:{}",
+            log.info("接收数据，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}],数据长度:[{}]",
                     remote, ch.getLocalAddress(), server.getConfig().getTargetAddress(),
                     replier.getRecvSeq(), data.length);
             // 发送给代理(客户端)
