@@ -23,8 +23,6 @@ public class ProxyConfigs {
     
     private static Map<String, ProxyConfig> nameMap;
     
-    private static Map<String, ProxyConfig> proxyAddressMap;
-    
     @Autowired
     private List<ProxyConfig> configs;// configs这个名称要和yml文件bridge下的名称对应
     
@@ -33,9 +31,6 @@ public class ProxyConfigs {
         nameMap = new ConcurrentHashMap<>();
         for (ProxyConfig config : configs) {
             nameMap.put(config.getName(), config);
-            if (config.getProxyAddress() != null) {
-                proxyAddressMap.put(config.getProxyAddress(), config);
-            }
         }
     }
     

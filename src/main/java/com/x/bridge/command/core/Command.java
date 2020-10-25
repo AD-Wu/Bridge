@@ -8,11 +8,11 @@ import com.x.bridge.command.impl.*;
  * @Author AD
  */
 public enum Command {
-    ConnectRequest(1, new ConnectRequestCommand()),
-    ConnectSuccess(2, new ConnectSuccessCommand()),
-    ConnectFailed(3, new ConnectFailedCommand()),
-    Disconnect(4, new DisconnectCommand()),
-    SendData(5, new SendDataCommand());
+    ConnectRequest(1, new ConnectRequest()),
+    ConnectSuccess(2, new ConnectSuccess()),
+    ConnectFailed(3, new ConnectFailed()),
+    Disconnect(4, new Disconnect()),
+    SendData(5, new SendData());
     
     private final int cmd;
     

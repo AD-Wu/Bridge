@@ -1,4 +1,4 @@
-package com.x.bridge.proxy.core;
+package com.x.bridge.proxy.bridge;
 
 import com.x.bridge.core.IService;
 
@@ -10,5 +10,11 @@ import com.x.bridge.core.IService;
 public interface IBridge<ChannelData> extends IService {
     
     void send(ChannelData data) throws Exception;
+    
+    boolean isStart();
+    
+    String bridgeName();
+    
+    IBridge newInstance();
     
 }

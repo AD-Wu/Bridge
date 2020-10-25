@@ -1,5 +1,6 @@
 package com.x.bridge.proxy.data;
 
+import com.x.bridge.command.core.Command;
 import lombok.Builder;
 import lombok.Data;
 
@@ -22,9 +23,9 @@ public class ChannelData {
     
     private long recvSeq;
     
-    private int command;
+    private Command command;
     
-    private int messageType;
+    private MessageType messageType;
     
     private byte[] data;
     

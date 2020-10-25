@@ -1,11 +1,9 @@
-package com.x.bridge.proxy.server;
+package com.x.bridge.proxy.core;
 
 import com.x.bridge.core.IServerListener;
 import com.x.bridge.core.SocketConfig;
-import com.x.bridge.proxy.MessageType;
-import com.x.bridge.proxy.core.ProxyServer;
-import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.data.ChannelInfo;
+import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.util.SocketHelper;
 import com.x.doraemon.util.Strings;
 import io.netty.buffer.ByteBuf;
@@ -44,54 +42,92 @@ public final class ServerListener implements IServerListener {
     
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
+        // 获取通道信息
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
+        // 创建应答对象
         Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(), ctx);
+        // 递增接收数据的序号
         replier.receive();
+        // 是否允许连接
         if (server.isAccept(ch.getRemoteIP())) {
+            // 管理应答对象
             server.addReplier(ch.getRemoteAddress(), replier);
+            // 日志记录
+            log.info("连接请求建立，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
+                    ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
+            // 向代理(客户端)发送连接请求
             if (!server.connectRequest(replier)) {
+                // 连接建立失败，移除应答者
                 server.removeReplier(ch.getRemoteAddress());
+                // 关闭通道
                 replier.close();
-                log.info("另一端代理与目标服务器:[{}]连接建立失败，当前连接:[{}]将关闭", ch.getRemoteAddress());
+                // 判断是否连接超时
+                if (!replier.isConnectTimeout()) {
+                    log.info("连接建立失败，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
+                            ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
+                }
             } else {
+                // 连接成功，设置连接状态
                 replier.setConnected(true);
-                log.info("连接:[{}] 建立成功", ch.getRemoteAddress());
+                log.info("连接建立成功，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
+                        ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
             }
-            
         } else {
+            // 非法连接，关闭通道
             replier.close();
-            log.info("非法客户端:[{}]企图建立与代理:[{}]建立连接,已关闭", ch.getLocalAddress(), ch.getRemoteAddress());
+            log.info("非法客户端，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
+                    ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
         }
     }
     
     @Override
     public void inActive(ChannelHandlerContext ctx) throws Exception {
+        // 获取通道信息
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
+        // 获取socket客户端
         String remote = ch.getRemoteAddress();
+        // 移除应答者
         Replier replier = server.removeReplier(remote);
+        // 判断是否有效
         if (replier != null) {
+            // 已连接状态
             if (replier.isConnected()) {
+                // 日志记录
+                log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，通知代理(客户端)关闭",
+                        remote, ch.getLocalAddress(), server.getConfig().getTargetAddress());
+                // 递增接收序号
                 replier.receive();
+                // 通知代理(客户端)关闭连接
                 server.disconnect(replier, MessageType.ServerToClient);
+                // 关闭通道
                 replier.close();
-                log.info("连接:{} 关闭，通知另一端代理关闭", remote);
             } else {
-                log.info("连接:{} 关闭，另一端代理未建立连接，不通知关闭", remote);
+                log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，代理(客户端)未建立连接，无需通知",
+                        remote, server.getConfig().getTargetAddress());
             }
         }
     }
     
     @Override
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
+        // 获取通道信息
         ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
+        // 获取socket客户端
         String remote = ch.getRemoteAddress();
+        // 获取应答者
         Replier replier = server.getReplier(remote);
+        // 判断是否有效
         if (replier != null) {
+            // 递增接收序号
             replier.receive();
+            // 读取数据
             byte[] data = SocketHelper.readData(buf);
+            // 日志记录
+            log.info("接收数据，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:{},数据长度:{}",
+                    remote, ch.getLocalAddress(), server.getConfig().getTargetAddress(),
+                    replier.getRecvSeq(), data.length);
+            // 发送给代理(客户端)
             server.send(replier, MessageType.ServerToClient, data);
-            log.info("代理:[{}] 接收来自客户端:[{}] 的数据，序号:{},数据长度:{}",
-                    ch.getLocalAddress(), remote, replier.getRecvSeq(), data.length);
         }
     }
     

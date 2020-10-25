@@ -4,9 +4,10 @@ import com.x.bridge.command.core.Command;
 import com.x.bridge.command.core.Commands;
 import com.x.bridge.command.core.ICommand;
 import com.x.bridge.core.IService;
-import com.x.bridge.proxy.BridgeManager;
-import com.x.bridge.proxy.MessageType;
+import com.x.bridge.proxy.bridge.BridgeManager;
+import com.x.bridge.proxy.bridge.IBridge;
 import com.x.bridge.proxy.data.ChannelData;
+import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;
@@ -42,7 +43,7 @@ public class Proxy implements IService {
     protected Proxy(ProxyConfig config, boolean serverModel) {
         this.config = config;
         this.serverModel = serverModel;
-        this.bridge = BridgeManager.getBridge(config.getBridge());
+        this.bridge = BridgeManager.getBridge(config.getName());
         this.repliers = new ConcurrentHashMap<>();
         this.runner = Executors.newCachedThreadPool();
     }
@@ -69,8 +70,8 @@ public class Proxy implements IService {
                 .recvSeq(replier.getRecvSeq())
                 .proxyAddress(replier.getProxyAddress())
                 .targetAddress(target)
-                .messageType(type.getCode())
-                .command(Command.Disconnect.getCmd())
+                .messageType(type)
+                .command(Command.Disconnect)
                 .data(ArrayHelper.EMPTY_BYTE)
                 .build();
         try {
@@ -90,8 +91,8 @@ public class Proxy implements IService {
                 .recvSeq(replier.getRecvSeq())
                 .proxyAddress(replier.getProxyAddress())
                 .targetAddress(target)
-                .messageType(type.getCode())
-                .command(Command.SendData.getCmd())
+                .messageType(type)
+                .command(Command.SendData)
                 .data(data)
                 .build();
         try {
@@ -102,7 +103,7 @@ public class Proxy implements IService {
     }
     
     public void receive(ChannelData cd) {
-        ICommand command = Commands.getCommand(cd.getCommand());
+        ICommand command = Commands.getCommand(cd.getCommand().getCmd());
         if (command != null) {
             try {
                 command.execute(cd);
@@ -118,7 +119,9 @@ public class Proxy implements IService {
     public void start() throws Exception {
         runner.execute(() -> {
             try {
-                bridge.start();
+                if (!bridge.isStart()) {
+                    bridge.start();
+                }
                 proxyStart();
             } catch (Exception e) {
                 try {
@@ -135,7 +138,9 @@ public class Proxy implements IService {
     public void stop() throws Exception {
         runner.execute(() -> {
             try {
-                bridge.stop();
+                if (bridge.isStart()) {
+                    bridge.stop();
+                }
                 proxyStop();
             } catch (Exception e) {
                 log.error(Strings.getExceptionTrace(e));

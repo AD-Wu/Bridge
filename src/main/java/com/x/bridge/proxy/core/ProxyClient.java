@@ -1,8 +1,8 @@
 package com.x.bridge.proxy.core;
 
 import com.x.bridge.command.core.Command;
-import com.x.bridge.proxy.MessageType;
 import com.x.bridge.proxy.data.ChannelData;
+import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;
@@ -26,8 +26,8 @@ public class ProxyClient extends Proxy {
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
                 .targetAddress(replier.getChannelInfo().getRemoteAddress())
-                .command(Command.ConnectSuccess.getCmd())
-                .messageType(MessageType.ClientToServer.getCode())
+                .command(Command.ConnectSuccess)
+                .messageType(MessageType.ClientToServer)
                 .data(ArrayHelper.EMPTY_BYTE)
                 .build();
         try {
@@ -43,8 +43,8 @@ public class ProxyClient extends Proxy {
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
                 .targetAddress(replier.getChannelInfo().getRemoteAddress())
-                .messageType(MessageType.ClientToServer.getCode())
-                .command(Command.ConnectFailed.getCmd())
+                .messageType(MessageType.ClientToServer)
+                .command(Command.ConnectFailed)
                 .data(ArrayHelper.EMPTY_BYTE)
                 .build();
         try {

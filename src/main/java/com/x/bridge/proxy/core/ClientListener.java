@@ -1,9 +1,8 @@
-package com.x.bridge.proxy.client;
+package com.x.bridge.proxy.core;
 
 import com.x.bridge.core.ISocketListener;
-import com.x.bridge.proxy.MessageType;
-import com.x.bridge.proxy.core.ProxyClient;
-import com.x.bridge.proxy.core.Replier;
+import com.x.bridge.proxy.data.ChannelInfo;
+import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.util.SocketHelper;
 import com.x.doraemon.util.Strings;
 import io.netty.buffer.ByteBuf;
@@ -43,8 +42,10 @@ public final class ClientListener implements ISocketListener {
         proxyClient.connectSuccess(replier);
         // 管理应答对象
         proxyClient.addReplier(appSocketClient, replier);
+        // 获取通道信息
+        ChannelInfo ch = replier.getChannelInfo();
         // 日志记录
-        log.info("应用客户端:[{}]连接建立成功", appSocketClient);
+        log.info("连接建立,客户端:[{}]，代理(客户端):[{}]，服务端:[{}]", appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
         
     }
     
@@ -60,9 +61,11 @@ public final class ClientListener implements ISocketListener {
         replier.setConnected(false);
         // 通知另一端（服务端）关闭连接
         proxyClient.disconnect(replier, MessageType.ClientToServer);
+        // 获取通道信息
+        ChannelInfo ch = replier.getChannelInfo();
         // 日志记录
-        log.info("应用服务器:[{}]主动关闭客户端连接,通知服务端代理关闭应用客户端连接:[{}]",
-                replier.getChannelInfo().getRemoteAddress(), appSocketClient);
+        log.info("连接关闭，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，通知代理(服务端)关闭",
+                appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
         
     }
     
@@ -75,9 +78,11 @@ public final class ClientListener implements ISocketListener {
         // 转发来自目标服务端的数据
         byte[] data = SocketHelper.readData(buf);
         proxyClient.send(replier, MessageType.ClientToServer, data);
+        // 获取通道信息
+        ChannelInfo ch = replier.getChannelInfo();
         // 日志记录
-        log.info("客户端:[[]]收到来自应用服务器:[{}]的数据，序号:{},数据长度:{}",
-                appSocketClient, replier.getChannelInfo().getRemoteAddress(),
+        log.info("接收数据，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，序号:{},数据长度:{}",
+                appSocketClient, ch.getLocalAddress(),ch.getRemoteAddress(),
                 replier.getRecvSeq(), data.length);
     }
     

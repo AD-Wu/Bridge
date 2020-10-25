@@ -5,7 +5,7 @@ import com.x.bridge.core.SocketClient;
 import com.x.bridge.core.SocketConfig;
 import com.x.bridge.proxy.ProxyConfigs;
 import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.client.ClientListener;
+import com.x.bridge.proxy.core.ClientListener;
 import com.x.bridge.proxy.core.ProxyClient;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.data.ChannelData;

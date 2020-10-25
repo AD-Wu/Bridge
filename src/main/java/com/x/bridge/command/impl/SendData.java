@@ -1,7 +1,7 @@
 package com.x.bridge.command.impl;
 
 import com.x.bridge.command.core.ICommand;
-import com.x.bridge.proxy.MessageType;
+import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.core.Replier;
@@ -14,7 +14,7 @@ public class SendData implements ICommand {
         // 获取应用客户端地址
         String appSocket = cd.getAppSocketClient();
         // 获取消息类型
-        int messageType = cd.getMessageType();
+        int messageType = cd.getMessageType().getCode();
         // 获取代理
         Proxy proxy = null;
         if (MessageType.ClientToServer.getCode() == messageType) {

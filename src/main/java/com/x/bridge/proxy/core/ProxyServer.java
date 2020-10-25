@@ -3,13 +3,11 @@ package com.x.bridge.proxy.core;
 import com.x.bridge.command.core.Command;
 import com.x.bridge.core.SocketConfig;
 import com.x.bridge.core.SocketServer;
-import com.x.bridge.proxy.MessageType;
 import com.x.bridge.proxy.data.ChannelData;
+import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
-import com.x.bridge.proxy.server.ServerListener;
 import com.x.bridge.util.AppHelper;
 import com.x.doraemon.util.ArrayHelper;
-import com.x.doraemon.util.Strings;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -57,25 +55,31 @@ public class ProxyServer extends Proxy  {
                 .recvSeq(replier.getRecvSeq())
                 .proxyAddress(replier.getChannelInfo().getLocalAddress())
                 .targetAddress(config.getTargetAddress())
-                .messageType(MessageType.ServerToClient.getCode())
-                .command(Command.ConnectRequest.getCmd())
+                .messageType(MessageType.ServerToClient)
+                .command(Command.ConnectRequest)
                 .data(ArrayHelper.EMPTY_BYTE)
                 .build();
         Object lock = replier.getConnectLock();
         try {
-            synchronized (lock) {
-                bridge.send(cd);
-                lock.wait(config.getConnectTimeout() * 1000);
-            }
-            if (replier.isConnectTimeout()) {
-                log.info("连接超时，配置时间:{}秒，连接关闭");
-                return false;
-            }
-            return replier.isConnected();
+            bridge.send(cd);
         } catch (Exception e) {
-            log.error(Strings.getExceptionTrace(e));
-            return false;
+            e.printStackTrace();
         }
+        return true;
+        // try {
+        //     synchronized (lock) {
+        //         bridge.send(cd);
+        //         lock.wait(config.getConnectTimeout() * 1000);
+        //     }
+        //     if (replier.isConnectTimeout()) {
+        //         log.info("连接超时，配置时间:{}秒，连接关闭",config.getConnectTimeout());
+        //         return false;
+        //     }
+        //     return replier.isConnected();
+        // } catch (Exception e) {
+        //     log.error(Strings.getExceptionTrace(e));
+        //     return false;
+        // }
     }
     
 }

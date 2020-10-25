@@ -1,17 +1,17 @@
 bridge:
   configs:
     - name: A
-      bridge: queue
+      bridge: DB
       proxyAddress: 127.0.0.1:1111
       targetAddress: 127.0.0.1:2222
       connectTimeout: 10
-      allowClients:
-        - 127.0.0.2
-        - 127.0.0.3
+#      allowClients:
+#        - 127.0.0.2
+#        - 127.0.0.3
     - name: B
-      bridge: queue
-      proxyAddress: 127.0.0.1:333
-      targetAddress: 127.0.0.1:444
+      bridge: DB
+      proxyAddress: 127.0.0.1:3333
+      targetAddress: 127.0.0.1:4444
       connectTimeout: 10
       allowClients:
         - 127.0.0.4
