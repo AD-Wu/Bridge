@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 bridge:
   configs:
     - name: A
@@ -16,3 +19,4 @@ bridge:
 #      allowClients:
 #        - 127.0.0.4
 #        - 127.0.0.5
+
