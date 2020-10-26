@@ -26,6 +26,7 @@ public class ConnectRequest implements ICommand {
         if (client == null) {
             ProxyConfig config = ProxyConfigs.get(cd.getProxyName());
             client = new ProxyClient(config);
+            client.start();
             ProxyManager.addProxyClient(cd.getProxyName(), client);
         }
         // 获取应答者
