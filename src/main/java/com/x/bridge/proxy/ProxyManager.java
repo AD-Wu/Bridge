@@ -8,7 +8,6 @@ import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.bridge.proxy.data.ProxyConfigs;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,42 +21,46 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Log4j2
 @Component
-public final class ProxyManager implements InitializingBean {
-    
+public final class ProxyManager {
+
     private static Map<String, ProxyServer> servers = new ConcurrentHashMap<>();
-    
+
     private static Map<String, ProxyClient> clients = new ConcurrentHashMap<>();
-    
-    private ProxyManager() {}
+
+    private ProxyManager() {
+    }
 
     @Autowired
     private ProxyConfigs configs;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        System.out.println(configs);
-
+    public static void startProxy(String name) throws Exception {
+        ProxyConfig config = ProxyConfigs.get(name);
+        if (config != null) {
+            startProxy(config);
+        } else {
+            log.error("不存在名为:[{}]的配置", name);
+        }
     }
-    
+
     public static void startProxy(ProxyConfig config) throws Exception {
-        
+
         ProxyServer server = new ProxyServer(config);
         server.start();
         servers.put(config.getName(), server);
-        
+
         ProxyClient client = new ProxyClient(config);
         client.start();
         clients.put(config.getName(), client);
-        
+
     }
-    
+
     public static void stopProxyServer(String proxyName) throws Exception {
         ProxyServer server = servers.remove(proxyName);
         if (server != null) {
             server.stop();
         }
     }
-    
+
     public static void receiveData(ChannelData cd) {
         MessageType type = cd.getMessageType();
         Proxy proxy = null;
@@ -81,17 +84,17 @@ public final class ProxyManager implements InitializingBean {
         if (proxy == null) {
             log.error("网关中没有该代理:[{}]，通道数据:{}", cd.getProxyName(), cd);
         }
-        
+
     }
-    
+
     public static ProxyServer getProxyServer(String proxyName) {
         return servers.get(proxyName);
     }
-    
+
     public static ProxyClient getProxyClient(String proxyName) {
         return clients.get(proxyName);
     }
-    
+
     public static void addProxyClient(String proxyName, ProxyClient client) {
         clients.put(proxyName, client);
     }

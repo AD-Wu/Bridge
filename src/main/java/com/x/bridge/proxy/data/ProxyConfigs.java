@@ -20,21 +20,21 @@ import java.util.concurrent.ConcurrentHashMap;
 @ConfigurationProperties(prefix = "bridge")
 public class ProxyConfigs {
     
-    private static Map<String, ProxyConfig> nameMap;
+    private static Map<String, ProxyConfig> configMap;
     
     @Autowired
     private List<ProxyConfig> configs;// configs这个名称要和yml文件bridge下的名称对应
 
     @PostConstruct
     private void convert() {
-        nameMap = new ConcurrentHashMap<>();
+        configMap = new ConcurrentHashMap<>();
         for (ProxyConfig config : configs) {
-            nameMap.put(config.getName(), config);
+            configMap.put(config.getName(), config);
         }
     }
     
     public static ProxyConfig get(String proxyName) {
-        return nameMap.get(proxyName);
+        return configMap.get(proxyName);
     }
     
 }
