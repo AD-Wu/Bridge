@@ -1,6 +1,5 @@
-package com.x.bridge.proxy;
+package com.x.bridge.proxy.data;
 
-import com.x.bridge.proxy.data.ProxyConfig;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,7 +24,7 @@ public class ProxyConfigs {
     
     @Autowired
     private List<ProxyConfig> configs;// configs这个名称要和yml文件bridge下的名称对应
-    
+
     @PostConstruct
     private void convert() {
         nameMap = new ConcurrentHashMap<>();

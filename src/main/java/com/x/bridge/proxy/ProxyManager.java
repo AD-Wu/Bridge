@@ -6,7 +6,11 @@ import com.x.bridge.proxy.core.ProxyServer;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
+import com.x.bridge.proxy.data.ProxyConfigs;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,13 +21,23 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author AD
  */
 @Log4j2
-public final class ProxyManager {
+@Component
+public final class ProxyManager implements InitializingBean {
     
     private static Map<String, ProxyServer> servers = new ConcurrentHashMap<>();
     
     private static Map<String, ProxyClient> clients = new ConcurrentHashMap<>();
     
     private ProxyManager() {}
+
+    @Autowired
+    private ProxyConfigs configs;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println(configs);
+
+    }
     
     public static void startProxy(ProxyConfig config) throws Exception {
         
@@ -81,5 +95,5 @@ public final class ProxyManager {
     public static void addProxyClient(String proxyName, ProxyClient client) {
         clients.put(proxyName, client);
     }
-    
+
 }

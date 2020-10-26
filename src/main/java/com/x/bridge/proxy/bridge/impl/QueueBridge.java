@@ -1,7 +1,8 @@
-package com.x.bridge.proxy.bridge;
+package com.x.bridge.proxy.bridge.impl;
 
 import com.google.auto.service.AutoService;
 import com.x.bridge.proxy.ProxyManager;
+import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.doraemon.util.Strings;

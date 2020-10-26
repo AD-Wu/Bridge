@@ -1,6 +1,6 @@
 package com.x.bridge.proxy.core;
 
-import com.x.bridge.command.core.Command;
+import com.x.bridge.proxy.command.core.Command;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;

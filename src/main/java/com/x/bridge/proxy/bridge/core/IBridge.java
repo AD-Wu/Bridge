@@ -1,4 +1,4 @@
-package com.x.bridge.proxy.bridge;
+package com.x.bridge.proxy.bridge.core;
 
 import com.x.bridge.core.IService;
 

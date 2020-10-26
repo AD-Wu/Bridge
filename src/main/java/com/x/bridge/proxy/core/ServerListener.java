@@ -4,7 +4,7 @@ import com.x.bridge.core.IServerListener;
 import com.x.bridge.core.SocketConfig;
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.proxy.data.MessageType;
-import com.x.bridge.util.SocketHelper;
+import com.x.bridge.proxy.util.ProxyHelper;
 import com.x.doraemon.util.Strings;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,7 +43,7 @@ public final class ServerListener implements IServerListener {
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         // 获取通道信息
-        ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
+        ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         // 创建应答对象
         Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(), ctx);
         // 递增接收数据的序号
@@ -83,7 +83,7 @@ public final class ServerListener implements IServerListener {
     @Override
     public void inActive(ChannelHandlerContext ctx) throws Exception {
         // 获取通道信息
-        ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
+        ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         // 获取socket客户端
         String remote = ch.getRemoteAddress();
         // 移除应答者
@@ -111,7 +111,7 @@ public final class ServerListener implements IServerListener {
     @Override
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         // 获取通道信息
-        ChannelInfo ch = SocketHelper.getChannelInfo(ctx);
+        ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         // 获取socket客户端
         String remote = ch.getRemoteAddress();
         // 获取应答者
@@ -121,7 +121,7 @@ public final class ServerListener implements IServerListener {
             // 递增接收序号
             replier.receive();
             // 读取数据
-            byte[] data = SocketHelper.readData(buf);
+            byte[] data = ProxyHelper.readData(buf);
             // 日志记录
             log.info("接收数据，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}],数据长度:[{}]",
                     remote, ch.getLocalAddress(), server.getConfig().getTargetAddress(),

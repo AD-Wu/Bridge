@@ -1,6 +1,6 @@
 package com.x.bridge.proxy.data;
 
-import com.x.bridge.command.core.Command;
+import com.x.bridge.proxy.command.core.Command;
 import lombok.Builder;
 import lombok.Data;
 

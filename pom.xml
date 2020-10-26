@@ -10,9 +10,8 @@
     </parent>
 
     <groupId>com.x</groupId>
-    <artifactId>bridge</artifactId>
-    <version>1.0.0</version>
-    <name>Bridge</name>
+    <artifactId>Bridge</artifactId>
+    <version>1.0</version>
 
     <properties>
         <java.version>1.8</java.version>

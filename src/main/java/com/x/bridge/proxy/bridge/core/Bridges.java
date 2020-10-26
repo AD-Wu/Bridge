@@ -1,6 +1,6 @@
-package com.x.bridge.proxy.bridge;
+package com.x.bridge.proxy.bridge.core;
 
-import com.x.bridge.proxy.ProxyConfigs;
+import com.x.bridge.proxy.data.ProxyConfigs;
 import com.x.bridge.proxy.data.ProxyConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author AD
  */
 @Component
-public final class BridgeManager {
+public final class Bridges {
     
     @Autowired
     private ProxyConfigs roxyConfigs;
@@ -43,7 +43,7 @@ public final class BridgeManager {
     
     public static IBridge getBridge(String proxyName) {
         if (!proxyBridges.containsKey(proxyName)) {
-            synchronized (BridgeManager.class) {
+            synchronized (Bridges.class) {
                 if (!proxyBridges.containsKey(proxyName)) {
                     ProxyConfig config = configs.get(proxyName);
                     IBridge bridge = bridges.get(config.getBridge());

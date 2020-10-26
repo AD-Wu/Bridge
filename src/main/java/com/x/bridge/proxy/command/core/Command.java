@@ -1,6 +1,6 @@
-package com.x.bridge.command.core;
+package com.x.bridge.proxy.command.core;
 
-import com.x.bridge.command.impl.*;
+import com.x.bridge.proxy.command.impl.*;
 
 /**
  * @Desc TODO

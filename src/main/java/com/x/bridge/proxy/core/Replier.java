@@ -1,7 +1,7 @@
 package com.x.bridge.proxy.core;
 
 import com.x.bridge.proxy.data.ChannelInfo;
-import com.x.bridge.util.SocketHelper;
+import com.x.bridge.proxy.util.ProxyHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
@@ -39,7 +39,7 @@ public final class Replier {
         this.appSocketClient = appSocketClient;
         this.proxyAddress = proxyAddress;
         this.ctx = ctx;
-        this.channelInfo = SocketHelper.getChannelInfo(ctx);
+        this.channelInfo = ProxyHelper.getChannelInfo(ctx);
         this.recvSeq = new AtomicLong(-1);
         this.connected = false;
         this.connectTimeout = true;

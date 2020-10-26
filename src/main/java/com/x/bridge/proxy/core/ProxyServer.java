@@ -1,12 +1,12 @@
 package com.x.bridge.proxy.core;
 
-import com.x.bridge.command.core.Command;
 import com.x.bridge.core.SocketConfig;
 import com.x.bridge.core.SocketServer;
+import com.x.bridge.proxy.command.core.Command;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
-import com.x.bridge.util.AppHelper;
+import com.x.bridge.proxy.util.ProxyHelper;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +23,7 @@ public class ProxyServer extends Proxy  {
     
     public ProxyServer(ProxyConfig config) {
         super(config, true);
-        int port = AppHelper.getPort(config.getProxyAddress());
+        int port = ProxyHelper.getPort(config.getProxyAddress());
         this.server = new SocketServer(new SocketConfig(port), new ServerListener(this));
     }
     

@@ -1,4 +1,4 @@
-package com.x.bridge.command.core;
+package com.x.bridge.proxy.command.core;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -3,7 +3,7 @@ package com.x.bridge.proxy.core;
 import com.x.bridge.core.ISocketListener;
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.proxy.data.MessageType;
-import com.x.bridge.util.SocketHelper;
+import com.x.bridge.proxy.util.ProxyHelper;
 import com.x.doraemon.util.Strings;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -82,7 +82,7 @@ public final class ClientListener implements ISocketListener {
             // 接收数据，seq递增
             replier.receive();
             // 转发来自目标服务端的数据
-            byte[] data = SocketHelper.readData(buf);
+            byte[] data = ProxyHelper.readData(buf);
             // 获取通道信息
             ChannelInfo ch = replier.getChannelInfo();
             // 日志记录
