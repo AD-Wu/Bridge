@@ -47,9 +47,6 @@ public final class ClientListener implements ISocketListener {
         proxyClient.connectSuccess(replier);
         // 管理应答对象
         proxyClient.addReplier(appSocketClient, replier);
-       
-        
-        
     }
     
     @Override

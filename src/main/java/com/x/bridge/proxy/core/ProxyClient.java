@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public class ProxyClient extends Proxy {
+ public class ProxyClient extends Proxy{
     
     public ProxyClient(ProxyConfig config) {
         super(config, false);
@@ -43,6 +43,7 @@ public class ProxyClient extends Proxy {
                 .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
                 .recvSeq(replier.getRecvSeq())
+                .proxyAddress(replier.getChannelInfo().getLocalAddress())
                 .targetAddress(replier.getChannelInfo().getRemoteAddress())
                 .messageType(MessageType.ClientToServer)
                 .command(Command.ConnectFailed)
@@ -53,16 +54,6 @@ public class ProxyClient extends Proxy {
         } catch (Exception e) {
             log.error(Strings.getExceptionTrace(e));
         }
-    }
-    
-    @Override
-    protected void proxyStart() throws Exception {
-    
-    }
-    
-    @Override
-    protected void proxyStop() throws Exception {
-    
     }
    
 }
