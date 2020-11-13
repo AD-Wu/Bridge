@@ -4,15 +4,14 @@ import com.x.bridge.core.IService;
 
 /**
  * @Desc
- * @Date 2020/10/22 19:07
- * @Author AD
+ * @Date 2020/10/22 19:07 * @Author AD
  */
-public interface IBridge<ChannelData> extends IService {
+public interface IBridge<T> extends IService {
     
     String name();
     
-    void send(ChannelData data) throws Exception;
+    void send(T data) throws Exception;
     
-    IBridge newInstance();
+    IBridge<T> newInstance();
     
 }

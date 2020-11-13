@@ -8,14 +8,24 @@ bridge:
       proxyAddress: 127.0.0.1:1111
       targetAddress: 127.0.0.1:7777
       connectTimeout: 10
+#      ssl:
+#        open: true
+#        needClientAuth: false
+#        keyStoreType: PCKS12
+#        keyStore: D:/KeyStore/keystore.p12
+#        keyStorePassword: 123456
+#        trustKeyStore:
+#        trustKeyStorePassword:
 #      allowClients:
 #        - 127.0.0.2
 #        - 127.0.0.3
-    - name: B
-      bridge: queue
-      proxyAddress: 127.0.0.1:3333
-      targetAddress: 127.0.0.1:7777
-      connectTimeout: 10
+
+
+#    - name: B
+#      bridge: queue
+#      proxyAddress: 127.0.0.1:3333
+#      targetAddress: 127.0.0.1:7777
+#      connectTimeout: 10
 #      allowClients:
 #        - 127.0.0.4
 #        - 127.0.0.5

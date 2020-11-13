@@ -55,7 +55,7 @@ public class QueueBridge extends BaseBridge {
     }
     
     @Override
-    public IBridge newInstance() {
+    public IBridge<ChannelData> newInstance() {
         return new QueueBridge();
     }
     

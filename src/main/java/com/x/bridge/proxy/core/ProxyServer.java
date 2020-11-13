@@ -12,43 +12,43 @@ import com.x.doraemon.util.Strings;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * @Desc
+ * @Desc 代理服务端
  * @Date 2020/10/24 17:35
  * @Author AD
  */
 @Log4j2
-public class ProxyServer extends Proxy  {
-    
+public class ProxyServer extends Proxy {
+
     private final SocketServer server;
-    
+
     public ProxyServer(ProxyConfig config) {
         super(config, true);
         int port = ProxyHelper.getPort(config.getProxyAddress());
         this.server = new SocketServer(new SocketConfig(port), new ServerListener(this));
     }
-    
+
     @Override
     public void proxyStart() throws Exception {
         runner.execute(server);
     }
-    
+
     @Override
     public void proxyStop() throws Exception {
-        runner.execute(()->{
+        runner.execute(() -> {
             server.stop();
-            runner.shutdown();
             for (Replier replier : repliers.values()) {
                 replier.close();
             }
             repliers.clear();
         });
-        
+        runner.shutdown();
+
     }
-    
-    public boolean isAccept(String socket){
+
+    public boolean isAccept(String socket) {
         return config.isAllowClient(socket);
     }
-    
+
     public boolean connectRequest(Replier replier) {
         ChannelData cd = ChannelData.builder()
                 .proxyName(config.getName())
@@ -67,7 +67,7 @@ public class ProxyServer extends Proxy  {
                 lock.wait(config.getConnectTimeout() * 1000);
             }
             if (replier.isConnectTimeout()) {
-                log.info("连接超时，配置时间:{}秒，连接关闭",config.getConnectTimeout());
+                log.info("连接超时，配置时间:[{}]秒，连接关闭", config.getConnectTimeout());
                 return false;
             }
             return replier.isConnected();
@@ -76,5 +76,5 @@ public class ProxyServer extends Proxy  {
             return false;
         }
     }
-    
+
 }

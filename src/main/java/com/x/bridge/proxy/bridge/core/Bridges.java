@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Bridges {
     
     @Autowired
-    private ProxyConfigs roxyConfigs;
+    private ProxyConfigs proxyConfigs;
     
     @PostConstruct
     private void init() {
@@ -30,7 +30,7 @@ public final class Bridges {
             IBridge b = it.next();
             bridges.put(b.name(), b);
         }
-        for (ProxyConfig config : roxyConfigs.getConfigs()) {
+        for (ProxyConfig config : proxyConfigs.getConfigs()) {
             configs.put(config.getName(), config);
         }
     }

@@ -36,7 +36,8 @@ public final class ProxyManager {
     
     @Autowired
     private ProxyConfigs configs;
-    
+
+    // web调用
     public static void startProxy(String name) throws Exception {
         ProxyConfig config = ProxyConfigs.get(name);
         if (config != null) {
@@ -45,7 +46,8 @@ public final class ProxyManager {
             log.error("不存在名为:[{}]的配置", name);
         }
     }
-    
+
+    // 测试调用
     public static void startProxy(ProxyConfig config) throws Exception {
         String proxyAddress = config.getProxyAddress();
         if (Strings.isNotNull(proxyAddress)) {
@@ -117,11 +119,5 @@ public final class ProxyManager {
     public static void addProxyClient(String proxyName, ProxyClient client) {
         clients.put(proxyName, client);
     }
-    
-    // ------------------------ 变量定义 ------------------------
-    // ------------------------ 构造方法 ------------------------
-    // ------------------------ 方法定义 ------------------------
-    // ------------------------ 私有方法 ------------------------
-    private void autoCreateMethod() {}
-    
+
 }
