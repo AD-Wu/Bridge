@@ -18,28 +18,28 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public final class ServerListener implements IServerListener {
-    
+
     private final ProxyServer server;
-    
+
     public ServerListener(ProxyServer proxyServer) {
         this.server = proxyServer;
     }
-    
+
     @Override
     public void onServerStart(SocketConfig config) {
         log.info("服务启动:[{}:{}]", config.getIp(), config.getPort());
     }
-    
+
     @Override
     public void onServerStartError(Throwable e) {
         log.error("服务启动异常:{}", Strings.getExceptionTrace(e));
     }
-    
+
     @Override
     public void onServerStop(SocketConfig config) {
         log.info("服务关闭:[{}:{}]", config.getIp(), config.getPort());
     }
-    
+
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         // 获取通道信息
@@ -79,7 +79,7 @@ public final class ServerListener implements IServerListener {
                     ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
         }
     }
-    
+
     @Override
     public void inActive(ChannelHandlerContext ctx) throws Exception {
         // 获取通道信息
@@ -103,11 +103,11 @@ public final class ServerListener implements IServerListener {
                 replier.close();
             } else {
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，代理(客户端)未建立连接，无需通知",
-                        remote, server.getConfig().getTargetAddress());
+                        remote, ch.getLocalAddress(), server.getConfig().getTargetAddress());
             }
         }
     }
-    
+
     @Override
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         // 获取通道信息
@@ -130,15 +130,15 @@ public final class ServerListener implements IServerListener {
             server.send(replier, MessageType.ServerToClient, data);
         }
     }
-    
+
     @Override
     public void timeout(ChannelHandlerContext ctx, IdleStateEvent event) throws Exception {
-    
+
     }
-    
+
     @Override
     public void error(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    
+
     }
-    
+
 }

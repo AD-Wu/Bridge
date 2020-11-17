@@ -26,14 +26,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Log4j2
 @Component
 public final class ProxyManager {
-    
+
     private static Map<String, ProxyServer> servers = new ConcurrentHashMap<>();
-    
+
     private static Map<String, ProxyClient> clients = new ConcurrentHashMap<>();
-    
+
     private ProxyManager() {
     }
-    
+
     @Autowired
     private ProxyConfigs configs;
 
@@ -58,16 +58,16 @@ public final class ProxyManager {
         // ProxyClient client = new ProxyClient(config);
         // client.start();
         // clients.put(config.getName(), client);
-        
+
     }
-    
+
     public static void stopProxyServer(String proxyName) throws Exception {
         ProxyServer server = servers.remove(proxyName);
         if (server != null) {
             server.stop();
         }
     }
-    
+
     public static void receiveData(ChannelData cd) {
         MessageType type = cd.getMessageType();
         Proxy proxy = null;
@@ -98,24 +98,24 @@ public final class ProxyManager {
                 } else {
                     proxy.receive(cd);
                 }
-            
+
             default:
                 break;
         }
-        if (proxy == null) {
+        if (proxy == null && cd.getCommand() != Command.ConnectRequest) {
             log.error("网关中没有该代理:[{}]，通道数据:{}", cd.getProxyName(), cd);
         }
-        
+
     }
-    
+
     public static ProxyServer getProxyServer(String proxyName) {
         return servers.get(proxyName);
     }
-    
+
     public static ProxyClient getProxyClient(String proxyName) {
         return clients.get(proxyName);
     }
-    
+
     public static void addProxyClient(String proxyName, ProxyClient client) {
         clients.put(proxyName, client);
     }
