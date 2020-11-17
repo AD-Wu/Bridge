@@ -48,6 +48,11 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
         <!--    该依赖会引入JPA和Hibernate    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
