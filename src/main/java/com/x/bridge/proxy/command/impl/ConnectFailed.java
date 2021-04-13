@@ -27,7 +27,7 @@ public class ConnectFailed implements ICommand {
                 connectLock.notify();
             }
         }
-        log.info("应用客户端:[{}]与目标服务器:[[]]连接建立失败", cd.getAppSocketClient(), cd.getTargetAddress());
+        log.info("应用客户端:[{}]与目标服务器:[{}]连接建立失败", cd.getAppSocketClient(), cd.getTargetAddress());
     }
     
 }
