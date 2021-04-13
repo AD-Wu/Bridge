@@ -4,6 +4,8 @@ import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.Strings;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -18,14 +20,14 @@ public final class ProxyHelper {
         String localAddress = ctx.channel().localAddress().toString().substring(1);
         return new ChannelInfo(remoteAddress, localAddress);
     }
-
+    
     public static String getIP(String appAddress) {
         if (Strings.isNotNull(appAddress)) {
             return appAddress.split(":")[0];
         }
         return appAddress;
     }
-
+    
     public static int getPort(String appAddress) {
         if (Strings.isNotNull(appAddress)) {
             return Integer.parseInt(appAddress.split(":")[1]);
@@ -41,6 +43,13 @@ public final class ProxyHelper {
             return data;
         }
         return ArrayHelper.EMPTY_BYTE;
+    }
+    
+    public static void main(String[] args) {
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeBytes(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
+        String hex = ByteBufUtil.hexDump(buf);
+        System.out.println(hex);
     }
     
 }

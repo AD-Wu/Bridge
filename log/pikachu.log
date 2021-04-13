@@ -1,0 +1,52 @@
+2020-10-27 00:03:32.713 [main] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on sundayMacBook.local with PID 6486 (/Users/sunday/IdeaProjects/Bridge/target/classes started by AD in /Users/sunday/IdeaProjects/Bridge)
+2020-10-27 00:03:32.730 [main] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2020-10-27 00:03:33.979 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x04fc7b6e]'
+2020-10-27 00:03:33.979 [pool-7-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x32e7f490]'
+2020-10-27 00:03:33.979 [pool-7-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x32e7f490]'
+2020-10-27 00:03:33.979 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x04fc7b6e]'
+2020-10-27 00:03:34.007 [pool-7-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[127.0.0.1:3333]
+2020-10-27 00:03:34.007 [pool-4-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[127.0.0.1:1111]
+2020-10-27 00:03:34.400 [main] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.401 seconds (JVM running for 3.707)
+2020-10-27 00:06:37.502 [main] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on sundayMacBook.local with PID 6576 (/Users/sunday/IdeaProjects/Bridge/target/classes started by AD in /Users/sunday/IdeaProjects/Bridge)
+2020-10-27 00:06:37.506 [main] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2020-10-27 00:06:38.533 [pool-7-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x2bd958dd]'
+2020-10-27 00:06:38.533 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x28be1919]'
+2020-10-27 00:06:38.534 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x28be1919]'
+2020-10-27 00:06:38.534 [pool-7-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x2bd958dd]'
+2020-10-27 00:06:38.553 [pool-7-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:3333]
+2020-10-27 00:06:38.553 [pool-4-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:1111]
+2020-10-27 00:06:38.818 [main] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.343 seconds (JVM running for 4.102)
+2020-10-27 00:58:32.337 [main] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on sundayMacBook.local with PID 7628 (/Users/sunday/IdeaProjects/Bridge/target/classes started by AD in /Users/sunday/IdeaProjects/Bridge)
+2020-10-27 00:58:32.342 [main] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2020-10-27 00:58:33.283 [pool-6-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0xa57546d5]'
+2020-10-27 00:58:33.283 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x394245c2]'
+2020-10-27 00:58:33.284 [pool-6-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0xa57546d5]'
+2020-10-27 00:58:33.284 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x394245c2]'
+2020-10-27 00:58:33.305 [pool-4-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:1111]
+2020-10-27 00:58:33.305 [pool-6-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:3333]
+2020-10-27 00:58:33.618 [main] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 1.828 seconds (JVM running for 4.272)
+2020-10-27 00:59:07.360 [nioEventLoopGroup-6-1] INFO  com.x.bridge.proxy.core.ServerListener - 连接请求建立，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]
+2020-10-27 00:59:07.367 [nioEventLoopGroup-6-1] INFO  com.x.bridge.proxy.bridge.impl.QueueBridge - 队列发送数据 >>> 消息类型:[ServerToClient]，指令:[ConnectRequest]，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
+2020-10-27 00:59:07.368 [pool-3-thread-1] INFO  com.x.bridge.proxy.ProxyManager - 网关收到数据 >>> 消息类型:[ServerToClient]，指令:[ConnectRequest]，客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
+2020-10-27 00:59:07.371 [pool-3-thread-1] ERROR com.x.bridge.proxy.ProxyManager - 网关中没有该代理:[A]，通道数据:ChannelData(proxyName=A, appSocketClient=127.0.0.1:51594, proxyAddress=127.0.0.1:1111, targetAddress=127.0.0.1:7777, recvSeq=0, command=ConnectRequest, messageType=ServerToClient, data=[])
+2020-10-27 00:59:07.391 [nioEventLoopGroup-7-1] INFO  com.x.bridge.proxy.core.ClientListener - 连接建立,客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]
+2020-10-27 00:59:07.391 [nioEventLoopGroup-7-1] INFO  com.x.bridge.proxy.bridge.impl.QueueBridge - 队列发送数据 >>> 消息类型:[ClientToServer]，指令:[ConnectSuccess]，客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
+2020-10-27 00:59:07.391 [pool-3-thread-2] INFO  com.x.bridge.proxy.ProxyManager - 网关收到数据 >>> 消息类型:[ClientToServer]，指令:[ConnectSuccess]，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
+2020-10-27 00:59:07.392 [nioEventLoopGroup-6-1] INFO  com.x.bridge.proxy.core.ServerListener - 连接建立成功，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]
+2020-10-27 00:59:07.473 [nioEventLoopGroup-7-1] INFO  com.x.bridge.proxy.core.ClientListener - 接收数据，客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[1],数据长度:[10]
+2020-10-27 00:59:07.473 [nioEventLoopGroup-7-1] INFO  com.x.bridge.proxy.bridge.impl.QueueBridge - 队列发送数据 >>> 消息类型:[ClientToServer]，指令:[SendData]，客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[1]，数据长度:[10]
+2020-10-27 00:59:07.473 [pool-3-thread-2] INFO  com.x.bridge.proxy.ProxyManager - 网关收到数据 >>> 消息类型:[ClientToServer]，指令:[SendData]，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[1]，数据长度:[10]
+2020-10-27 00:59:07.478 [pool-3-thread-2] INFO  com.x.bridge.proxy.core.Replier - 成功发送数据至:[127.0.0.1:51594]，序号:[1],长度:[10]
+2020-10-27 00:59:52.983 [main] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on sundayMacBook.local with PID 7681 (/Users/sunday/IdeaProjects/Bridge/target/classes started by AD in /Users/sunday/IdeaProjects/Bridge)
+2020-10-27 00:59:52.992 [main] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2020-10-27 00:59:54.358 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x70098620]'
+2020-10-27 00:59:54.358 [pool-6-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0xd38745b2]'
+2020-10-27 00:59:54.359 [pool-6-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0xd38745b2]'
+2020-10-27 00:59:54.359 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x70098620]'
+2020-10-27 00:59:54.393 [pool-4-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:1111]
+2020-10-27 00:59:54.393 [pool-6-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:3333]
+2020-10-27 00:59:54.845 [main] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.687 seconds (JVM running for 4.903)
+2020-10-27 00:59:59.612 [nioEventLoopGroup-5-1] INFO  com.x.bridge.proxy.core.ServerListener - 连接请求建立，客户端:[127.0.0.1:51613]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]
+2020-10-27 00:59:59.617 [nioEventLoopGroup-5-1] INFO  com.x.bridge.proxy.bridge.impl.QueueBridge - 队列发送数据 >>> 消息类型:[ServerToClient]，指令:[ConnectRequest]，客户端:[127.0.0.1:51613]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
+2020-10-27 00:59:59.618 [pool-3-thread-1] INFO  com.x.bridge.proxy.ProxyManager - 网关收到数据 >>> 消息类型:[ServerToClient]，指令:[ConnectRequest]，客户端:[127.0.0.1:51613]，代理(客户端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
+2020-10-27 01:00:09.620 [nioEventLoopGroup-5-1] INFO  com.x.bridge.proxy.core.ProxyServer - 连接超时，配置时间:10秒，连接关闭
