@@ -1,6 +1,6 @@
 package com.x.bridge.proxy.bridge.core;
 
-import com.x.bridge.core.IService;
+import com.x.bridge.common.IService;
 
 /**
  * @Desc

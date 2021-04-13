@@ -42,14 +42,10 @@ public class QueueBridge extends BaseBridge {
     @Override
     public void send(ChannelData cd) throws Exception {
         if (MessageType.ServerToClient == cd.getMessageType()) {
-            log.info("队列发送数据 >>> 消息类型:[{}]，指令:[{}]，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}]，数据长度:[{}]",
-                    cd.getMessageType(), cd.getCommand(), cd.getAppSocketClient(), cd.getProxyAddress(),
-                    cd.getTargetAddress(), cd.getRecvSeq(), cd.getData().length);
+            log(cd);
             serverToClient.add(cd);
         } else {
-            log.info("队列发送数据 >>> 消息类型:[{}]，指令:[{}]，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，序号:[{}]，数据长度:[{}]",
-                    cd.getMessageType(), cd.getCommand(), cd.getAppSocketClient(), cd.getProxyAddress(),
-                    cd.getTargetAddress(), cd.getRecvSeq(), cd.getData().length);
+            log(cd);
             clientToServer.add(cd);
         }
     }
@@ -88,6 +84,12 @@ public class QueueBridge extends BaseBridge {
         runner.shutdown();
         serverToClient.clear();
         clientToServer.clear();
+    }
+
+    private void log(ChannelData cd){
+        log.info("队列发送数据 >>> 消息类型:[{}]，指令:[{}]，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}]，数据长度:[{}]",
+                cd.getMessageType(), cd.getCommand(), cd.getAppSocketClient(), cd.getProxyAddress(),
+                cd.getTargetAddress(), cd.getRecvSeq(), cd.getData().length);
     }
     
 }

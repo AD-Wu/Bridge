@@ -8,21 +8,21 @@ package com.x.bridge.proxy.data;
 public enum MessageType {
     ClientToServer(1),
     ServerToClient(2);
-    
-    
-    public static MessageType getMessageType(int code){
-        if(code==1){
+
+
+    public static MessageType getMessageType(int code) {
+        if (code == 1) {
             return ClientToServer;
         }
         return ServerToClient;
     }
-    
+
     private final int code;
-    
+
     private MessageType(int code) {
         this.code = code;
     }
-    
+
     public int getCode() {
         return code;
     }

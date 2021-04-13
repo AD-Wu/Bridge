@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "bridge")
-public class ProxyConfigs {
+public class ProxyConfigManager {
     
     private static Map<String, ProxyConfig> configMap;
     

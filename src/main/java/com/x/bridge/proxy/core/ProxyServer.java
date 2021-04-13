@@ -1,7 +1,7 @@
 package com.x.bridge.proxy.core;
 
-import com.x.bridge.core.SocketConfig;
-import com.x.bridge.core.SocketServer;
+import com.x.bridge.common.SocketConfig;
+import com.x.bridge.common.SocketServer;
 import com.x.bridge.proxy.command.core.Command;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
@@ -24,7 +24,7 @@ public class ProxyServer extends Proxy {
     public ProxyServer(ProxyConfig config) {
         super(config, true);
         int port = ProxyHelper.getPort(config.getProxyAddress());
-        this.server = new SocketServer(new SocketConfig(port), new ServerListener(this));
+        this.server = new SocketServer(new SocketConfig(port), new ProxyServerListener(this));
     }
 
     @Override

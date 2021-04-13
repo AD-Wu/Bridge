@@ -15,12 +15,12 @@ import java.util.Set;
 @Configuration
 public class ProxyConfig {
     
-    private String name;
-    private String bridge;
-    private String proxyAddress;
-    private String targetAddress;
-    private Set<String> allowClients;
-    private int connectTimeout;// 超时时间，单位:秒
+    protected String name;
+    protected String bridge;
+    protected String proxyAddress;
+    protected String targetAddress;
+    protected Set<String> allowClients;
+    protected int connectTimeout;// 超时时间，单位:秒
     
     public boolean isAllowClient(String remoteIP){
         if(ArrayHelper.isEmpty(allowClients)){

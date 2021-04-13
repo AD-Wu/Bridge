@@ -1,10 +1,10 @@
 package com.x.bridge.proxy.core;
 
 import com.x.bridge.proxy.command.core.Command;
-import com.x.bridge.proxy.command.core.Commands;
+import com.x.bridge.proxy.command.core.CommandManager;
 import com.x.bridge.proxy.command.core.ICommand;
-import com.x.bridge.core.IService;
-import com.x.bridge.proxy.bridge.core.Bridges;
+import com.x.bridge.common.IService;
+import com.x.bridge.proxy.bridge.core.BridgeManager;
 import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
@@ -43,7 +43,7 @@ public class Proxy implements IService {
     protected Proxy(ProxyConfig config, boolean serverModel) {
         this.config = config;
         this.serverModel = serverModel;
-        this.bridge = Bridges.getBridge(config.getName());
+        this.bridge = BridgeManager.getBridge(config.getName());
         this.repliers = new ConcurrentHashMap<>();
         this.runner = Executors.newCachedThreadPool();
     }
@@ -106,7 +106,7 @@ public class Proxy implements IService {
     }
     
     public void receive(ChannelData cd) {
-        ICommand command = Commands.getCommand(cd.getCommand().getCmd());
+        ICommand command = CommandManager.getCommand(cd.getCommand().getCmd());
         if (command != null) {
             try {
                 command.execute(cd);

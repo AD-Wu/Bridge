@@ -1,4 +1,4 @@
-package com.x.bridge.core;
+package com.x.bridge.common;
 
 public interface IServerListener extends ISocketListener{
 

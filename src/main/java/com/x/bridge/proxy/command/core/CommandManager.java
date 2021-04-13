@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/10/24 12:58
  * @Author AD
  */
-public final class Commands {
+public final class CommandManager {
     
     private static volatile boolean inited = false;
     
@@ -22,7 +22,7 @@ public final class Commands {
     }
     
     private static void init() {
-        synchronized (Commands.class) {
+        synchronized (CommandManager.class) {
             if (!inited) {
                 commands = new ConcurrentHashMap<>();
                 for (Command cmd : Command.values()) {

@@ -1,15 +1,15 @@
 package com.x.bridge.proxy.command.impl;
 
-import com.x.bridge.core.SocketClient;
-import com.x.bridge.core.SocketConfig;
+import com.x.bridge.common.SocketClient;
+import com.x.bridge.common.SocketConfig;
 import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.command.core.ICommand;
-import com.x.bridge.proxy.core.ClientListener;
+import com.x.bridge.proxy.core.ProxyClientListener;
 import com.x.bridge.proxy.core.ProxyClient;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.ProxyConfig;
-import com.x.bridge.proxy.data.ProxyConfigs;
+import com.x.bridge.proxy.data.ProxyConfigManager;
 import com.x.bridge.proxy.util.ProxyHelper;
 import lombok.extern.log4j.Log4j2;
 
@@ -24,7 +24,7 @@ public class ConnectRequest implements ICommand {
         ProxyClient client = ProxyManager.getProxyClient(cd.getProxyName());
         // 首次请求
         if (client == null) {
-            ProxyConfig config = ProxyConfigs.get(cd.getProxyName());
+            ProxyConfig config = ProxyConfigManager.get(cd.getProxyName());
             client = new ProxyClient(config);
             client.start();
             ProxyManager.addProxyClient(cd.getProxyName(), client);
@@ -38,7 +38,7 @@ public class ConnectRequest implements ICommand {
             int port = ProxyHelper.getPort(cd.getTargetAddress());
             SocketClient socket = new SocketClient(
                     new SocketConfig(ip, port),
-                    new ClientListener(appSocket, cd.getProxyAddress(), client));
+                    new ProxyClientListener(appSocket, cd.getProxyAddress(), client));
             client.getRunner().execute(socket);
         } else {
             log.info("代理服务器:[{}],连接:[{}]已存在，不再重新建立",

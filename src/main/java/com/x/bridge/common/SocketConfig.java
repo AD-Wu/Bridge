@@ -1,4 +1,4 @@
-package com.x.bridge.core;
+package com.x.bridge.common;
 
 import com.x.doraemon.util.Strings;
 import lombok.Data;

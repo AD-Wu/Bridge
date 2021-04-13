@@ -1,7 +1,7 @@
 package com.x.bridge.proxy.core;
 
-import com.x.bridge.core.IServerListener;
-import com.x.bridge.core.SocketConfig;
+import com.x.bridge.common.IServerListener;
+import com.x.bridge.common.SocketConfig;
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.util.ProxyHelper;
@@ -17,11 +17,11 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public final class ServerListener implements IServerListener {
+public final class ProxyServerListener implements IServerListener {
 
     private final ProxyServer server;
 
-    public ServerListener(ProxyServer proxyServer) {
+    public ProxyServerListener(ProxyServer proxyServer) {
         this.server = proxyServer;
     }
 
@@ -47,7 +47,7 @@ public final class ServerListener implements IServerListener {
         // 创建应答对象
         Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(), ctx);
         // 递增接收数据的序号
-        replier.receive();
+        //replier.receive();
         // 是否允许连接
         if (server.isAccept(ch.getRemoteIP())) {
             // 管理应答对象
@@ -96,7 +96,7 @@ public final class ServerListener implements IServerListener {
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，通知代理(客户端)关闭",
                         remote, ch.getLocalAddress(), server.getConfig().getTargetAddress());
                 // 递增接收序号
-                replier.receive();
+                //replier.receive();
                 // 通知代理(客户端)关闭连接
                 server.disconnect(replier, MessageType.ServerToClient);
                 // 关闭通道

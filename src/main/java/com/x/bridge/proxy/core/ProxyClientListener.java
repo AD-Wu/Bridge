@@ -1,6 +1,6 @@
 package com.x.bridge.proxy.core;
 
-import com.x.bridge.core.ISocketListener;
+import com.x.bridge.common.ISocketListener;
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.util.ProxyHelper;
@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public final class ClientListener implements ISocketListener {
+public final class ProxyClientListener implements ISocketListener {
     
     private final String appSocketClient;
     
@@ -24,7 +24,7 @@ public final class ClientListener implements ISocketListener {
     
     private final ProxyClient proxyClient;
     
-    public ClientListener(String appSocketClient, String proxyAddress, ProxyClient proxyClient) {
+    public ProxyClientListener(String appSocketClient, String proxyAddress, ProxyClient proxyClient) {
         this.appSocketClient = appSocketClient;
         this.proxyAddress = proxyAddress;
         this.proxyClient = proxyClient;
@@ -40,13 +40,13 @@ public final class ClientListener implements ISocketListener {
         log.info("连接建立,客户端:[{}]，代理(客户端):[{}]，服务端:[{}]",
                 appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
         // 接收数据（从建立连接开始，seq就开始递增）
-        replier.receive();
+        //replier.receive();
         // 设置当前会话连接状态
         replier.setConnected(true);
-        // 获取代理客户端，通知另一端代理（服务端）连接成功
-        proxyClient.connectSuccess(replier);
         // 管理应答对象
         proxyClient.addReplier(appSocketClient, replier);
+        // 获取代理客户端，通知另一端代理（服务端）连接成功
+        proxyClient.connectSuccess(replier);
     }
     
     @Override
@@ -56,7 +56,7 @@ public final class ClientListener implements ISocketListener {
         // 如果是应用在代理服务端主动断开，先执行Disconnect命令，此时会为空
         if (replier != null) {
             // 接收数据，seq递增
-            replier.receive();
+            //replier.receive();
             // 关闭应答对象
             replier.close();
             // 设置连接关闭状态
