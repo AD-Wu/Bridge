@@ -10,7 +10,7 @@ public enum MessageType {
     ServerToClient(2);
 
 
-    public static MessageType getMessageType(int code) {
+    public static MessageType get(int code) {
         if (code == 1) {
             return ClientToServer;
         }

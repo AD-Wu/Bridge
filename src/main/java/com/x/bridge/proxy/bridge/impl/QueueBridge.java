@@ -6,7 +6,7 @@ import com.x.bridge.proxy.bridge.core.BaseBridge;
 import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
-import com.x.doraemon.util.Strings;
+import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.concurrent.ExecutorService;
@@ -41,7 +41,7 @@ public class QueueBridge extends BaseBridge {
     
     @Override
     public void send(ChannelData cd) throws Exception {
-        if (MessageType.ServerToClient == cd.getMessageType()) {
+        if (MessageType.ServerToClient.getCode() == cd.getMessageTypeCode()) {
             log(cd);
             serverToClient.add(cd);
         } else {
@@ -63,7 +63,7 @@ public class QueueBridge extends BaseBridge {
                     ChannelData cd = serverToClient.take();
                     ProxyManager.receiveData(cd);
                 } catch (InterruptedException e) {
-                    log.error(Strings.getExceptionTrace(e));
+                    log.error(StringHelper.getExceptionTrace(e));
                 }
             }
         });
@@ -73,7 +73,7 @@ public class QueueBridge extends BaseBridge {
                     ChannelData cd = clientToServer.take();
                     ProxyManager.receiveData(cd);
                 } catch (InterruptedException e) {
-                    log.error(Strings.getExceptionTrace(e));
+                    log.error(StringHelper.getExceptionTrace(e));
                 }
             }
         });
@@ -88,8 +88,8 @@ public class QueueBridge extends BaseBridge {
 
     private void log(ChannelData cd){
         log.info("队列发送数据 >>> 消息类型:[{}]，指令:[{}]，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}]，数据长度:[{}]",
-                cd.getMessageType(), cd.getCommand(), cd.getAppSocketClient(), cd.getProxyAddress(),
-                cd.getTargetAddress(), cd.getRecvSeq(), cd.getData().length);
+                cd.getMessageTypeCode(), cd.getCommandCode(), cd.getAppSocketClient(), cd.getProxyAddress(),
+                cd.getTargetAddress(), cd.getSeq(), cd.getData().length);
     }
     
 }

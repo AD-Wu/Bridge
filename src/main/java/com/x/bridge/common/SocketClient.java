@@ -1,6 +1,6 @@
 package com.x.bridge.common;
 
-import com.x.doraemon.util.Strings;
+import com.x.doraemon.util.StringHelper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -37,7 +37,7 @@ public class SocketClient implements Runnable{
     }
     
     public void connect() {
-        NioEventLoopGroup worker = new NioEventLoopGroup();
+        NioEventLoopGroup worker = new NioEventLoopGroup(1);
         Bootstrap boot = new Bootstrap();
         boot.group(worker);
         boot.channel(NioSocketChannel.class);
@@ -65,7 +65,7 @@ public class SocketClient implements Runnable{
             channel = future.channel();
             channel.closeFuture().sync();
         } catch (InterruptedException e) {
-            log.error(Strings.getExceptionTrace(e));
+            log.error(StringHelper.getExceptionTrace(e));
         } finally {
             connected = false;
             worker.shutdownGracefully();

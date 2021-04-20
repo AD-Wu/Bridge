@@ -4,7 +4,7 @@ import com.x.bridge.common.ISocketListener;
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.util.ProxyHelper;
-import com.x.doraemon.util.Strings;
+import com.x.doraemon.util.StringHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -40,7 +40,7 @@ public final class ProxyClientListener implements ISocketListener {
         log.info("连接建立,客户端:[{}]，代理(客户端):[{}]，服务端:[{}]",
                 appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
         // 接收数据（从建立连接开始，seq就开始递增）
-        //replier.receive();
+        replier.receive();
         // 设置当前会话连接状态
         replier.setConnected(true);
         // 管理应答对象
@@ -56,7 +56,7 @@ public final class ProxyClientListener implements ISocketListener {
         // 如果是应用在代理服务端主动断开，先执行Disconnect命令，此时会为空
         if (replier != null) {
             // 接收数据，seq递增
-            //replier.receive();
+            replier.receive();
             // 关闭应答对象
             replier.close();
             // 设置连接关闭状态
@@ -103,7 +103,7 @@ public final class ProxyClientListener implements ISocketListener {
             replier = new Replier(appSocketClient, proxyAddress, ctx);
         }
         proxyClient.connectFailed(replier);
-        log.error(Strings.getExceptionTrace(cause));
+        log.error(StringHelper.getExceptionTrace(cause));
     }
     
 }

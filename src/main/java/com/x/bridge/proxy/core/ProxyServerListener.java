@@ -5,7 +5,7 @@ import com.x.bridge.common.SocketConfig;
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.util.ProxyHelper;
-import com.x.doraemon.util.Strings;
+import com.x.doraemon.util.StringHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -32,7 +32,7 @@ public final class ProxyServerListener implements IServerListener {
 
     @Override
     public void onServerStartError(Throwable e) {
-        log.error("服务启动异常:{}", Strings.getExceptionTrace(e));
+        log.error("服务启动异常:{}", StringHelper.getExceptionTrace(e));
     }
 
     @Override
@@ -47,7 +47,7 @@ public final class ProxyServerListener implements IServerListener {
         // 创建应答对象
         Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(), ctx);
         // 递增接收数据的序号
-        //replier.receive();
+        replier.receive();
         // 是否允许连接
         if (server.isAccept(ch.getRemoteIP())) {
             // 管理应答对象
@@ -96,7 +96,7 @@ public final class ProxyServerListener implements IServerListener {
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，通知代理(客户端)关闭",
                         remote, ch.getLocalAddress(), server.getConfig().getTargetAddress());
                 // 递增接收序号
-                //replier.receive();
+                replier.receive();
                 // 通知代理(客户端)关闭连接
                 server.disconnect(replier, MessageType.ServerToClient);
                 // 关闭通道

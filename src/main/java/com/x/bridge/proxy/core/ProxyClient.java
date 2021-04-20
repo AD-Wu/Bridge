@@ -1,11 +1,10 @@
 package com.x.bridge.proxy.core;
 
-import com.x.bridge.proxy.command.core.Command;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.doraemon.util.ArrayHelper;
-import com.x.doraemon.util.Strings;
+import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -24,17 +23,17 @@ import lombok.extern.log4j.Log4j2;
         ChannelData cd = ChannelData.builder()
                 .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
-                .recvSeq(replier.getRecvSeq())
+                .seq(replier.getRecvSeq())
                 .proxyAddress(replier.getChannelInfo().getLocalAddress())
                 .targetAddress(replier.getChannelInfo().getRemoteAddress())
-                .command(Command.ConnectSuccess)
-                .messageType(MessageType.ClientToServer)
+                .commandCode(Command.ConnectSuccess.getCode())
+                .messageTypeCode(MessageType.ClientToServer.getCode())
                 .data(ArrayHelper.EMPTY_BYTE)
                 .build();
         try {
             bridge.send(cd);
         } catch (Exception e) {
-            log.error(Strings.getExceptionTrace(e));
+            log.error(StringHelper.getExceptionTrace(e));
         }
     }
     
@@ -42,17 +41,17 @@ import lombok.extern.log4j.Log4j2;
         ChannelData cd = ChannelData.builder()
                 .proxyName(config.getName())
                 .appSocketClient(replier.getAppSocketClient())
-                .recvSeq(replier.getRecvSeq())
+                .seq(replier.getRecvSeq())
                 .proxyAddress(replier.getChannelInfo().getLocalAddress())
                 .targetAddress(replier.getChannelInfo().getRemoteAddress())
-                .messageType(MessageType.ClientToServer)
-                .command(Command.ConnectFailed)
+                .messageTypeCode(MessageType.ClientToServer.getCode())
+                .commandCode(Command.ConnectFailed.getCode())
                 .data(ArrayHelper.EMPTY_BYTE)
                 .build();
         try {
             bridge.send(cd);
         } catch (Exception e) {
-            log.error(Strings.getExceptionTrace(e));
+            log.error(StringHelper.getExceptionTrace(e));
         }
     }
    

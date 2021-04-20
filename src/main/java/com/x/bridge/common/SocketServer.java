@@ -1,6 +1,6 @@
 package com.x.bridge.common;
 
-import com.x.doraemon.util.Strings;
+import com.x.doraemon.util.StringHelper;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @Author AD
  */
 @Log4j2
-public class SocketServer implements Runnable {
+public class SocketServer  {
     
     private volatile boolean started = false;
     
@@ -32,12 +32,7 @@ public class SocketServer implements Runnable {
         this.listener = listener;
     }
     
-    @Override
-    public void run() {
-        start();
-    }
-    
-    public void start() {
+    public synchronized void start() {
         if (started) {
             listener.onServerStart(config);
         } else {
@@ -64,8 +59,8 @@ public class SocketServer implements Runnable {
                 }
             });
            
-            EventLoopGroup boss = new NioEventLoopGroup();
-            EventLoopGroup worker = new NioEventLoopGroup();
+            EventLoopGroup boss = new NioEventLoopGroup(1);
+            EventLoopGroup worker = new NioEventLoopGroup(100);
             boot.group(boss, worker);
             try {
                 ChannelFuture future = boot.bind(config.getPort()).sync();
@@ -75,7 +70,7 @@ public class SocketServer implements Runnable {
                 channel.closeFuture().sync();// 阻塞当前服务
             } catch (Exception e) {
                 started = false;
-                log.error(Strings.getExceptionTrace(e));
+                log.error(StringHelper.getExceptionTrace(e));
                 listener.onServerStartError(e);
             } finally {
                 boss.shutdownGracefully();
@@ -84,7 +79,7 @@ public class SocketServer implements Runnable {
         }
     }
     
-    public void stop() {
+    public synchronized void stop() {
         if (started) {
             channel.close();
             started = false;

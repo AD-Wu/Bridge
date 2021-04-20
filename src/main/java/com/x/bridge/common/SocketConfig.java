@@ -1,6 +1,6 @@
 package com.x.bridge.common;
 
-import com.x.doraemon.util.Strings;
+import com.x.doraemon.util.StringHelper;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
@@ -35,7 +35,7 @@ public class SocketConfig {
             this.ip = InetAddress.getLocalHost().getHostAddress();
             this.port = port < 0 ? 0 : port;
         } catch (UnknownHostException e) {
-            log.error(Strings.getExceptionTrace(e));
+            log.error(StringHelper.getExceptionTrace(e));
         }
     }
     

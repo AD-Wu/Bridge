@@ -2,11 +2,14 @@ package com.x.bridge.proxy.util;
 
 import com.x.bridge.proxy.data.ChannelInfo;
 import com.x.doraemon.util.ArrayHelper;
-import com.x.doraemon.util.Strings;
+import com.x.doraemon.util.StringHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * @Desc
@@ -22,15 +25,27 @@ public final class ProxyHelper {
     }
     
     public static String getIP(String appAddress) {
-        if (Strings.isNotNull(appAddress)) {
-            return appAddress.split(":")[0];
+        if (StringHelper.isNotNull(appAddress)) {
+            if (appAddress.contains(":")) {
+                return appAddress.split(":")[0];
+            } else {
+                try {
+                    return InetAddress.getByName(appAddress).getHostAddress();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                    return appAddress;
+                }
+            }
+            
         }
         return appAddress;
     }
     
     public static int getPort(String appAddress) {
-        if (Strings.isNotNull(appAddress)) {
-            return Integer.parseInt(appAddress.split(":")[1]);
+        if (StringHelper.isNotNull(appAddress)) {
+            if (appAddress.contains(":")) {
+                return Integer.parseInt(appAddress.split(":")[1]);
+            }
         }
         return -1;
     }
