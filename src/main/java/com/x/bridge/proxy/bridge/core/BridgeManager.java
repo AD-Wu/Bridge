@@ -47,8 +47,7 @@ public final class BridgeManager {
                 if (!proxyBridges.containsKey(proxyName)) {
                     ProxyConfig config = configs.get(proxyName);
                     IBridge bridge = bridges.get(config.getBridge());
-                    IBridge newBridge = bridge.newInstance();
-                    proxyBridges.put(proxyName, newBridge);
+
                 }
             }
         }

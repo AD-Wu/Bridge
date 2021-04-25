@@ -2,7 +2,6 @@ package com.x.bridge.proxy.bridge.impl;
 
 import com.google.auto.service.AutoService;
 import com.x.bridge.proxy.ProxyManager;
-import com.x.bridge.proxy.bridge.core.BaseBridge;
 import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
@@ -20,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 @Log4j2
 @AutoService(IBridge.class)
-public class QueueBridge extends BaseBridge {
+public class QueueBridge implements IBridge<ChannelData>{
     
     private final LinkedBlockingQueue<ChannelData> serverToClient;
     
@@ -29,7 +28,7 @@ public class QueueBridge extends BaseBridge {
     private final ExecutorService runner;
     
     public QueueBridge() {
-        this.serverToClient = new LinkedBlockingQueue();
+        this.serverToClient = new LinkedBlockingQueue<>();
         this.clientToServer = new LinkedBlockingQueue<>();
         this.runner = Executors.newFixedThreadPool(2);
     }
@@ -49,14 +48,9 @@ public class QueueBridge extends BaseBridge {
             clientToServer.add(cd);
         }
     }
-    
+
     @Override
-    public IBridge<ChannelData> newInstance() {
-        return new QueueBridge();
-    }
-    
-    @Override
-    public void onStart() throws Exception {
+    public void start() throws Exception {
         runner.execute(() -> {
             while (true) {
                 try {
@@ -80,7 +74,7 @@ public class QueueBridge extends BaseBridge {
     }
     
     @Override
-    public void onStop() throws Exception {
+    public void stop() throws Exception {
         runner.shutdown();
         serverToClient.clear();
         clientToServer.clear();

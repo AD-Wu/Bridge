@@ -1,6 +1,5 @@
 package com.x.bridge.proxy.core;
 
-import com.x.bridge.common.IService;
 import com.x.bridge.proxy.bridge.core.BridgeManager;
 import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.data.ChannelData;
@@ -20,38 +19,42 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author AD
  */
 // @Data
-public abstract class Proxy implements IService {
-    
+public abstract class Proxy {
+
     protected final ProxyConfig config;
+
     protected final boolean serverModel;
+
     protected final IBridge bridge;
+
     protected final Map<String, Replier> repliers;
+
     protected final Logger log = LogManager.getLogger(this.getClass());
-    
+
     protected Proxy(ProxyConfig config, boolean serverModel) {
         this.config = config;
         this.serverModel = serverModel;
         this.bridge = BridgeManager.getBridge(config.getName());
         this.repliers = new ConcurrentHashMap<>();
     }
-    
+
     public void addReplier(String remoteAddress, Replier replier) {
         repliers.put(remoteAddress, replier);
     }
-    
+
     public Replier getReplier(String remoteAddress) {
         return repliers.get(remoteAddress);
     }
-    
+
     public Replier removeReplier(String remoteAddress) {
         return repliers.remove(remoteAddress);
     }
-    
+
     public void disconnect(Replier replier, MessageType type) {
         String target = MessageType.ClientToServer == type ?
                 replier.getChannelInfo().getRemoteAddress() :
                 config.getTargetAddress();
-        
+
         ChannelData cd = new ChannelData();
         cd.setProxyName(config.getName());
         cd.setAppSocketClient(replier.getAppSocketClient());
@@ -67,7 +70,7 @@ public abstract class Proxy implements IService {
             log.error(StringHelper.getExceptionTrace(e));
         }
     }
-    
+
     public void send(Replier replier, MessageType type, byte[] data) {
         String target = MessageType.ClientToServer == type ?
                 replier.getChannelInfo().getRemoteAddress() :
@@ -75,7 +78,7 @@ public abstract class Proxy implements IService {
         String proxyAddress = MessageType.ClientToServer == type ?
                 replier.getChannelInfo().getLocalAddress() :
                 config.getTargetAddress();
-        
+
         ChannelData cd = new ChannelData();
         cd.setProxyName(config.getName());
         cd.setAppSocketClient(replier.getAppSocketClient());
@@ -85,14 +88,14 @@ public abstract class Proxy implements IService {
         cd.setMessageTypeCode(type.getCode());
         cd.setCommandCode(Command.SendData.getCode());
         cd.setData(data);
-        
+
         try {
             bridge.send(cd);
         } catch (Exception e) {
             log.error(StringHelper.getExceptionTrace(e));
         }
     }
-    
+
     public void receive(ChannelData cd) {
         Command command = Command.get(cd.getCommandCode());
         if (command != null) {
@@ -105,13 +108,17 @@ public abstract class Proxy implements IService {
             log.error("代理收到非法指令:[{}]数据", cd.getCommandCode());
         }
     }
-    
+
     public ProxyConfig getConfig() {
         return config;
     }
-    
+
     public boolean isServerModel() {
         return serverModel;
     }
-    
+
+    public abstract void start() throws Exception;
+
+    public abstract void stop() throws Exception;
+
 }

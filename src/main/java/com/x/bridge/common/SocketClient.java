@@ -17,28 +17,33 @@ import java.util.concurrent.TimeUnit;
  * @Author AD
  */
 @Log4j2
-public class SocketClient{
-    
+public class SocketClient {
+
     private volatile boolean connected;
-    
+
     private Channel channel;
-    
+
+    private NioEventLoopGroup worker;
+
     private final SocketConfig config;
-    
+
     private final ISocketListener listener;
-    
-    public SocketClient(SocketConfig config, ISocketListener listener){
+
+    public SocketClient(SocketConfig config, ISocketListener listener) {
         this.config = config;
         this.listener = listener;
     }
-    
-    public void connect() {
-        NioEventLoopGroup worker = new NioEventLoopGroup(1);
+
+    public synchronized void connect() {
+        if (connected) {
+            return;
+        }
+        worker = new NioEventLoopGroup(1);
         Bootstrap boot = new Bootstrap();
         boot.group(worker);
         boot.channel(NioSocketChannel.class);
         boot.option(ChannelOption.SO_KEEPALIVE, true);
-        
+
         boot.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel channel) throws Exception {
@@ -54,24 +59,24 @@ public class SocketClient{
                 p.addLast(new SocketHandler(listener));
             }
         });
-        
+
         try {
             ChannelFuture future = boot.connect(config.getIp(), config.getPort()).sync();
-            connected = true;
             channel = future.channel();
-            channel.closeFuture().sync();
+            connected = true;
         } catch (InterruptedException e) {
             log.error(StringHelper.getExceptionTrace(e));
-        } finally {
-            connected = false;
+        }
+    }
+
+    public synchronized void disconnect() {
+        if (channel != null) {
+            channel.close();
+        }
+        if (worker != null) {
             worker.shutdownGracefully();
         }
+        connected = false;
     }
-    
-    public void disconnect(){
-        if(connected){
-            channel.close();
-            connected = false;
-        }
-    }
+
 }
