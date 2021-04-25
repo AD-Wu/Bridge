@@ -15,6 +15,8 @@ import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.data.ChannelData;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,15 +28,23 @@ import java.util.concurrent.Executors;
 @Log4j2
 @AutoService(IBridge.class)
 public class DBBridge extends BaseBridge {
-    
+
     private DBConfig config;
+
     private DaoManager daoManager;
+
     private ExecutorService reader;
+
     private ExecutorService writer;
+
+    private ExecutorService deleter;
+
     private ITableInfoGetter<ChannelData> writeGetter;
+
     private ITableInfoGetter<ChannelData> readGetter;
+
     private TableInfo tableInfo;
-    
+
     public DBBridge() {
         try {
             DatabaseConfig dbConfig = new DatabaseConfig();
@@ -43,10 +53,11 @@ public class DBBridge extends BaseBridge {
             dbConfig.setDriver(config.getDriver());
             dbConfig.setUser(config.getUser());
             dbConfig.setPassword(config.getPassword());
-            
+
             this.daoManager = new DaoManager(dbConfig);
             this.reader = Executors.newSingleThreadExecutor();
             this.writer = Executors.newSingleThreadExecutor();
+            this.deleter = Executors.newSingleThreadExecutor();
             this.tableInfo = new PikachuTableInfoGetter<ChannelData>().getTableInfo(ChannelData.class);
             this.writeGetter = new ITableInfoGetter<ChannelData>() {
                 @Override
@@ -59,7 +70,7 @@ public class DBBridge extends BaseBridge {
                     return tableInfo;
                 }
             };
-            
+
             this.readGetter = new ITableInfoGetter<ChannelData>() {
                 @Override
                 public TableInfo getTableInfo(Class<ChannelData> clazz) {
@@ -71,40 +82,27 @@ public class DBBridge extends BaseBridge {
                     return tableInfo;
                 }
             };
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     protected void onStart() throws Exception {
         reader.execute(new Runnable() {
             @Override
             public void run() {
                 IDao<ChannelData> dao = daoManager.getDao(ChannelData.class, readGetter);
-                IDatabase database = daoManager.getDatabaseAccess();
-                String[] pks = dao.getPrimaryKeys();
-                StringBuilder sb = new StringBuilder();
                 while (true) {
                     try {
                         ChannelData[] datas = dao.getList(null, null);
-                        String[] sqls = new String[datas.length];
-                        for (int i = 0, c = datas.length; i < c; i++) {
-                            sb.append("delete from ");
-                            sb.append(dao.getTableName());
-                            sb.append(" where ");
-                            for (String pk : pks) {
-                                sb.append(pk).append("=?");
+                        if (datas != null && datas.length > 0) {
+                            for (ChannelData data : datas) {
+                                ProxyManager.receiveData(data);
                             }
-                            sqls[i] = sb.toString();
-                            sb.delete(0, sb.length());
+                            deleteReaded(datas, daoManager, dao);
                         }
-                        
-                        for (ChannelData data : datas) {
-                            ProxyManager.receiveData(data);
-                        }
-                        
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -112,28 +110,71 @@ public class DBBridge extends BaseBridge {
             }
         });
     }
-    
+
     @Override
     protected void onStop() throws Exception {
         reader.shutdown();
         daoManager.stop();
         BridgeManager.removeBridge(config.getName());
     }
-    
+
     @Override
     public String name() {
         return "DB";
     }
-    
+
     @Override
     public void send(ChannelData data) throws Exception {
         IDao<ChannelData> dao = daoManager.getDao(ChannelData.class, writeGetter);
-        dao.add(data);
+        writer.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    dao.add(data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
-    
+
     @Override
     public IBridge<ChannelData> newInstance() {
         return new DBBridge();
     }
-    
+
+    private void deleteReaded(ChannelData[] datas, DaoManager daoManager, IDao<ChannelData> dao) {
+        deleter.execute(new Runnable() {
+            @Override
+            public void run() {
+                // 获取数据库
+                IDatabase db = daoManager.getDatabaseAccess();
+                // 生成sql语句
+                StringBuilder sql = new StringBuilder();
+                sql.append("delete from ");
+                sql.append(dao.getTableName());
+                sql.append(" where ");
+                String[] pks = dao.getPrimaryKeys();
+                for (int i = 0, c = pks.length; i < pks.length; i++) {
+                    if (i > 0) {
+                        sql.append(" and ");
+                    }
+                    sql.append(pks[i]).append("=?");
+                }
+                // 获取参数
+                List<Object[]> params = new ArrayList<>();
+                for (ChannelData data : datas) {
+                    params.add(dao.getPrimaryKeysValue(data));
+                }
+                try {
+                    db.executeBatch(sql.toString(), params, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
 }
