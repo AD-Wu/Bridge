@@ -8,7 +8,6 @@ import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.StringHelper;
-import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/10/24 18:00
  * @Author AD
  */
-@Data
-public class Proxy implements IService {
+// @Data
+public abstract class Proxy implements IService {
     
     protected final ProxyConfig config;
     protected final boolean serverModel;
@@ -52,16 +51,16 @@ public class Proxy implements IService {
         String target = MessageType.ClientToServer == type ?
                 replier.getChannelInfo().getRemoteAddress() :
                 config.getTargetAddress();
-        ChannelData cd = ChannelData.builder()
-                .proxyName(config.getName())
-                .appSocketClient(replier.getAppSocketClient())
-                .seq(replier.getRecvSeq())
-                .proxyAddress(replier.getProxyAddress())
-                .targetAddress(target)
-                .messageTypeCode(type.getCode())
-                .commandCode(Command.Disconnect.getCode())
-                .data(ArrayHelper.EMPTY_BYTE)
-                .build();
+        
+        ChannelData cd = new ChannelData();
+        cd.setProxyName(config.getName());
+        cd.setAppSocketClient(replier.getAppSocketClient());
+        cd.setSeq(replier.getRecvSeq());
+        cd.setProxyAddress(replier.getProxyAddress());
+        cd.setTargetAddress(target);
+        cd.setMessageTypeCode(type.getCode());
+        cd.setCommandCode(Command.Disconnect.getCode());
+        cd.setData(ArrayHelper.EMPTY_BYTE);
         try {
             bridge.send(cd);
         } catch (Exception e) {
@@ -76,16 +75,17 @@ public class Proxy implements IService {
         String proxyAddress = MessageType.ClientToServer == type ?
                 replier.getChannelInfo().getLocalAddress() :
                 config.getTargetAddress();
-        ChannelData cd = ChannelData.builder()
-                .proxyName(config.getName())
-                .appSocketClient(replier.getAppSocketClient())
-                .seq(replier.getRecvSeq())
-                .proxyAddress(proxyAddress)
-                .targetAddress(target)
-                .messageTypeCode(type.getCode())
-                .commandCode(Command.SendData.getCode())
-                .data(data)
-                .build();
+        
+        ChannelData cd = new ChannelData();
+        cd.setProxyName(config.getName());
+        cd.setAppSocketClient(replier.getAppSocketClient());
+        cd.setSeq(replier.getRecvSeq());
+        cd.setProxyAddress(proxyAddress);
+        cd.setTargetAddress(target);
+        cd.setMessageTypeCode(type.getCode());
+        cd.setCommandCode(Command.SendData.getCode());
+        cd.setData(data);
+        
         try {
             bridge.send(cd);
         } catch (Exception e) {
@@ -106,33 +106,12 @@ public class Proxy implements IService {
         }
     }
     
-    @Override
-    public final void start() throws Exception {
-            try {
-                bridge.start();
-                onStart();
-            } catch (Exception e) {
-                try {
-                    stop();
-                } catch (Exception exception) {
-                    log.error(StringHelper.getExceptionTrace(e));
-                }
-                log.error(StringHelper.getExceptionTrace(e));
-            }
+    public ProxyConfig getConfig() {
+        return config;
     }
     
-    @Override
-    public final void stop() throws Exception {
-            try {
-                bridge.stop();
-                onStop();
-            } catch (Exception e) {
-                log.error(StringHelper.getExceptionTrace(e));
-            }
+    public boolean isServerModel() {
+        return serverModel;
     }
-    
-    protected void onStart() throws Exception {}
-    
-    protected void onStop() throws Exception  {}
     
 }

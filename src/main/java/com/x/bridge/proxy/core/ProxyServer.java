@@ -27,12 +27,12 @@ public class ProxyServer extends Proxy {
     }
     
     @Override
-    public void onStart() throws Exception {
+    public void start() throws Exception {
         server.start();
     }
     
     @Override
-    public void onStop() throws Exception {
+    public void stop() throws Exception {
         server.stop();
         for (Replier replier : repliers.values()) {
             replier.close();
@@ -45,16 +45,15 @@ public class ProxyServer extends Proxy {
     }
     
     public boolean connectRequest(Replier replier) {
-        ChannelData cd = ChannelData.builder()
-                .proxyName(config.getName())
-                .appSocketClient(replier.getAppSocketClient())
-                .seq(replier.getRecvSeq())
-                .proxyAddress(replier.getChannelInfo().getLocalAddress())
-                .targetAddress(config.getTargetAddress())
-                .messageTypeCode(MessageType.ServerToClient.getCode())
-                .commandCode(Command.ConnectRequest.getCode())
-                .data(ArrayHelper.EMPTY_BYTE)
-                .build();
+        ChannelData cd = new ChannelData();
+        cd.setProxyName(config.getName());
+        cd.setAppSocketClient(replier.getAppSocketClient());
+        cd.setSeq(replier.getRecvSeq());
+        cd.setProxyAddress(replier.getChannelInfo().getLocalAddress());
+        cd.setTargetAddress(config.getTargetAddress());
+        cd.setMessageTypeCode(MessageType.ServerToClient.getCode());
+        cd.setCommandCode(Command.ConnectRequest.getCode());
+        cd.setData(ArrayHelper.EMPTY_BYTE);
         Object lock = replier.getConnectLock();
         try {
             synchronized (lock) {

@@ -44,7 +44,7 @@ public enum Command {
                 SocketClient socket = new SocketClient(
                         new SocketConfig(ip, port),
                         new ProxyClientListener(appSocket, cd.getProxyAddress(), client));
-                client.getRunner().execute(socket);
+                // client.getRunner().execute(socket);
             } else {
                 log.info("代理服务器:[{}],连接:[{}]已存在，不再重新建立",
                         cd.getProxyAddress(), cd.getAppSocketClient());

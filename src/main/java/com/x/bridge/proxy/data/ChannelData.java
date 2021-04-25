@@ -3,10 +3,8 @@ package com.x.bridge.proxy.data;
 import com.pikachu.common.annotations.IColumn;
 import com.pikachu.common.annotations.ITable;
 import com.x.bridge.proxy.core.Command;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.StringJoiner;
 
 /**
@@ -14,11 +12,8 @@ import java.util.StringJoiner;
  * @Date 2020/10/22 22:02
  * @Author AD
  */
-@Data
-@Builder
-@NoArgsConstructor
 @ITable(doc = "通道数据基类", cache = false)
-public class ChannelData {
+public class ChannelData implements Serializable {
     
     @IColumn(doc = "客户端socket地址", pk = true)
     protected String appSocketClient;
@@ -45,6 +40,70 @@ public class ChannelData {
 
     protected byte[] data;
     
+    public String getAppSocketClient() {
+        return appSocketClient;
+    }
+    
+    public void setAppSocketClient(String appSocketClient) {
+        this.appSocketClient = appSocketClient;
+    }
+    
+    public long getSeq() {
+        return seq;
+    }
+    
+    public void setSeq(long seq) {
+        this.seq = seq;
+    }
+    
+    public String getProxyName() {
+        return proxyName;
+    }
+    
+    public void setProxyName(String proxyName) {
+        this.proxyName = proxyName;
+    }
+    
+    public String getProxyAddress() {
+        return proxyAddress;
+    }
+    
+    public void setProxyAddress(String proxyAddress) {
+        this.proxyAddress = proxyAddress;
+    }
+    
+    public String getTargetAddress() {
+        return targetAddress;
+    }
+    
+    public void setTargetAddress(String targetAddress) {
+        this.targetAddress = targetAddress;
+    }
+    
+    public int getCommandCode() {
+        return commandCode;
+    }
+    
+    public void setCommandCode(int commandCode) {
+        this.commandCode = commandCode;
+    }
+    
+    public int getMessageTypeCode() {
+        return messageTypeCode;
+    }
+    
+    public void setMessageTypeCode(int messageTypeCode) {
+        this.messageTypeCode = messageTypeCode;
+    }
+    
+    public byte[] getData() {
+        return data;
+    }
+    
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+    
     @Override
     public String toString() {
         return new StringJoiner(", ", ChannelData.class.getSimpleName() + "[", "]")
@@ -59,10 +118,5 @@ public class ChannelData {
                 .toString();
     }
     
-    // ------------------------ 变量定义 ------------------------
-    // ------------------------ 构造方法 ------------------------
-    // ------------------------ 方法定义 ------------------------
-    // ------------------------ 私有方法 ------------------------
-    private void autoCreateMethod() {}
     
 }

@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * @Author AD
  */
 @Log4j2
-public class SocketClient implements Runnable{
+public class SocketClient{
     
     private volatile boolean connected;
     
@@ -30,10 +30,6 @@ public class SocketClient implements Runnable{
     public SocketClient(SocketConfig config, ISocketListener listener){
         this.config = config;
         this.listener = listener;
-    }
-    @Override
-    public void run(){
-        connect();
     }
     
     public void connect() {
