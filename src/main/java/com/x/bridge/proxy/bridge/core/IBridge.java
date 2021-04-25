@@ -1,10 +1,12 @@
 package com.x.bridge.proxy.bridge.core;
 
+import com.x.bridge.proxy.data.ChannelData;
+
 /**
  * @Desc
  * @Date 2020/10/22 19:07 * @Author AD
  */
-public interface IBridge<T> {
+public interface IBridge{
 
     String name();
 
@@ -12,6 +14,6 @@ public interface IBridge<T> {
 
     void stop() throws Exception;
 
-    void send(T data) throws Exception;
+    void send(ChannelData data) throws Exception;
 
 }

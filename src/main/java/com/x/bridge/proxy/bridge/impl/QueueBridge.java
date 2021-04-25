@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 @Log4j2
 @AutoService(IBridge.class)
-public class QueueBridge implements IBridge<ChannelData>{
+public class QueueBridge implements IBridge{
     
     private final LinkedBlockingQueue<ChannelData> serverToClient;
     

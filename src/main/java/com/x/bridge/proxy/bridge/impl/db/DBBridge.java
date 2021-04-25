@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
  */
 @Log4j2
 @AutoService(IBridge.class)
-public class DBBridge implements IBridge<ChannelData> {
+public class DBBridge implements IBridge {
 
     private DBConfig config;
 
