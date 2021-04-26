@@ -22,14 +22,14 @@ public class ProxyServer extends Proxy {
     
     public ProxyServer(ProxyConfig config) {
         super(config, true, null);
-        int port = ProxyHelper.getPort(config.getProxyAddress());
+        int port = ProxyHelper.getPort(config.getProxyServer());
         this.server = new SocketServer(new SocketConfig(port), new ProxyServerListener(this));
     }
     
     @Override
     public void start() throws Exception {
-        sender.start();
         server.start();
+        sender.start();
     }
     
     @Override
@@ -47,13 +47,7 @@ public class ProxyServer extends Proxy {
     }
     
     public boolean connectRequest(Replier replier) {
-        ChannelData cd = new ChannelData();
-        cd.setProxyName(config.getName());
-        cd.setAppSocketClient(replier.getAppSocketClient());
-        cd.setSeq(replier.getRecvSeq());
-        cd.setProxyAddress(replier.getChannelInfo().getLocalAddress());
-        cd.setTargetAddress(config.getTargetAddress());
-        cd.setMessageType(MessageType.ServerToClient);
+        ChannelData cd = ChannelData.generate(config.getName(), replier, MessageType.ServerToClient);
         cd.setCommand(Command.ConnectRequest);
         cd.setData(ArrayHelper.EMPTY_BYTE);
         Object lock = replier.getConnectLock();

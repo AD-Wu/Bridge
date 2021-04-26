@@ -17,8 +17,8 @@ public class ProxyConfig {
     
     protected String name;
     protected String bridge;
-    protected String proxyAddress;
-    protected String targetAddress;
+    protected String proxyServer;
+    protected String appSocketServer;
     protected Set<String> allowClients;
     protected int connectTimeout;// 超时时间，单位:秒
     

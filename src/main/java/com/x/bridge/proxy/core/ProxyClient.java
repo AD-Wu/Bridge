@@ -20,16 +20,9 @@ public class ProxyClient extends Proxy {
     }
     
     public void connectSuccess(Replier replier) {
-        ChannelData cd = new ChannelData();
-        cd.setProxyName(config.getName());
-        cd.setAppSocketClient(replier.getAppSocketClient());
-        cd.setSeq(replier.getRecvSeq());
-        cd.setProxyAddress(replier.getChannelInfo().getLocalAddress());
-        cd.setTargetAddress(replier.getChannelInfo().getRemoteAddress());
+        ChannelData cd = ChannelData.generate(config.getName(), replier, MessageType.ClientToServer);
         cd.setCommand(Command.ConnectSuccess);
-        cd.setMessageType(MessageType.ClientToServer);
         cd.setData(ArrayHelper.EMPTY_BYTE);
-        
         try {
             sender.send(cd);
         } catch (Exception e) {
@@ -38,13 +31,7 @@ public class ProxyClient extends Proxy {
     }
     
     public void connectFailed(Replier replier) {
-        ChannelData cd = new ChannelData();
-        cd.setProxyName(config.getName());
-        cd.setAppSocketClient(replier.getAppSocketClient());
-        cd.setSeq(replier.getRecvSeq());
-        cd.setProxyAddress(replier.getChannelInfo().getLocalAddress());
-        cd.setTargetAddress(replier.getChannelInfo().getRemoteAddress());
-        cd.setMessageType(MessageType.ClientToServer);
+        ChannelData cd = ChannelData.generate(config.getName(), replier, MessageType.ClientToServer);
         cd.setCommand(Command.ConnectFailed);
         cd.setData(ArrayHelper.EMPTY_BYTE);
         try {

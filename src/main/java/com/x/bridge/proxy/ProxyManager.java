@@ -1,10 +1,8 @@
 package com.x.bridge.proxy;
 
-import com.x.bridge.proxy.core.Command;
-import com.x.bridge.proxy.core.Proxy;
+import com.x.bridge.proxy.core.ProxyClient;
 import com.x.bridge.proxy.core.ProxyServer;
 import com.x.bridge.proxy.data.ChannelData;
-import com.x.bridge.proxy.data.MessageType;
 import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.bridge.proxy.data.ProxyConfigManager;
 import com.x.doraemon.util.StringHelper;
@@ -45,7 +43,7 @@ public final class ProxyManager {
     
     // 测试调用
     public static void startProxyServer(ProxyConfig config) throws Exception {
-        String proxyAddress = config.getProxyAddress();
+        String proxyAddress = config.getProxyServer();
         if (StringHelper.isNotNull(proxyAddress)) {
             ProxyServer server = new ProxyServer(config);
             server.start();
@@ -82,33 +80,7 @@ public final class ProxyManager {
             client.stop();
         }
     }
-    
-    public static void receiveData(ChannelData cd) {
-        MessageType type = cd.getMessageType();
-        Proxy proxy = null;
-        switch (type) {
-            case ClientToServer:
-                log(cd);
-                proxy = getProxyServer(cd.getProxyName());
-                if (proxy != null) {
-                    proxy.receive(cd);
-                }
-                break;
-            case ServerToClient:
-                log(cd);
-                proxy = getProxyClient(cd.getProxyName());
-                if (proxy != null) {
-                    proxy.receive(cd);
-                }
-                break;
-            default:
-                break;
-        }
-        if (proxy == null && cd.getCommand() != Command.ConnectRequest) {
-            log.error("网关中没有该代理:[{}]，通道数据:{}", cd.getProxyName(), cd);
-        }
-        
-    }
+
     
     public static ProxyServer getProxyServer(String proxyName) {
         return servers.get(proxyName);
@@ -124,8 +96,8 @@ public final class ProxyManager {
     
     private static void log(ChannelData cd) {
         log.info("网关收到数据 >>> 消息类型:[{}]，指令:[{}]，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，序号:[{}]，数据长度:[{}]",
-                cd.getMessageType(), cd.getCommand(), cd.getAppSocketClient(), cd.getProxyAddress(),
-                cd.getTargetAddress(), cd.getSeq(), cd.getData().length);
+                cd.getMessageType(), cd.getCommand(), cd.getAppSocketClient(), cd.getProxyServer(),
+                cd.getAppSocketServer(), cd.getSeq(), cd.getData().length);
     }
     
 }

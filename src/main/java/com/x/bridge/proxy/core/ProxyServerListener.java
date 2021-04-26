@@ -46,6 +46,8 @@ public final class ProxyServerListener implements IServerListener {
         ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         // 创建应答对象
         Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(), ctx);
+        // 设置app服务端地址
+        replier.setAppSocketServer(server.getConfig().getAppSocketServer());
         // 递增接收数据的序号
         replier.receive();
         // 是否允许连接
@@ -54,7 +56,7 @@ public final class ProxyServerListener implements IServerListener {
             server.addReplier(ch.getRemoteAddress(), replier);
             // 日志记录
             log.info("连接请求建立，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                    ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
+                    replier.getAppSocketClient(), replier.getProxyServer(), replier.getAppSocketServer());
             // 向代理(客户端)发送连接请求
             if (!server.connectRequest(replier)) {
                 // 连接建立失败，移除应答者
@@ -64,19 +66,19 @@ public final class ProxyServerListener implements IServerListener {
                 // 判断是否连接超时
                 if (!replier.isConnectTimeout()) {
                     log.info("连接建立失败，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                            ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
+                            ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppSocketServer());
                 }
             } else {
                 // 连接成功，设置连接状态
                 replier.setConnected(true);
                 log.info("连接建立成功，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                        ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
+                        ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppSocketServer());
             }
         } else {
             // 非法连接，关闭通道
             replier.close();
             log.info("非法客户端，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                    ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getTargetAddress());
+                    ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppSocketServer());
         }
     }
 
@@ -94,7 +96,7 @@ public final class ProxyServerListener implements IServerListener {
             if (replier.isConnected()) {
                 // 日志记录
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，通知代理(客户端)关闭",
-                        remote, ch.getLocalAddress(), server.getConfig().getTargetAddress());
+                        remote, ch.getLocalAddress(), server.getConfig().getAppSocketServer());
                 // 递增接收序号
                 replier.receive();
                 // 通知代理(客户端)关闭连接
@@ -103,7 +105,7 @@ public final class ProxyServerListener implements IServerListener {
                 replier.close();
             } else {
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，代理(客户端)未建立连接，无需通知",
-                        remote, ch.getLocalAddress(), server.getConfig().getTargetAddress());
+                        remote, ch.getLocalAddress(), server.getConfig().getAppSocketServer());
             }
         }
     }
@@ -124,7 +126,7 @@ public final class ProxyServerListener implements IServerListener {
             byte[] data = ProxyHelper.readData(buf);
             // 日志记录
             log.info("接收数据，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}],数据长度:[{}]",
-                    remote, ch.getLocalAddress(), server.getConfig().getTargetAddress(),
+                    remote, ch.getLocalAddress(), server.getConfig().getAppSocketServer(),
                     replier.getRecvSeq(), data.length);
             // 发送给代理(客户端)
             server.send(replier, MessageType.ServerToClient, data);

@@ -20,29 +20,33 @@ public final class ProxyClientListener implements ISocketListener {
     
     private final String appSocketClient;
     
-    private final String proxyAddress;
+    private final String proxyServer;
     
     private final ProxyClient proxyClient;
     
-    public ProxyClientListener(String appSocketClient, String proxyAddress, ProxyClient proxyClient) {
+    public ProxyClientListener(String appSocketClient, String proxyServer, ProxyClient proxyClient) {
         this.appSocketClient = appSocketClient;
-        this.proxyAddress = proxyAddress;
+        this.proxyServer = proxyServer;
         this.proxyClient = proxyClient;
     }
     
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         // 生成应答对象
-        Replier replier = new Replier(appSocketClient, proxyAddress, ctx);
+        Replier replier = new Replier(appSocketClient, proxyServer, ctx);
         // 获取通道信息
         ChannelInfo ch = replier.getChannelInfo();
-        // 日志记录
-        log.info("连接建立,客户端:[{}]，代理(客户端):[{}]，服务端:[{}]",
-                appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
         // 接收数据（从建立连接开始，seq就开始递增）
         replier.receive();
         // 设置当前会话连接状态
         replier.setConnected(true);
+        // 设置代理客户端地址
+        replier.setProxyClient(ch.getLocalAddress());
+        // 设置app服务端地址
+        replier.setAppSocketServer(ch.getRemoteAddress());
+        // 日志记录
+        log.info("连接建立,客户端:[{}]，代理(客户端):[{}]，服务端:[{}]",
+                appSocketClient, replier.getProxyClient(), replier.getAppSocketServer());
         // 管理应答对象
         proxyClient.addReplier(appSocketClient, replier);
         // 获取代理客户端，通知另一端代理（服务端）连接成功
@@ -100,7 +104,7 @@ public final class ProxyClientListener implements ISocketListener {
     public void error(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Replier replier = proxyClient.getReplier(appSocketClient);
         if (replier == null) {
-            replier = new Replier(appSocketClient, proxyAddress, ctx);
+            replier = new Replier(appSocketClient, proxyServer, ctx);
         }
         proxyClient.connectFailed(replier);
         log.error(StringHelper.getExceptionTrace(cause));

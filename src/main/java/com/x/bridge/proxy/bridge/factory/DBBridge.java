@@ -1,4 +1,4 @@
-package com.x.bridge.proxy.bridge.impl.db;
+package com.x.bridge.proxy.bridge.factory;
 
 import com.google.auto.service.AutoService;
 import com.pikachu.common.database.core.IDatabase;
@@ -13,6 +13,7 @@ import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.bridge.core.IReceiver;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.util.ProxyThreadFactory;
+import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -42,13 +43,12 @@ public class DBBridge implements IBridge {
     private ITableInfoGetter<ChannelData> writeGetter;
 
     private ITableInfoGetter<ChannelData> readGetter;
-
-    private TableInfo tableInfo;
     
-    private List<IReceiver> receivers = new ArrayList<>();
+    private final List<IReceiver> receivers;
    
 
-    public DBBridge(IReceiver dataListener) {
+    public DBBridge() {
+        this.receivers = new ArrayList<>();
         try {
             // 创建数据库访问对象管理者
             DatabaseConfig dbConfig = new DatabaseConfig();
@@ -65,33 +65,12 @@ public class DBBridge implements IBridge {
             this.writer = Executors.newSingleThreadExecutor(new ProxyThreadFactory("DB-Writer-"));
             // 数据删除者
             this.deleter = Executors.newSingleThreadExecutor(new ProxyThreadFactory("DB-Deleter-"));
-            this.tableInfo = new PikachuTableInfoGetter<ChannelData>().getTableInfo(ChannelData.class);
             // 写表信息获取器
-            this.writeGetter = new ITableInfoGetter<ChannelData>() {
-                @Override
-                public TableInfo getTableInfo(Class<ChannelData> clazz) {
-                    if (DBBridge.this.config.isOut()) {
-                        tableInfo.setTableName(DBBridge.this.config.getOutWriteInTable());
-                    } else {
-                        tableInfo.setTableName(DBBridge.this.config.getInWriteOutTable());
-                    }
-                    return tableInfo;
-                }
-            };
+            this.writeGetter = tableInfoGetter(true);
             // 读表信息获取器
-            this.readGetter = new ITableInfoGetter<ChannelData>() {
-                @Override
-                public TableInfo getTableInfo(Class<ChannelData> clazz) {
-                    if (DBBridge.this.config.isOut()) {
-                        tableInfo.setTableName(DBBridge.this.config.getInWriteOutTable());
-                    } else {
-                        tableInfo.setTableName(DBBridge.this.config.getOutWriteInTable());
-                    }
-                    return tableInfo;
-                }
-            };
+            this.readGetter = tableInfoGetter(false);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(StringHelper.getExceptionTrace(e));
         }
     }
     
@@ -154,7 +133,6 @@ public class DBBridge implements IBridge {
         daoManager.stop();
         BridgeManager.removeBridge(config.getName());
     }
-    
 
     private void deleteReaded(ChannelData[] datas, DaoManager daoManager, IDao<ChannelData> dao) {
         deleter.execute(new Runnable() {
@@ -187,6 +165,29 @@ public class DBBridge implements IBridge {
             }
         });
 
+    }
+
+    private ITableInfoGetter<ChannelData> tableInfoGetter(boolean write){
+        TableInfo tableInfo = new PikachuTableInfoGetter<ChannelData>().getTableInfo(ChannelData.class);
+        return new ITableInfoGetter<ChannelData>() {
+            @Override
+            public TableInfo getTableInfo(Class<ChannelData> clazz) {
+                if (DBBridge.this.config.isOut()) {
+                    if(write){
+                        tableInfo.setTableName(DBBridge.this.config.getOutWriteInTable());
+                    }else{
+                        tableInfo.setTableName(DBBridge.this.config.getInWriteOutTable());
+                    }
+                } else {
+                    if(write){
+                        tableInfo.setTableName(DBBridge.this.config.getInWriteOutTable());
+                    }else{
+                        tableInfo.setTableName(DBBridge.this.config.getOutWriteInTable());
+                    }
+                }
+                return tableInfo;
+            }
+        };
     }
 
 }

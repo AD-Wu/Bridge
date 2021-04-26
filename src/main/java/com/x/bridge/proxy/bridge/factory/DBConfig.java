@@ -1,4 +1,4 @@
-package com.x.bridge.proxy.bridge.impl.db;
+package com.x.bridge.proxy.bridge.factory;
 
 import com.x.bridge.proxy.data.ProxyConfig;
 import lombok.Data;

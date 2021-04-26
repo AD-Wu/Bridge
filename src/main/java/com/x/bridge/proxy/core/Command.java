@@ -24,15 +24,15 @@ public enum Command {
             // 未建立建立
             if (replier == null) {
                 // 创建socket客户端连接目标服务器
-                String ip = ProxyHelper.getIP(cd.getTargetAddress());
-                int port = ProxyHelper.getPort(cd.getTargetAddress());
+                String ip = ProxyHelper.getIP(cd.getAppSocketServer());
+                int port = ProxyHelper.getPort(cd.getAppSocketServer());
                 SocketClient socket = new SocketClient(
                         new SocketConfig(ip, port),
-                        new ProxyClientListener(appSocket, cd.getProxyAddress(),(ProxyClient) proxy));
+                        new ProxyClientListener(appSocket, cd.getProxyServer(),(ProxyClient) proxy));
                 socket.connect();
             } else {
                 log.info("代理服务器:[{}],连接:[{}]已存在，不再重新建立",
-                        cd.getProxyAddress(), cd.getAppSocketClient());
+                        cd.getProxyServer(), cd.getAppSocketClient());
             }
         }
     },
@@ -50,6 +50,7 @@ public enum Command {
                 synchronized (connectLock) {
                     replier.setConnected(true);
                     replier.setConnectTimeout(false);
+                    replier.setProxyClient(cd.getProxyClient());
                     connectLock.notify();
                 }
             }
@@ -71,7 +72,7 @@ public enum Command {
                     connectLock.notify();
                 }
             }
-            log.info("应用客户端:[{}]与目标服务器:[{}]连接建立失败", cd.getAppSocketClient(), cd.getTargetAddress());
+            log.info("应用客户端:[{}]与目标服务器:[{}]连接建立失败", cd.getAppSocketClient(), cd.getAppSocketServer());
         }
     },
     Disconnect {

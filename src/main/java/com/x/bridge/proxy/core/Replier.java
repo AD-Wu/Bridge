@@ -23,7 +23,11 @@ public final class Replier {
 
     private final String appSocketClient;
 
-    private final String proxyAddress;
+    private final String proxyServer;
+
+    private String proxyClient;
+
+    private String appSocketServer;
 
     private final ChannelHandlerContext ctx;
 
@@ -41,9 +45,9 @@ public final class Replier {
 
     private final Map<Long, byte[]> dataCache;
 
-    public Replier(String appSocketClient, String proxyAddress, ChannelHandlerContext ctx) {
+    public Replier(String appSocketClient, String proxyServer, ChannelHandlerContext ctx) {
         this.appSocketClient = appSocketClient;
-        this.proxyAddress = proxyAddress;
+        this.proxyServer = proxyServer;
         this.ctx = ctx;
         this.channelInfo = ProxyHelper.getChannelInfo(ctx);
         this.recvSeq = new AtomicLong(0);
