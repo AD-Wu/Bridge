@@ -2,16 +2,10 @@ package com.x.bridge.proxy.core;
 
 import com.x.bridge.common.SocketClient;
 import com.x.bridge.common.SocketConfig;
-import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
-import com.x.bridge.proxy.data.ProxyConfig;
-import com.x.bridge.proxy.data.ProxyConfigManager;
 import com.x.bridge.proxy.util.ProxyHelper;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Desc
@@ -20,22 +14,13 @@ import java.util.Map;
  */
 @Log4j2
 public enum Command {
-    ConnectRequest(1) {
+    ConnectRequest {
         @Override
-        public void execute(ChannelData cd) throws Exception {
+        public void execute(Proxy proxy, ChannelData cd) throws Exception {
             // 获取应用客户端地址
             String appSocket = cd.getAppSocketClient();
-            // 获取代理
-            ProxyClient client = ProxyManager.getProxyClient(cd.getProxyName());
-            // 首次请求
-            if (client == null) {
-                ProxyConfig config = ProxyConfigManager.get(cd.getProxyName());
-                client = new ProxyClient(config);
-                client.start();
-                ProxyManager.addProxyClient(cd.getProxyName(), client);
-            }
             // 获取应答者
-            Replier replier = client.getReplier(appSocket);
+            Replier replier = proxy.getReplier(appSocket);
             // 未建立建立
             if (replier == null) {
                 // 创建socket客户端连接目标服务器
@@ -43,23 +28,21 @@ public enum Command {
                 int port = ProxyHelper.getPort(cd.getTargetAddress());
                 SocketClient socket = new SocketClient(
                         new SocketConfig(ip, port),
-                        new ProxyClientListener(appSocket, cd.getProxyAddress(), client));
-                // client.getRunner().execute(socket);
+                        new ProxyClientListener(appSocket, cd.getProxyAddress(),(ProxyClient) proxy));
+                socket.connect();
             } else {
                 log.info("代理服务器:[{}],连接:[{}]已存在，不再重新建立",
                         cd.getProxyAddress(), cd.getAppSocketClient());
             }
         }
     },
-    ConnectSuccess(2) {
+    ConnectSuccess {
         @Override
-        public void execute(ChannelData cd) throws Exception {
+        public void execute(Proxy proxy, ChannelData cd) throws Exception {
             // 获取应用客户端地址
             String appSocket = cd.getAppSocketClient();
-            // 获取代理
-            ProxyServer server = ProxyManager.getProxyServer(cd.getProxyName());
             // 获取应答者
-            Replier replier = server.getReplier(appSocket);
+            Replier replier = proxy.getReplier(appSocket);
             if (replier != null) {
                 // 获取应答者连接建立锁
                 Object connectLock = replier.getConnectLock();
@@ -70,18 +53,15 @@ public enum Command {
                     connectLock.notify();
                 }
             }
-            
         }
     },
-    ConnectFailed(3) {
+    ConnectFailed {
         @Override
-        public void execute(ChannelData cd) throws Exception {
+        public void execute(Proxy proxy, ChannelData cd) throws Exception {
             // 获取应用客户端地址
             String appSocket = cd.getAppSocketClient();
-            // 获取代理
-            ProxyServer server = ProxyManager.getProxyServer(cd.getProxyName());
             // 移除应答者
-            Replier replier = server.removeReplier(appSocket);
+            Replier replier = proxy.removeReplier(appSocket);
             if (replier != null) {
                 // 获取应答者连接建立锁
                 Object connectLock = replier.getConnectLock();
@@ -94,27 +74,12 @@ public enum Command {
             log.info("应用客户端:[{}]与目标服务器:[{}]连接建立失败", cd.getAppSocketClient(), cd.getTargetAddress());
         }
     },
-    Disconnect(4) {
+    Disconnect {
         @Override
-        public void execute(ChannelData cd) throws Exception {
+        public void execute(Proxy proxy, ChannelData cd) throws Exception {
             // 获取应用客户端地址
             String appSocket = cd.getAppSocketClient();
-            
-            // 获取代理
-            Proxy proxy = null;
-            String sc = "";
-            switch (MessageType.get(cd.getMessageTypeCode())) {
-                case ServerToClient:
-                    proxy = ProxyManager.getProxyClient(cd.getProxyName());
-                    sc = "客户端";
-                    break;
-                case ClientToServer:
-                    proxy = ProxyManager.getProxyServer(cd.getProxyName());
-                    sc = "服务端";
-                    break;
-                default:
-                    throw new RuntimeException("消息类型错误，当前消息类型代码:" + cd.getMessageTypeCode());
-            }
+            String sc = cd.getMessageType() == MessageType.ServerToClient ? "客户端" : "服务端";
             // 移除应答者
             Replier replier = proxy.removeReplier(appSocket);
             // 关闭通道
@@ -128,22 +93,11 @@ public enum Command {
             }
         }
     },
-    SendData(5) {
+    SendData {
         @Override
-        public void execute(ChannelData cd) {
+        public void execute(Proxy proxy, ChannelData cd) {
             // 获取应用客户端地址
             String appSocket = cd.getAppSocketClient();
-            // 获取消息类型
-            int messageType = cd.getMessageTypeCode();
-            // 获取代理
-            Proxy proxy = null;
-            if (MessageType.ClientToServer.getCode() == messageType) {
-                proxy = ProxyManager.getProxyServer(cd.getProxyName());
-            } else if (MessageType.ServerToClient.getCode() == messageType) {
-                proxy = ProxyManager.getProxyClient(cd.getProxyName());
-            } else {
-                throw new RuntimeException("消息类型错误，当前消息类型代码:" + messageType);
-            }
             // 获取应答者
             Replier replier = proxy.getReplier(appSocket);
             if (replier != null) {
@@ -152,33 +106,13 @@ public enum Command {
             }
         }
     },
-    Heartbeat(6) {
+    Heartbeat {
         @Override
-        public void execute(ChannelData cd) throws Exception {
+        public void execute(Proxy proxy, ChannelData cd) throws Exception {
             log.info("收到心跳:{}", cd.toString());
         }
     };
-    private static final Map<Integer, Command> COMMANDS = new HashMap<>();
     
-    public static Command get(int cmd) {
-        return COMMANDS.get(cmd);
-    }
+    public abstract void execute(Proxy proxy, ChannelData cd) throws Exception;
     
-    private final int code;
-    
-    private Command(int code) {
-        this.code = code;
-    }
-    
-    public int getCode() {
-        return code;
-    }
-    
-    public abstract void execute(ChannelData cd) throws Exception;
-    
-    static {
-        for (Command command : values()) {
-            COMMANDS.put(command.getCode(), command);
-        }
-    }
 }

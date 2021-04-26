@@ -18,6 +18,12 @@ import java.net.UnknownHostException;
  */
 public final class ProxyHelper {
     
+    // ------------------------ 变量定义 ------------------------
+    // ------------------------ 构造方法 ------------------------
+    // ------------------------ 方法定义 ------------------------
+    // ------------------------ 私有方法 ------------------------
+    public ProxyHelper() {}
+    
     public static ChannelInfo getChannelInfo(ChannelHandlerContext ctx) {
         String remoteAddress = ctx.channel().remoteAddress().toString().substring(1);
         String localAddress = ctx.channel().localAddress().toString().substring(1);
@@ -60,11 +66,12 @@ public final class ProxyHelper {
         return ArrayHelper.EMPTY_BYTE;
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         ByteBuf buf = Unpooled.buffer();
         buf.writeBytes(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20});
         String hex = ByteBufUtil.hexDump(buf);
         System.out.println(hex);
     }
+    
     
 }

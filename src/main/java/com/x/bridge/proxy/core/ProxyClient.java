@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 public class ProxyClient extends Proxy {
     
     public ProxyClient(ProxyConfig config) {
-        super(config, false);
+        super(config, false,null);
     }
     
     public void connectSuccess(Replier replier) {
@@ -26,12 +26,12 @@ public class ProxyClient extends Proxy {
         cd.setSeq(replier.getRecvSeq());
         cd.setProxyAddress(replier.getChannelInfo().getLocalAddress());
         cd.setTargetAddress(replier.getChannelInfo().getRemoteAddress());
-        cd.setCommandCode(Command.ConnectSuccess.getCode());
-        cd.setMessageTypeCode(MessageType.ClientToServer.getCode());
+        cd.setCommand(Command.ConnectSuccess);
+        cd.setMessageType(MessageType.ClientToServer);
         cd.setData(ArrayHelper.EMPTY_BYTE);
         
         try {
-            bridge.send(cd);
+            sender.send(cd);
         } catch (Exception e) {
             log.error(StringHelper.getExceptionTrace(e));
         }
@@ -44,11 +44,11 @@ public class ProxyClient extends Proxy {
         cd.setSeq(replier.getRecvSeq());
         cd.setProxyAddress(replier.getChannelInfo().getLocalAddress());
         cd.setTargetAddress(replier.getChannelInfo().getRemoteAddress());
-        cd.setMessageTypeCode(MessageType.ClientToServer.getCode());
-        cd.setCommandCode(Command.ConnectFailed.getCode());
+        cd.setMessageType(MessageType.ClientToServer);
+        cd.setCommand(Command.ConnectFailed);
         cd.setData(ArrayHelper.EMPTY_BYTE);
         try {
-            bridge.send(cd);
+            sender.send(cd);
         } catch (Exception e) {
             log.error(StringHelper.getExceptionTrace(e));
         }
@@ -56,12 +56,12 @@ public class ProxyClient extends Proxy {
     
     @Override
     public void start() throws Exception {
-    
+        sender.start();
     }
     
     @Override
     public void stop() throws Exception {
-    
+        sender.stop();
     }
     
 }

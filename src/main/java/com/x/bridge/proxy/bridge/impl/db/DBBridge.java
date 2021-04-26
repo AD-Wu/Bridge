@@ -8,9 +8,9 @@ import com.pikachu.framework.database.core.DatabaseConfig;
 import com.pikachu.framework.database.core.ITableInfoGetter;
 import com.pikachu.framework.database.core.PikachuTableInfoGetter;
 import com.pikachu.framework.database.core.TableInfo;
-import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.bridge.core.BridgeManager;
 import com.x.bridge.proxy.bridge.core.IBridge;
+import com.x.bridge.proxy.bridge.core.IReceiver;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.util.ProxyThreadFactory;
 import lombok.extern.log4j.Log4j2;
@@ -44,8 +44,11 @@ public class DBBridge implements IBridge {
     private ITableInfoGetter<ChannelData> readGetter;
 
     private TableInfo tableInfo;
+    
+    private List<IReceiver> receivers = new ArrayList<>();
+   
 
-    public DBBridge() {
+    public DBBridge(IReceiver dataListener) {
         try {
             // 创建数据库访问对象管理者
             DatabaseConfig dbConfig = new DatabaseConfig();
@@ -91,7 +94,12 @@ public class DBBridge implements IBridge {
             e.printStackTrace();
         }
     }
-
+    
+    @Override
+    public String name() {
+        return "DB";
+    }
+    
     @Override
     public void start() throws Exception {
         reader.execute(new Runnable() {
@@ -107,8 +115,8 @@ public class DBBridge implements IBridge {
                             // 异步删除已读数据
                             deleteReaded(datas, daoManager, dao);
                             // 回调读到的数据
-                            for (ChannelData data : datas) {
-                                ProxyManager.receiveData(data);
+                            for (IReceiver receiver : receivers) {
+                                receiver.receive(datas);
                             }
                         }
                     } catch (Exception e) {
@@ -122,6 +130,7 @@ public class DBBridge implements IBridge {
     @Override
     public void send(ChannelData data) throws Exception {
         IDao<ChannelData> dao = daoManager.getDao(ChannelData.class, writeGetter);
+        // dao.add(data);
         writer.execute(new Runnable() {
             @Override
             public void run() {
@@ -133,18 +142,19 @@ public class DBBridge implements IBridge {
             }
         });
     }
-
+    
+    @Override
+    public void addReceiver(IReceiver receiver) {
+        receivers.add(receiver);
+    }
+    
     @Override
     public void stop() throws Exception {
         reader.shutdown();
         daoManager.stop();
         BridgeManager.removeBridge(config.getName());
     }
-
-    @Override
-    public String name() {
-        return "DB";
-    }
+    
 
     private void deleteReaded(ChannelData[] datas, DaoManager daoManager, IDao<ChannelData> dao) {
         deleter.execute(new Runnable() {

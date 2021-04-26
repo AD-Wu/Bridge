@@ -5,6 +5,7 @@ import com.pikachu.common.annotations.ITable;
 import com.x.bridge.proxy.core.Command;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.StringJoiner;
 
 /**
@@ -31,12 +32,12 @@ public class ChannelData implements Serializable {
      * 对应枚举类
      * {@link Command}
      */
-    protected int commandCode;
+    protected Command command;
     /**
      * 对应枚举类
      * {@link MessageType}
      */
-    protected int messageTypeCode;
+    protected MessageType messageType;
 
     protected byte[] data;
     
@@ -80,20 +81,20 @@ public class ChannelData implements Serializable {
         this.targetAddress = targetAddress;
     }
     
-    public int getCommandCode() {
-        return commandCode;
+    public Command getCommand() {
+        return command;
     }
     
-    public void setCommandCode(int commandCode) {
-        this.commandCode = commandCode;
+    public void setCommand(Command command) {
+        this.command = command;
     }
     
-    public int getMessageTypeCode() {
-        return messageTypeCode;
+    public MessageType getMessageType() {
+        return messageType;
     }
     
-    public void setMessageTypeCode(int messageTypeCode) {
-        this.messageTypeCode = messageTypeCode;
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
     }
     
     public byte[] getData() {
@@ -107,16 +108,15 @@ public class ChannelData implements Serializable {
     @Override
     public String toString() {
         return new StringJoiner(", ", ChannelData.class.getSimpleName() + "[", "]")
-                .add("proxyName='" + proxyName + "'")
                 .add("appSocketClient='" + appSocketClient + "'")
+                .add("seq=" + seq)
+                .add("proxyName='" + proxyName + "'")
                 .add("proxyAddress='" + proxyAddress + "'")
                 .add("targetAddress='" + targetAddress + "'")
-                .add("seq=" + seq)
-                .add("command=" + Command.get(commandCode))
-                .add("messageType=" + MessageType.get(messageTypeCode))
-                .add("dataLength=" + data.length)
+                .add("command=" + command)
+                .add("messageType=" + messageType)
+                .add("data=" + Arrays.toString(data))
                 .toString();
     }
-    
     
 }

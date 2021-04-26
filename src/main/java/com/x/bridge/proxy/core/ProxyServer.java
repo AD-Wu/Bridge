@@ -21,13 +21,14 @@ public class ProxyServer extends Proxy {
     private final SocketServer server;
     
     public ProxyServer(ProxyConfig config) {
-        super(config, true);
+        super(config, true, null);
         int port = ProxyHelper.getPort(config.getProxyAddress());
         this.server = new SocketServer(new SocketConfig(port), new ProxyServerListener(this));
     }
     
     @Override
     public void start() throws Exception {
+        sender.start();
         server.start();
     }
     
@@ -38,6 +39,7 @@ public class ProxyServer extends Proxy {
             replier.close();
         }
         repliers.clear();
+        sender.stop();
     }
     
     public boolean isAccept(String socket) {
@@ -51,13 +53,13 @@ public class ProxyServer extends Proxy {
         cd.setSeq(replier.getRecvSeq());
         cd.setProxyAddress(replier.getChannelInfo().getLocalAddress());
         cd.setTargetAddress(config.getTargetAddress());
-        cd.setMessageTypeCode(MessageType.ServerToClient.getCode());
-        cd.setCommandCode(Command.ConnectRequest.getCode());
+        cd.setMessageType(MessageType.ServerToClient);
+        cd.setCommand(Command.ConnectRequest);
         cd.setData(ArrayHelper.EMPTY_BYTE);
         Object lock = replier.getConnectLock();
         try {
             synchronized (lock) {
-                bridge.send(cd);
+                sender.send(cd);
                 lock.wait(config.getConnectTimeout() * 1000);
             }
             if (replier.isConnectTimeout()) {

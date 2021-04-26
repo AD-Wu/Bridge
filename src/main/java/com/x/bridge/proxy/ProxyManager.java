@@ -2,7 +2,6 @@ package com.x.bridge.proxy;
 
 import com.x.bridge.proxy.core.Command;
 import com.x.bridge.proxy.core.Proxy;
-import com.x.bridge.proxy.core.ProxyClient;
 import com.x.bridge.proxy.core.ProxyServer;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
@@ -85,7 +84,7 @@ public final class ProxyManager {
     }
     
     public static void receiveData(ChannelData cd) {
-        MessageType type = MessageType.get(cd.getMessageTypeCode());
+        MessageType type = cd.getMessageType();
         Proxy proxy = null;
         switch (type) {
             case ClientToServer:
@@ -105,7 +104,7 @@ public final class ProxyManager {
             default:
                 break;
         }
-        if (proxy == null && cd.getCommandCode() != Command.ConnectRequest.getCode()) {
+        if (proxy == null && cd.getCommand() != Command.ConnectRequest) {
             log.error("网关中没有该代理:[{}]，通道数据:{}", cd.getProxyName(), cd);
         }
         
@@ -125,7 +124,7 @@ public final class ProxyManager {
     
     private static void log(ChannelData cd) {
         log.info("网关收到数据 >>> 消息类型:[{}]，指令:[{}]，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，序号:[{}]，数据长度:[{}]",
-                cd.getMessageTypeCode(), cd.getCommandCode(), cd.getAppSocketClient(), cd.getProxyAddress(),
+                cd.getMessageType(), cd.getCommand(), cd.getAppSocketClient(), cd.getProxyAddress(),
                 cd.getTargetAddress(), cd.getSeq(), cd.getData().length);
     }
     

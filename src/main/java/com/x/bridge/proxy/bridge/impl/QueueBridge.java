@@ -3,6 +3,7 @@ package com.x.bridge.proxy.bridge.impl;
 import com.google.auto.service.AutoService;
 import com.x.bridge.proxy.ProxyManager;
 import com.x.bridge.proxy.bridge.core.IBridge;
+import com.x.bridge.proxy.bridge.core.IReceiver;
 import com.x.bridge.proxy.data.ChannelData;
 import com.x.bridge.proxy.data.MessageType;
 import com.x.doraemon.util.StringHelper;
@@ -19,7 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 @Log4j2
 @AutoService(IBridge.class)
-public class QueueBridge implements IBridge{
+public class QueueBridge implements IBridge {
     
     private final LinkedBlockingQueue<ChannelData> serverToClient;
     
@@ -40,7 +41,7 @@ public class QueueBridge implements IBridge{
     
     @Override
     public void send(ChannelData cd) throws Exception {
-        if (MessageType.ServerToClient.getCode() == cd.getMessageTypeCode()) {
+        if (MessageType.ServerToClient == cd.getMessageType()) {
             log(cd);
             serverToClient.add(cd);
         } else {
@@ -48,7 +49,12 @@ public class QueueBridge implements IBridge{
             clientToServer.add(cd);
         }
     }
-
+    
+    @Override
+    public void addReceiver(IReceiver receiver) {
+    
+    }
+    
     @Override
     public void start() throws Exception {
         runner.execute(() -> {
@@ -82,7 +88,7 @@ public class QueueBridge implements IBridge{
 
     private void log(ChannelData cd){
         log.info("队列发送数据 >>> 消息类型:[{}]，指令:[{}]，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}]，数据长度:[{}]",
-                cd.getMessageTypeCode(), cd.getCommandCode(), cd.getAppSocketClient(), cd.getProxyAddress(),
+                cd.getMessageType(), cd.getCommand(), cd.getAppSocketClient(), cd.getProxyAddress(),
                 cd.getTargetAddress(), cd.getSeq(), cd.getData().length);
     }
     
