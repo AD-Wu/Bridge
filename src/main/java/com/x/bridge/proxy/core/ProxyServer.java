@@ -29,17 +29,12 @@ public class ProxyServer extends Proxy {
     @Override
     public void start() throws Exception {
         server.start();
-        sender.start();
     }
     
     @Override
     public void stop() throws Exception {
         server.stop();
-        for (Replier replier : repliers.values()) {
-            replier.close();
-        }
         repliers.clear();
-        sender.stop();
     }
     
     public boolean isAccept(String socket) {

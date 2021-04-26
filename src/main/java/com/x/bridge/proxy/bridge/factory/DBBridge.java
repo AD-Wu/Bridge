@@ -8,7 +8,6 @@ import com.pikachu.framework.database.core.DatabaseConfig;
 import com.pikachu.framework.database.core.ITableInfoGetter;
 import com.pikachu.framework.database.core.PikachuTableInfoGetter;
 import com.pikachu.framework.database.core.TableInfo;
-import com.x.bridge.proxy.bridge.core.BridgeManager;
 import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.bridge.core.IReceiver;
 import com.x.bridge.proxy.data.ChannelData;
@@ -20,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Desc 数据库桥
@@ -34,7 +35,7 @@ public class DBBridge implements IBridge {
 
     private DaoManager daoManager;
 
-    private ExecutorService reader;
+    private ScheduledExecutorService reader;
 
     private ExecutorService writer;
 
@@ -43,9 +44,9 @@ public class DBBridge implements IBridge {
     private ITableInfoGetter<ChannelData> writeGetter;
 
     private ITableInfoGetter<ChannelData> readGetter;
-    
+
     private final List<IReceiver> receivers;
-   
+
 
     public DBBridge() {
         this.receivers = new ArrayList<>();
@@ -60,7 +61,7 @@ public class DBBridge implements IBridge {
 
             this.daoManager = new DaoManager(dbConfig);
             // 创建数据读取器
-            this.reader = Executors.newSingleThreadExecutor(new ProxyThreadFactory("DB-Reader-"));
+            this.reader = Executors.newScheduledThreadPool(1, new ProxyThreadFactory("DB-Reader-"));
             // 数据发送器
             this.writer = Executors.newSingleThreadExecutor(new ProxyThreadFactory("DB-Writer-"));
             // 数据删除者
@@ -73,37 +74,35 @@ public class DBBridge implements IBridge {
             log.error(StringHelper.getExceptionTrace(e));
         }
     }
-    
+
     @Override
     public String name() {
         return "DB";
     }
-    
+
     @Override
     public void start() throws Exception {
-        reader.execute(new Runnable() {
+        reader.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 IDao<ChannelData> dao = daoManager.getDao(ChannelData.class, readGetter);
-                while (true) {
-                    try {
-                        // 读取所有数据
-                        ChannelData[] datas = dao.getList(null, null);
-                        // 判断数据是否有效
-                        if (datas != null && datas.length > 0) {
-                            // 异步删除已读数据
-                            deleteReaded(datas, daoManager, dao);
-                            // 回调读到的数据
-                            for (IReceiver receiver : receivers) {
-                                receiver.receive(datas);
-                            }
+                try {
+                    // 读取所有数据
+                    ChannelData[] datas = dao.getList(null, null);
+                    // 判断数据是否有效
+                    if (datas != null && datas.length > 0) {
+                        // 异步删除已读数据
+                        deleteReaded(datas, daoManager, dao);
+                        // 回调读到的数据
+                        for (IReceiver receiver : receivers) {
+                            receiver.receive(datas);
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        });
+        }, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -121,17 +120,17 @@ public class DBBridge implements IBridge {
             }
         });
     }
-    
+
     @Override
     public void addReceiver(IReceiver receiver) {
         receivers.add(receiver);
     }
-    
+
     @Override
     public void stop() throws Exception {
         reader.shutdown();
         daoManager.stop();
-        BridgeManager.removeBridge(config.getName());
+        receivers.clear();
     }
 
     private void deleteReaded(ChannelData[] datas, DaoManager daoManager, IDao<ChannelData> dao) {
@@ -167,21 +166,21 @@ public class DBBridge implements IBridge {
 
     }
 
-    private ITableInfoGetter<ChannelData> tableInfoGetter(boolean write){
+    private ITableInfoGetter<ChannelData> tableInfoGetter(boolean write) {
         TableInfo tableInfo = new PikachuTableInfoGetter<ChannelData>().getTableInfo(ChannelData.class);
         return new ITableInfoGetter<ChannelData>() {
             @Override
             public TableInfo getTableInfo(Class<ChannelData> clazz) {
                 if (DBBridge.this.config.isOut()) {
-                    if(write){
+                    if (write) {
                         tableInfo.setTableName(DBBridge.this.config.getOutWriteInTable());
-                    }else{
+                    } else {
                         tableInfo.setTableName(DBBridge.this.config.getInWriteOutTable());
                     }
                 } else {
-                    if(write){
+                    if (write) {
                         tableInfo.setTableName(DBBridge.this.config.getInWriteOutTable());
-                    }else{
+                    } else {
                         tableInfo.setTableName(DBBridge.this.config.getOutWriteInTable());
                     }
                 }
