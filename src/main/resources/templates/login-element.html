@@ -10,55 +10,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
+    <!-- import CSS -->
     <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
-    <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="all">
-    <!-- google fonts -->
-    <link rel="stylesheet" href="css/font-google.css" type="text/css" media="all">
+    <!-- import Vue before Element -->
+    <script src="js/vue.js"></script>
+    <link rel="stylesheet" href="css/Element-2.15.1.css">
+    <!-- import JavaScript -->
+    <script src="js/Element-2.15.1.js"></script>
+    <!-- jquery -->
+    <script src="js/jquery-3.5.1.js"></script>
 
 </head>
 
 <body>
 
-<section class="main">
-    <div class="bottom-grid">
-        <div class="logo">
-            <h1><a> Golden Gate Bridge</a></h1>
-        </div>
+<div id="app" class="store-login" v-cloak>
+    <!-- 背景  -->
+    <div class="main">
+        <li v-for="bgimg in bgImages">
+            <img :src="bgimg">
+        </li>
     </div>
-    <div class="content-w3ls">
-        <div class="text-center icon">
-            <span class="fa fa-meetup"></span>
-        </div>
+    <div class="login-s">
+        <!-- 登录表单 -->
+        <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
+            <!-- 用户名 -->
+            <el-form-item prop="username">
+                <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
+            </el-form-item>
+            <!-- 密码 -->
+            <el-form-item prop="password">
+                <el-input type="password" v-model="loginForm.password"
+                          prefix-icon="iconfont icon-3702mima"></el-input>
+            </el-form-item>
+            <!-- 按钮 -->
+            <el-form-item class="btns">
+                <el-button type="primary" @click="login">登录</el-button>
+                <el-button type="info" @click="resetLoginForm">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+<!--  版权信息 -->
+<div class="copyright">
+    <p>© 2021 Golden Gate Bridge. All rights reserved | Design by AD</p>
+</div>
 
-        <div class="content-bottom">
-            <el-form :model="loginForm" class="field-group">
-                <!--  用户名 -->
-                <div class="field-group">
-                    <span class="fa fa-user" aria-hidden="true"></span>
-                    <div class="wthree-field">
-                        <el-input v-model="loginForm.username" placeholder="Username" required></el-input>
-                    </div>
-                </div>
-                <!--  密码-->
-                <div class="field-group">
-                    <span class="fa fa-lock" aria-hidden="true"></span>
-                    <div class="wthree-field">
-                        <el-input name="password" v-model="loginForm.password" placeholder="Password"></el-input>
-                    </div>
-                </div>
-                <!--  登入按钮 -->
-                <div class="wthree-field">
-                    <el-button type="submit" class="btn" @click="login('loginForm')">Sign in</el-button>
-                </div>
-            </el-form>
-        </div>
-    </div>
-    <!--  版权信息 -->
-    <div class="copyright">
-        <p>© 2021 Golden Gate Bridge. All rights reserved | Design by AD</p>
-    </div>
-</section>
-
+<script src="js/Login.js"></script>
 </body>
 
 </html>
