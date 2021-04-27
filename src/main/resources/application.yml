@@ -1,13 +1,24 @@
 server:
   port: 8080
 
-bridge:
-  configs:
-    - name: A
-      bridge: queue
-      proxyAddress: 127.0.0.1:1111
-      targetAddress: 127.0.0.1:7777
-      connectTimeout: 10
+#运行项目后是否打开浏览器
+start:
+  open: true  #是否打开浏览器运行
+  cmd: open -a   #运行命令
+  web:
+    url: http://localhost:8080/login #项目要运行url
+    browser: Google\ Chrome  #运行的浏览器
+
+
+#bridge:
+#  configs:
+#    - name: A
+#      bridge: DB
+#      proxyServer: 127.0.0.1:1111
+#      appServer: 127.0.0.1:7777
+#      connectTimeout: 10
+#      heartbeat: 30
+#      keepAlive: true
 #      ssl:
 #        open: true
 #        needClientAuth: false
@@ -21,19 +32,4 @@ bridge:
 #        - 127.0.0.3
 
 
-#    - name: B
-#      bridge: queue
-#      proxyAddress: 127.0.0.1:3333
-#      targetAddress: 127.0.0.1:7777
-#      connectTimeout: 10
-#      allowClients:
-#        - 127.0.0.4
-#        - 127.0.0.5
-spring:
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306?ad
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
 
