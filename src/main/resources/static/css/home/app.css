@@ -89,5 +89,6 @@ h1 {
   display: block;
 }
 #leftNavigation > li.active {
-  background-color: #427c97;
+  /*background-color: #427c97;*/
+  background-color: rgba(40, 60, 81, 0.79);
 }
