@@ -2,9 +2,10 @@ package com.x.bridge.proxy.core;
 
 import com.x.bridge.common.SocketClient;
 import com.x.bridge.common.SocketConfig;
-import com.x.bridge.proxy.data.ChannelData;
-import com.x.bridge.proxy.data.MessageType;
-import com.x.bridge.proxy.util.ProxyHelper;
+import com.x.bridge.proxy.client.ProxyClient;
+import com.x.bridge.proxy.client.ProxyClientListener;
+import com.x.bridge.data.ChannelData;
+import com.x.bridge.util.ProxyHelper;
 import lombok.extern.log4j.Log4j2;
 
 /**

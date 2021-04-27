@@ -1,6 +1,5 @@
-package com.x.bridge.proxy.bridge.factory;
+package com.x.bridge.data;
 
-import com.x.bridge.proxy.data.ProxyConfig;
 import lombok.Data;
 
 /**
@@ -10,8 +9,7 @@ import lombok.Data;
  */
 @Data
 public class DBConfig extends ProxyConfig {
-
-
+    
     private String url;
 
     private String driver;

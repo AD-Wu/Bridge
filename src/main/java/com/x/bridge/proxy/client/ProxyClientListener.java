@@ -1,9 +1,10 @@
-package com.x.bridge.proxy.core;
+package com.x.bridge.proxy.client;
 
 import com.x.bridge.common.ISocketListener;
-import com.x.bridge.proxy.data.ChannelInfo;
-import com.x.bridge.proxy.data.MessageType;
-import com.x.bridge.proxy.util.ProxyHelper;
+import com.x.bridge.proxy.core.Replier;
+import com.x.bridge.data.ChannelInfo;
+import com.x.bridge.proxy.core.MessageType;
+import com.x.bridge.util.ProxyHelper;
 import com.x.doraemon.util.StringHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

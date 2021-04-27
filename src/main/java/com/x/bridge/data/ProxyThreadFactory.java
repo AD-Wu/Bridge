@@ -1,4 +1,4 @@
-package com.x.bridge.proxy.util;
+package com.x.bridge.data;
 
 import java.util.concurrent.ThreadFactory;
 

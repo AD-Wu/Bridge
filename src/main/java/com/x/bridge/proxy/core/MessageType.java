@@ -1,4 +1,4 @@
-package com.x.bridge.proxy.data;
+package com.x.bridge.proxy.core;
 
 /**
  * @Desc TODO

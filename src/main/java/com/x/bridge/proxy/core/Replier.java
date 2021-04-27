@@ -1,7 +1,7 @@
 package com.x.bridge.proxy.core;
 
-import com.x.bridge.proxy.data.ChannelInfo;
-import com.x.bridge.proxy.util.ProxyHelper;
+import com.x.bridge.data.ChannelInfo;
+import com.x.bridge.util.ProxyHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;

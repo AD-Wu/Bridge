@@ -1,10 +1,9 @@
 package com.x.bridge.proxy.core;
 
+import com.x.bridge.data.ChannelData;
+import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.bridge.core.IReceiver;
-import com.x.bridge.proxy.data.ChannelData;
-import com.x.bridge.proxy.data.MessageType;
-import com.x.bridge.proxy.data.ProxyConfig;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.StringHelper;
 import org.apache.logging.log4j.LogManager;
@@ -52,7 +51,6 @@ public abstract class Proxy implements IReceiver {
     }
 
     public void disconnect(Replier replier, MessageType type) {
-
         ChannelData cd = ChannelData.generate(config.getName(), replier, type);
         cd.setCommand(Command.Disconnect);
         cd.setData(ArrayHelper.EMPTY_BYTE);

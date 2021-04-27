@@ -1,6 +1,6 @@
 package com.x.bridge.proxy.bridge.core;
 
-import com.x.bridge.proxy.data.ChannelData;
+import com.x.bridge.data.ChannelData;
 
 /**
  * @Desc TODO

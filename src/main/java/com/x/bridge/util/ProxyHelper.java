@@ -1,6 +1,6 @@
-package com.x.bridge.proxy.util;
+package com.x.bridge.util;
 
-import com.x.bridge.proxy.data.ChannelInfo;
+import com.x.bridge.data.ChannelInfo;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.StringHelper;
 import io.netty.buffer.ByteBuf;
@@ -17,12 +17,6 @@ import java.net.UnknownHostException;
  * @Author AD
  */
 public final class ProxyHelper {
-    
-    // ------------------------ 变量定义 ------------------------
-    // ------------------------ 构造方法 ------------------------
-    // ------------------------ 方法定义 ------------------------
-    // ------------------------ 私有方法 ------------------------
-    public ProxyHelper() {}
     
     public static ChannelInfo getChannelInfo(ChannelHandlerContext ctx) {
         String remoteAddress = ctx.channel().remoteAddress().toString().substring(1);

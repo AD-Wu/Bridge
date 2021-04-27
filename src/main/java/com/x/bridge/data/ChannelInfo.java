@@ -1,11 +1,11 @@
-package com.x.bridge.proxy.data;
+package com.x.bridge.data;
 
 import lombok.Getter;
 
 import java.util.StringJoiner;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020/10/21 23:28
  * @Author AD
  */

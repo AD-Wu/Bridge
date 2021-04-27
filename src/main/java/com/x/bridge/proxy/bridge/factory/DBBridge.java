@@ -8,10 +8,11 @@ import com.pikachu.framework.database.core.DatabaseConfig;
 import com.pikachu.framework.database.core.ITableInfoGetter;
 import com.pikachu.framework.database.core.PikachuTableInfoGetter;
 import com.pikachu.framework.database.core.TableInfo;
+import com.x.bridge.data.DBConfig;
 import com.x.bridge.proxy.bridge.core.IBridge;
 import com.x.bridge.proxy.bridge.core.IReceiver;
-import com.x.bridge.proxy.data.ChannelData;
-import com.x.bridge.proxy.util.ProxyThreadFactory;
+import com.x.bridge.data.ChannelData;
+import com.x.bridge.data.ProxyThreadFactory;
 import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
@@ -46,20 +47,11 @@ public class DBBridge implements IBridge {
     private ITableInfoGetter<ChannelData> readGetter;
 
     private final List<IReceiver> receivers;
-
-
-    public DBBridge() {
+    
+    public DBBridge(DatabaseConfig config) {
         this.receivers = new ArrayList<>();
         try {
-            // 创建数据库访问对象管理者
-            DatabaseConfig dbConfig = new DatabaseConfig();
-            dbConfig.setName(config.getName());
-            dbConfig.setUrl(config.getUrl());
-            dbConfig.setDriver(config.getDriver());
-            dbConfig.setUser(config.getUser());
-            dbConfig.setPassword(config.getPassword());
-
-            this.daoManager = new DaoManager(dbConfig);
+            this.daoManager = new DaoManager(config);
             // 创建数据读取器
             this.reader = Executors.newScheduledThreadPool(1, new ProxyThreadFactory("DB-Reader-"));
             // 数据发送器

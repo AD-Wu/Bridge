@@ -1,9 +1,10 @@
-package com.x.bridge.proxy.data;
+package com.x.bridge.data;
 
 import com.pikachu.common.annotations.IColumn;
 import com.pikachu.common.annotations.ITable;
 import com.x.bridge.proxy.core.Command;
 import com.x.bridge.proxy.core.Replier;
+import com.x.bridge.proxy.core.MessageType;
 
 import java.io.Serializable;
 import java.util.Arrays;

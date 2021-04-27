@@ -1,11 +1,14 @@
-package com.x.bridge.proxy.core;
+package com.x.bridge.proxy.server;
 
 import com.x.bridge.common.SocketConfig;
 import com.x.bridge.common.SocketServer;
-import com.x.bridge.proxy.data.ChannelData;
-import com.x.bridge.proxy.data.MessageType;
-import com.x.bridge.proxy.data.ProxyConfig;
-import com.x.bridge.proxy.util.ProxyHelper;
+import com.x.bridge.proxy.core.Command;
+import com.x.bridge.proxy.core.Proxy;
+import com.x.bridge.proxy.core.Replier;
+import com.x.bridge.data.ChannelData;
+import com.x.bridge.proxy.core.MessageType;
+import com.x.bridge.data.ProxyConfig;
+import com.x.bridge.util.ProxyHelper;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;

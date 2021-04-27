@@ -1,14 +1,12 @@
 package com.x.bridge.proxy;
 
-import com.x.bridge.proxy.core.ProxyClient;
-import com.x.bridge.proxy.core.ProxyServer;
-import com.x.bridge.proxy.data.ChannelData;
-import com.x.bridge.proxy.data.ProxyConfig;
-import com.x.bridge.proxy.data.ProxyConfigManager;
+import com.x.bridge.data.ChannelData;
+import com.x.bridge.data.ProxyConfig;
+import com.x.bridge.data.ProxyConfigManager;
+import com.x.bridge.proxy.client.ProxyClient;
+import com.x.bridge.proxy.server.ProxyServer;
 import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author AD
  */
 @Log4j2
-@Component
+// @Component
 public final class ProxyManager {
     
     private static Map<String, ProxyServer> servers = new ConcurrentHashMap<>();
@@ -27,9 +25,6 @@ public final class ProxyManager {
     
     private ProxyManager() {
     }
-    
-    @Autowired
-    private ProxyConfigManager configs;
     
     // web调用
     public static void startProxyServer(String proxyName) throws Exception {
@@ -79,19 +74,6 @@ public final class ProxyManager {
         if (client != null) {
             client.stop();
         }
-    }
-
-    
-    public static ProxyServer getProxyServer(String proxyName) {
-        return servers.get(proxyName);
-    }
-    
-    public static ProxyClient getProxyClient(String proxyName) {
-        return clients.get(proxyName);
-    }
-    
-    public static void addProxyClient(String proxyName, ProxyClient client) {
-        clients.put(proxyName, client);
     }
     
     private static void log(ChannelData cd) {

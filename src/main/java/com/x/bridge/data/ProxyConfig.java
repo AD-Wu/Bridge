@@ -1,8 +1,7 @@
-package com.x.bridge.proxy.data;
+package com.x.bridge.data;
 
 import com.x.doraemon.util.ArrayHelper;
 import lombok.Data;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.Set;
 
@@ -12,15 +11,15 @@ import java.util.Set;
  * @Author AD
  */
 @Data
-@Configuration
+// @Configuration
 public class ProxyConfig {
     
-    protected String name;
-    protected String bridge;
-    protected String proxyServer;
-    protected String appSocketServer;
-    protected Set<String> allowClients;
-    protected int connectTimeout;// 超时时间，单位:秒
+    public String name;
+    public String bridge;
+    public String proxyServer;
+    public String appSocketServer;
+    public Set<String> allowClients;
+    public int connectTimeout;// 超时时间，单位:秒
     
     public boolean isAllowClient(String remoteIP){
         if(ArrayHelper.isEmpty(allowClients)){
