@@ -6,7 +6,7 @@ start:
   open: true  #是否打开浏览器运行
   cmd: open -a   #运行命令
   web:
-    url: http://localhost:8080/login #项目要运行url
+    url: http://localhost:8080 #项目要运行url
     browser: Google\ Chrome  #运行的浏览器
 
 
