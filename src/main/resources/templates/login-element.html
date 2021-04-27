@@ -31,48 +31,26 @@
         </div>
 
         <div class="content-bottom">
-            <form action="#" method="post">
+            <el-form :model="loginForm" class="field-group">
                 <!--  用户名 -->
                 <div class="field-group">
                     <span class="fa fa-user" aria-hidden="true"></span>
                     <div class="wthree-field">
-                        <input name="username" id="username" type="text" value="" placeholder="Username" required>
+                        <el-input v-model="loginForm.username" placeholder="Username" required></el-input>
                     </div>
                 </div>
                 <!--  密码-->
                 <div class="field-group">
                     <span class="fa fa-lock" aria-hidden="true"></span>
                     <div class="wthree-field">
-                        <input name="password" id="password" type="Password" placeholder="Password">
+                        <el-input name="password" v-model="loginForm.password" placeholder="Password"></el-input>
                     </div>
                 </div>
                 <!--  登入按钮 -->
                 <div class="wthree-field">
-                    <button type="submit" class="btn">Sign in</button>
+                    <el-button type="submit" class="btn" @click="login('loginForm')">Sign in</el-button>
                 </div>
-                <!--                    <ul class="list-login">-->
-                <!--                        <li class="switch-agileits">-->
-                <!--                            <label class="switch">-->
-                <!--                                <input type="checkbox">-->
-                <!--                                <span class="slider round"></span>-->
-                <!--                                keep Logged in-->
-                <!--                            </label>-->
-                <!--                        </li>-->
-                <!--                        <li>-->
-                <!--                            <a href="#" class="text-right">forgot password?</a>-->
-                <!--                        </li>-->
-                <!--                        <li class="clearfix"></li>-->
-                <!--                    </ul>-->
-                <!--                    <ul class="list-login-bottom">-->
-                <!--                        <li class="">-->
-                <!--                            <a href="#url" class="">Create Account</a>-->
-                <!--                        </li>-->
-                <!--                        <li class="">-->
-                <!--                            <a href="#url" class="text-right">Need Help?</a>-->
-                <!--                        </li>-->
-                <!--                        <li class="clearfix"></li>-->
-                <!--                    </ul>-->
-            </form>
+            </el-form>
         </div>
     </div>
     <!--  版权信息 -->
