@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+
+    <title>Sunday</title>
+
+    <!-- Meta-Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="login/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="login/css/font-awesome.min.css" type="text/css" media="all">
+    <!-- google fonts -->
+    <link rel="stylesheet" href="common/css/font-google.css" type="text/css" media="all">
+    <script src="common/js/EventHelper.js"></script>
+    <script src="login/js/Login.js"></script>
+</head>
+
+<body>
+
+<section class="main">
+    <div class="bottom-grid">
+        <div class="logo">
+            <h1><a id="title">Golden Gate Bridge</a></h1>
+        </div>
+    </div>
+    <div class="content-w3ls">
+        <div class="text-center icon">
+            <span class="fa fa-meetup"></span>
+        </div>
+
+        <div class="content-bottom">
+            <form action="/login" method="post" onsubmit="return canLogin()">
+                <!--  用户名 -->
+                <div class="field-group">
+                    <span class="fa fa-user" aria-hidden="true"></span>
+                    <div class="wthree-field">
+                        <input id="user" type="text" autocomplete="off" placeholder="user" oninput="checkUser()">
+                    </div>
+                </div>
+                <!--  密码-->
+                <div class="field-group">
+                    <span class="fa fa-lock" aria-hidden="true"></span>
+                    <div class="wthree-field">
+                        <input id="pwd" type="password" placeholder="pwd">
+                    </div>
+                </div>
+                <!--  登入按钮 -->
+                <div class="wthree-field">
+                    <button id="loginButton" class="btn" disabled="true" onclick="canLogin()">Enter user</button>
+                </div>
+                <!--<ul class="list-login">-->
+                <!--    <li class="switch-agileits">-->
+                <!--        <label class="switch">-->
+                <!--            <input type="checkbox">-->
+                <!--            <span class="slider round"></span>-->
+                <!--            keep Logged in-->
+                <!--        </label>-->
+                <!--    </li>-->
+                <!--    <li>-->
+                <!--        <a href="#" class="text-right">forgot pwd?</a>-->
+                <!--    </li>-->
+                <!--    <li class="clearfix"></li>-->
+                <!--</ul>-->
+                <!--<ul class="list-login-bottom">-->
+                <!--    <li class="">-->
+                <!--        <a href="#url" class="">Create Account</a>-->
+                <!--    </li>-->
+                <!--    <li class="">-->
+                <!--        <a href="#url" class="text-right">Need Help?</a>-->
+                <!--    </li>-->
+                <!--    <li class="clearfix"></li>-->
+                <!--</ul>-->
+            </form>
+        </div>
+    </div>
+    <!--  版权信息 -->
+    <div class="copyright">
+        <p id="copyright">© 2021 Golden Gate Bridge. All rights reserved | Design by AD</p>
+    </div>
+</section>
+
+
+</body>
+</html>
