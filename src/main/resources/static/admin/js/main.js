@@ -1,22 +1,22 @@
 layui.use(['layer', 'form', 'element', 'jquery', 'dialog'], function() {
-	var layer = layui.layer;
-	var element = layui.element();
-	var form = layui.form();
-	var $ = layui.jquery;
-	var dialog = layui.dialog;
-	var hideBtn = $('#hideBtn');
-	var mainLayout = $('#main-layout');
-	var mainMask = $('.main-mask');
+	let layer = layui.layer;
+	let element = layui.element();
+	let form = layui.form();
+	let $ = layui.jquery;
+	let dialog = layui.dialog;
+	let hideBtn = $('#hideBtn');
+	let mainLayout = $('#main-layout');
+	let mainMask = $('.main-mask');
 	//监听导航点击
 	element.on('nav(leftNav)', function(elem) {
-		var navA = $(elem).find('a');
-		var id = navA.attr('data-id');
-		var url = navA.attr('data-url');
-		var text = navA.attr('data-text');
+		let navA = $(elem).find('a');
+		let id = navA.attr('data-id');
+		let url = navA.attr('data-url');
+		let text = navA.attr('data-text');
 		if(!url){
 			return;
 		}
-		var isActive = $('.main-layout-tab .layui-tab-title').find("li[lay-id=" + id + "]");
+		let isActive = $('.main-layout-tab .layui-tab-title').find("li[lay-id=" + id + "]");
 		if(isActive.length > 0) {
 			//切换到选项卡
 			element.tabChange('tab', id);
@@ -33,14 +33,14 @@ layui.use(['layer', 'form', 'element', 'jquery', 'dialog'], function() {
 	});
 	//监听导航点击
 	element.on('nav(rightNav)', function(elem) {
-		var navA = $(elem).find('a');
-		var id = navA.attr('data-id');
-		var url = navA.attr('data-url');
-		var text = navA.attr('data-text');
+		let navA = $(elem).find('a');
+		let id = navA.attr('data-id');
+		let url = navA.attr('data-url');
+		let text = navA.attr('data-text');
 		if(!url){
 			return;
 		}
-		var isActive = $('.main-layout-tab .layui-tab-title').find("li[lay-id=" + id + "]");
+		let isActive = $('.main-layout-tab .layui-tab-title').find("li[lay-id=" + id + "]");
 		if(isActive.length > 0) {
 			//切换到选项卡
 			element.tabChange('tab', id);
@@ -82,7 +82,7 @@ layui.use(['layer', 'form', 'element', 'jquery', 'dialog'], function() {
 //		  ,moveType: 1 //拖拽模式，0或者1
 //		  ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">后台模版1.1版本今日更新：<br><br><br>数据列表页...<br><br>编辑删除弹出功能<br><br>失去焦点排序功能<br>数据列表页<br>数据列表页<br>数据列表页</div>'
 //		  ,success: function(layero){
-//		    var btn = layero.find('.layui-layer-btn');
+//		    let btn = layero.find('.layui-layer-btn');
 //		    btn.find('.layui-layer-btn0').attr({
 //		      href: 'http://www.layui.com/'
 //		      ,target: '_blank'
