@@ -5,11 +5,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020/10/21 19:40
  * @Author AD
  */
-public interface ISocketListener {
+public interface ISocketListener{
     
     void active(ChannelHandlerContext ctx) throws Exception;
     

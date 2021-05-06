@@ -1,11 +1,12 @@
 package com.x.bridge.proxy.client;
 
+import com.x.bridge.common.ISender;
+import com.x.bridge.data.ChannelData;
+import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.proxy.core.Command;
+import com.x.bridge.proxy.core.MessageType;
 import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.core.Replier;
-import com.x.bridge.data.ChannelData;
-import com.x.bridge.proxy.core.MessageType;
-import com.x.bridge.data.ProxyConfig;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
@@ -18,8 +19,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ProxyClient extends Proxy {
     
-    public ProxyClient(ProxyConfig config) {
-        super(config, false,null);
+    public ProxyClient(ProxyConfig config, ISender<ChannelData> sender) {
+        super(config, sender);
     }
     
     public void connectSuccess(Replier replier) {
@@ -45,13 +46,16 @@ public class ProxyClient extends Proxy {
     }
     
     @Override
+    public String name() {
+        return config.getName();
+    }
+    
+    @Override
     public void start() throws Exception {
-        sender.start();
     }
     
     @Override
     public void stop() throws Exception {
-        sender.stop();
     }
     
 }

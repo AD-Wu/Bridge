@@ -1,13 +1,14 @@
 package com.x.bridge.proxy.server;
 
+import com.x.bridge.common.ISender;
 import com.x.bridge.common.SocketConfig;
 import com.x.bridge.common.SocketServer;
+import com.x.bridge.data.ChannelData;
+import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.proxy.core.Command;
+import com.x.bridge.proxy.core.MessageType;
 import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.core.Replier;
-import com.x.bridge.data.ChannelData;
-import com.x.bridge.proxy.core.MessageType;
-import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.util.ProxyHelper;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.StringHelper;
@@ -23,10 +24,16 @@ public class ProxyServer extends Proxy {
     
     private final SocketServer server;
     
-    public ProxyServer(ProxyConfig config) {
-        super(config, true, null);
+    public ProxyServer(ProxyConfig config, ISender<ChannelData> sender) {
+        super(config, sender);
         int port = ProxyHelper.getPort(config.getProxyServer());
-        this.server = new SocketServer(new SocketConfig(port), new ProxyServerListener(this));
+        ProxyServerListener listener = new ProxyServerListener(this);
+        this.server = new SocketServer(config.getName(), new SocketConfig(port), listener);
+    }
+    
+    @Override
+    public String name() {
+        return config.getName();
     }
     
     @Override
@@ -41,7 +48,7 @@ public class ProxyServer extends Proxy {
     }
     
     public boolean isAccept(String socket) {
-        return config.isAllowClient(socket);
+        return config.getAllowClients().contains(socket);
     }
     
     public boolean connectRequest(Replier replier) {

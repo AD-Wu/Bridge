@@ -12,29 +12,33 @@ import lombok.extern.log4j.Log4j2;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020/10/21 20:53
  * @Author AD
  */
 @Log4j2
-public class SocketClient {
-
+public class SocketClient implements IService {
+    
     private volatile boolean connected;
-
     private Channel channel;
-
     private NioEventLoopGroup worker;
-
+    private final String name;
     private final SocketConfig config;
-
     private final ISocketListener listener;
-
-    public SocketClient(SocketConfig config, ISocketListener listener) {
+    
+    public SocketClient(String name, SocketConfig config, ISocketListener listener) {
+        this.name = name;
         this.config = config;
         this.listener = listener;
     }
-
-    public synchronized void connect() {
+    
+    @Override
+    public String name() {
+        return this.name;
+    }
+    
+    @Override
+    public synchronized void start() {
         if (connected) {
             return;
         }
@@ -43,7 +47,7 @@ public class SocketClient {
         boot.group(worker);
         boot.channel(NioSocketChannel.class);
         boot.option(ChannelOption.SO_KEEPALIVE, true);
-
+        
         boot.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel channel) throws Exception {
@@ -59,17 +63,19 @@ public class SocketClient {
                 p.addLast(new SocketHandler(listener));
             }
         });
-
+        
         try {
             ChannelFuture future = boot.connect(config.getIp(), config.getPort()).sync();
             channel = future.channel();
             connected = true;
         } catch (InterruptedException e) {
             log.error(StringHelper.getExceptionTrace(e));
+            connected = false;
         }
     }
-
-    public synchronized void disconnect() {
+    
+    @Override
+    public synchronized void stop() {
         if (channel != null) {
             channel.close();
         }
@@ -78,5 +84,5 @@ public class SocketClient {
         }
         connected = false;
     }
-
+    
 }

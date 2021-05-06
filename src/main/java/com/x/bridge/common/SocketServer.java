@@ -12,31 +12,34 @@ import lombok.extern.log4j.Log4j2;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2020/10/21 18:53
  * @Author AD
  */
 @Log4j2
-public class SocketServer {
-
+public class SocketServer implements IService {
+    
     private volatile boolean started = false;
-
     private Channel channel;
-
     private EventLoopGroup boss;
-
     private EventLoopGroup worker;
-
+    private final String name;
     private final SocketConfig config;
-
-    private final IServerListener listener;
-
-    public SocketServer(SocketConfig config, IServerListener listener) {
+    private final ISocketListener socketListener;
+    
+    public SocketServer(String name, SocketConfig config, ISocketListener socketListener) {
+        this.name = name;
         this.config = config;
-        this.listener = listener;
+        this.socketListener = socketListener;
     }
-
-    public synchronized void start() {
+    
+    @Override
+    public String name() {
+        return this.name;
+    }
+    
+    @Override
+    public synchronized void start() throws Exception{
         if (started) {
             return;
         }
@@ -46,7 +49,7 @@ public class SocketServer {
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_BACKLOG, config.getBacklog())
                 .option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(config.getRecvBuf()));
-
+        
         boot.childHandler(new ChannelInitializer<NioSocketChannel>() {
             @Override
             protected void initChannel(NioSocketChannel channel) throws Exception {
@@ -59,7 +62,7 @@ public class SocketServer {
                         TimeUnit.MINUTES
                 ));
                 // 设置通道监听器
-                p.addLast(new SocketHandler(listener));
+                p.addLast(new SocketHandler(socketListener));
             }
         });
         // 创建线程池
@@ -70,16 +73,15 @@ public class SocketServer {
             ChannelFuture future = boot.bind(config.getPort()).sync();
             channel = future.channel();
             started = true;
-            listener.onServerStart(config);
         } catch (Exception e) {
             started = false;
             log.error(StringHelper.getExceptionTrace(e));
-            listener.onServerStartError(e);
-            stop();
+            throw e;
         }
     }
-
-    public synchronized void stop() {
+    
+    @Override
+    public synchronized void stop()throws Exception {
         if (channel != null) {
             channel.close();
         }
@@ -89,8 +91,7 @@ public class SocketServer {
         if (boss != null) {
             boss.shutdownGracefully();
         }
-        listener.onServerStop(config);
         started = false;
     }
-
+    
 }

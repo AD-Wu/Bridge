@@ -28,9 +28,10 @@ public enum Command {
                 String ip = ProxyHelper.getIP(cd.getAppSocketServer());
                 int port = ProxyHelper.getPort(cd.getAppSocketServer());
                 SocketClient socket = new SocketClient(
+                        proxy.name(),
                         new SocketConfig(ip, port),
                         new ProxyClientListener(appSocket, cd.getProxyServer(),(ProxyClient) proxy));
-                socket.connect();
+                socket.start();
             } else {
                 log.info("代理服务器:[{}],连接:[{}]已存在，不再重新建立",
                         cd.getProxyServer(), cd.getAppSocketClient());
@@ -116,5 +117,6 @@ public enum Command {
     };
     
     public abstract void execute(Proxy proxy, ChannelData cd) throws Exception;
+    
     
 }

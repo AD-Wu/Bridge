@@ -1,13 +1,13 @@
 package com.x.bridge.proxy.core;
 
+import com.x.bridge.common.IReceiver;
+import com.x.bridge.common.ISender;
+import com.x.bridge.common.IService;
 import com.x.bridge.data.ChannelData;
 import com.x.bridge.data.ProxyConfig;
-import com.x.bridge.proxy.bridge.core.IBridge;
-import com.x.bridge.proxy.bridge.core.IReceiver;
 import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.StringHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,50 +17,36 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/10/24 18:00
  * @Author AD
  */
-// @Data
-public abstract class Proxy implements IReceiver {
-
+@Log4j2
+public abstract class Proxy implements IService, IReceiver<ChannelData> {
+    
     protected final ProxyConfig config;
-
-    protected final boolean serverModel;
-
-    protected final IBridge sender;
-
+    protected final ISender<ChannelData> sender;
     protected final Map<String, Replier> repliers;
-
-    protected final Logger log = LogManager.getLogger(this.getClass());
-
-    protected Proxy(ProxyConfig config, boolean serverModel, IBridge sender) {
+    
+    protected Proxy(ProxyConfig config, ISender<ChannelData> sender) {
         this.repliers = new ConcurrentHashMap<>();
         this.config = config;
-        this.serverModel = serverModel;
         this.sender = sender;
-        sender.addReceiver(this);
+        sender.setReceiver(this);
     }
-
-    public void addReplier(String appSocketClient, Replier replier) {
-        repliers.put(appSocketClient, replier);
-    }
-
-    public Replier getReplier(String appSocketClient) {
-        return repliers.get(appSocketClient);
-    }
-
-    public Replier removeReplier(String appSocketClient) {
-        return repliers.remove(appSocketClient);
-    }
-
-    public void disconnect(Replier replier, MessageType type) {
-        ChannelData cd = ChannelData.generate(config.getName(), replier, type);
-        cd.setCommand(Command.Disconnect);
-        cd.setData(ArrayHelper.EMPTY_BYTE);
-        try {
-            sender.send(cd);
-        } catch (Exception e) {
-            log.error(StringHelper.getExceptionTrace(e));
+    
+    @Override
+    public void onReceive(ChannelData... datas) {
+        if (!ArrayHelper.isEmpty(datas)) {
+            for (ChannelData data : datas) {
+                Command command = data.getCommand();
+                if (command != null) {
+                    try {
+                        command.execute(this, data);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
-
+    
     public void send(Replier replier, MessageType type, byte[] data) {
         ChannelData cd = ChannelData.generate(config.getName(), replier, type);
         cd.setCommand(Command.SendData);
@@ -71,36 +57,33 @@ public abstract class Proxy implements IReceiver {
             log.error(StringHelper.getExceptionTrace(e));
         }
     }
-
-
-    @Override
-    public final void receive(ChannelData... datas) throws Exception {
-        if (datas != null && datas.length > 0) {
-            for (ChannelData data : datas) {
-                Command command = data.getCommand();
-                if (command != null) {
-                    try {
-                        command.execute(this, data);
-                    } catch (Exception e) {
-                        log.error(StringHelper.getExceptionTrace(e));
-                    }
-                } else {
-                    log.error("代理收到非法指令:[{}]数据", data.getCommand());
-                }
-            }
+    
+    public void disconnect(Replier replier, MessageType type) {
+        ChannelData data = ChannelData.generate(config.getName(), replier, type);
+        data.setCommand(Command.Disconnect);
+        data.setData(ArrayHelper.EMPTY_BYTE);
+        try {
+            sender.send(data);
+        } catch (Exception e) {
+            log.error(StringHelper.getExceptionTrace(e));
         }
     }
-
+    
+    public void addReplier(String appSocketClient, Replier replier) {
+        repliers.put(appSocketClient, replier);
+    }
+    
+    public Replier getReplier(String appSocketClient) {
+        return repliers.get(appSocketClient);
+    }
+    
+    public Replier removeReplier(String appSocketClient) {
+        return repliers.remove(appSocketClient);
+    }
+    
+    
     public ProxyConfig getConfig() {
         return config;
     }
-
-    public boolean isServerModel() {
-        return serverModel;
-    }
-
-    public abstract void start() throws Exception;
-
-    public abstract void stop() throws Exception;
-
+    
 }

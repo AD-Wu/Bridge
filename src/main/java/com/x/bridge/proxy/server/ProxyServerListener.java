@@ -1,12 +1,10 @@
 package com.x.bridge.proxy.server;
 
-import com.x.bridge.common.IServerListener;
-import com.x.bridge.common.SocketConfig;
-import com.x.bridge.proxy.core.Replier;
+import com.x.bridge.common.ISocketListener;
 import com.x.bridge.data.ChannelInfo;
 import com.x.bridge.proxy.core.MessageType;
+import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.util.ProxyHelper;
-import com.x.doraemon.util.StringHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
@@ -18,29 +16,14 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public final class ProxyServerListener implements IServerListener {
-
+public final class ProxyServerListener implements ISocketListener{
+    
     private final ProxyServer server;
-
+    
     public ProxyServerListener(ProxyServer proxyServer) {
         this.server = proxyServer;
     }
-
-    @Override
-    public void onServerStart(SocketConfig config) {
-        log.info("服务启动:[{}:{}]", config.getIp(), config.getPort());
-    }
-
-    @Override
-    public void onServerStartError(Throwable e) {
-        log.error("服务启动异常:{}", StringHelper.getExceptionTrace(e));
-    }
-
-    @Override
-    public void onServerStop(SocketConfig config) {
-        log.info("服务关闭:[{}:{}]", config.getIp(), config.getPort());
-    }
-
+    
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
         // 获取通道信息
@@ -48,7 +31,7 @@ public final class ProxyServerListener implements IServerListener {
         // 创建应答对象
         Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(), ctx);
         // 设置app服务端地址
-        replier.setAppSocketServer(server.getConfig().getAppSocketServer());
+        replier.setAppSocketServer(server.getConfig().getAppServer());
         // 递增接收数据的序号
         replier.receive();
         // 是否允许连接
@@ -67,22 +50,22 @@ public final class ProxyServerListener implements IServerListener {
                 // 判断是否连接超时
                 if (!replier.isConnectTimeout()) {
                     log.info("连接建立失败，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                            ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppSocketServer());
+                            ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppServer());
                 }
             } else {
                 // 连接成功，设置连接状态
                 replier.setConnected(true);
                 log.info("连接建立成功，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                        ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppSocketServer());
+                        ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppServer());
             }
         } else {
             // 非法连接，关闭通道
             replier.close();
             log.info("非法客户端，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                    ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppSocketServer());
+                    ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppServer());
         }
     }
-
+    
     @Override
     public void inActive(ChannelHandlerContext ctx) throws Exception {
         // 获取通道信息
@@ -97,7 +80,7 @@ public final class ProxyServerListener implements IServerListener {
             if (replier.isConnected()) {
                 // 日志记录
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，通知代理(客户端)关闭",
-                        remote, ch.getLocalAddress(), server.getConfig().getAppSocketServer());
+                        remote, ch.getLocalAddress(), server.getConfig().getAppServer());
                 // 递增接收序号
                 replier.receive();
                 // 通知代理(客户端)关闭连接
@@ -106,11 +89,11 @@ public final class ProxyServerListener implements IServerListener {
                 replier.close();
             } else {
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，代理(客户端)未建立连接，无需通知",
-                        remote, ch.getLocalAddress(), server.getConfig().getAppSocketServer());
+                        remote, ch.getLocalAddress(), server.getConfig().getAppServer());
             }
         }
     }
-
+    
     @Override
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         // 获取通道信息
@@ -127,21 +110,21 @@ public final class ProxyServerListener implements IServerListener {
             byte[] data = ProxyHelper.readData(buf);
             // 日志记录
             log.info("接收数据，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}],数据长度:[{}]",
-                    remote, ch.getLocalAddress(), server.getConfig().getAppSocketServer(),
+                    remote, ch.getLocalAddress(), server.getConfig().getAppServer(),
                     replier.getRecvSeq(), data.length);
             // 发送给代理(客户端)
             server.send(replier, MessageType.ServerToClient, data);
         }
     }
-
+    
     @Override
     public void timeout(ChannelHandlerContext ctx, IdleStateEvent event) throws Exception {
-
+    
     }
-
+    
     @Override
     public void error(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-
+    
     }
-
+    
 }
