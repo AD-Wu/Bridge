@@ -27,6 +27,7 @@ public class DBConfig extends ProxyConfig {
     private String outWriteInTable;
     private String inWriteOutTable;
     
+    
     @Override
     public String toString() {
         return StringHelper.defaultToString(this);

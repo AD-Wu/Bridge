@@ -27,15 +27,13 @@ public class ProxyConfig {
     private int heartbeat = 30;// 心跳周期，单位:秒
     private boolean keepAlive = true;
     private Set<String> allowClients;
-    
-    private boolean open=false;
+    private boolean open = false;
     private boolean needClientAuth = false;
     private String keyStoreType;
     private String keyStore;
     private String keyStorePassword;
     private String trustKeyStore;
     private String trustKeyStorePassword;
-    
     private String sendType;
     
     @Override

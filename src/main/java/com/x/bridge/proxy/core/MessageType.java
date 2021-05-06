@@ -6,7 +6,9 @@ package com.x.bridge.proxy.core;
  * @Author AD
  */
 public enum MessageType {
+    
     ClientToServer,
+    
     ServerToClient;
     
 }

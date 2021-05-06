@@ -9,7 +9,7 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @Date 2020/10/21 19:40
  * @Author AD
  */
-public interface ISocketListener{
+public interface ISocketListener {
     
     void active(ChannelHandlerContext ctx) throws Exception;
     

@@ -39,7 +39,7 @@ public class SocketServer implements IService {
     }
     
     @Override
-    public synchronized void start() throws Exception{
+    public synchronized void start() throws Exception {
         if (started) {
             return;
         }
@@ -81,7 +81,7 @@ public class SocketServer implements IService {
     }
     
     @Override
-    public synchronized void stop()throws Exception {
+    public synchronized void stop() throws Exception {
         if (channel != null) {
             channel.close();
         }

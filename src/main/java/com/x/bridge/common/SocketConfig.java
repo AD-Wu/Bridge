@@ -17,17 +17,11 @@ import java.net.UnknownHostException;
 public class SocketConfig {
     
     private String ip;
-    
     private int port;
-    
     private int readTimeout = 0;
-    
     private int writeTimeout = 0;
-    
     private int idleTimeout = 0;
-    
     private int backlog = 2048;
-    
     private int recvBuf = 65536;
     
     public SocketConfig(int port) {

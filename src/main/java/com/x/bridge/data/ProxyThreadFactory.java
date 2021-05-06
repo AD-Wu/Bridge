@@ -8,16 +8,16 @@ import java.util.concurrent.ThreadFactory;
  * @Author AD
  */
 public class ProxyThreadFactory implements ThreadFactory {
-
+    
     private final String threadPrefixName;
-
+    
     public ProxyThreadFactory(String threadPrefixName) {
         this.threadPrefixName = threadPrefixName;
     }
-
+    
     @Override
     public Thread newThread(Runnable r) {
         return new Thread(r, threadPrefixName);
     }
-
+    
 }

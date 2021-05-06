@@ -20,9 +20,7 @@ import lombok.extern.log4j.Log4j2;
 public final class ProxyClientListener implements ISocketListener {
     
     private final String appSocketClient;
-    
     private final String proxyServer;
-    
     private final ProxyClient proxyClient;
     
     public ProxyClientListener(String appSocketClient, String proxyServer, ProxyClient proxyClient) {

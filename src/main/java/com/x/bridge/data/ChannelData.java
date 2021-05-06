@@ -20,22 +20,14 @@ public class ChannelData implements Serializable {
 
     @IColumn(doc = "客户端socket地址", pk = true)
     protected String appSocketClient;
-
     @IColumn(doc = "数据帧序号", pk = true)
     protected long seq;
-
     protected String proxyName;
-
     protected String proxyServer;
-
     protected String proxyClient;
-
     protected String appSocketServer;
-
     protected Command command;
-
     protected MessageType messageType;
-
     protected byte[] data;
 
     public static ChannelData generate(String proxyName, Replier replier, MessageType type) {

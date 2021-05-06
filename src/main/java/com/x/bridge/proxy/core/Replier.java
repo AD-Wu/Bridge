@@ -20,31 +20,20 @@ import java.util.concurrent.atomic.AtomicLong;
 @Data
 @Log4j2
 public final class Replier {
-
+    
     private final String appSocketClient;
-
     private final String proxyServer;
-
     private String proxyClient;
-
     private String appSocketServer;
-
     private final ChannelHandlerContext ctx;
-
     private final ChannelInfo channelInfo;
-
     private final AtomicLong recvSeq;
-
     private final AtomicLong sendSeq;
-
     private volatile boolean connected;
-
     private volatile boolean connectTimeout;
-
     private final Object connectLock;
-
     private final Map<Long, byte[]> dataCache;
-
+    
     public Replier(String appSocketClient, String proxyServer, ChannelHandlerContext ctx) {
         this.appSocketClient = appSocketClient;
         this.proxyServer = proxyServer;
@@ -57,7 +46,7 @@ public final class Replier {
         this.connectLock = new Object();
         this.dataCache = new ConcurrentHashMap<>();
     }
-
+    
     public void send(long sendSeq, byte[] data) {
         if (sendSeq > nextSendSeq()) {
             dataCache.put(sendSeq, data);
@@ -77,42 +66,42 @@ public final class Replier {
                 if (next != null) {
                     send(nextSendSeq(), next);
                 }
-
+                
             }
         }
     }
-
+    
     private long nextSendSeq() {
         return sendSeq.get();
     }
-
+    
     public void receive() {
         recvSeq.incrementAndGet();
     }
-
+    
     public long getRecvSeq() {
         return recvSeq.get();
     }
-
+    
     public void close() {
         dataCache.clear();
         ctx.close();
     }
-
+    
     public ChannelInfo getChannelInfo() {
         return channelInfo;
     }
-
+    
     public boolean isConnected() {
         return connected;
     }
-
+    
     public void setConnected(boolean connected) {
         this.connected = connected;
     }
-
+    
     public Object getConnectLock() {
         return connectLock;
     }
-
+    
 }
