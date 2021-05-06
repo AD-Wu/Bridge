@@ -124,7 +124,7 @@ body {
 }
 
 .main {
-    background: url(../../images/beach.jpg) no-repeat center;
+    background: url(../images/beach.jpg) no-repeat center;
     background-size: cover;
     -webkit-background-size: cover;
     -moz-background-size: cover;
