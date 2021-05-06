@@ -1,0 +1,3 @@
+templates:该文件夹下的文件只能通过Controller访问，建议将html页面放在该目录下
+
+static:能直接被外接访问，用来存放js，css，image等静态资源
