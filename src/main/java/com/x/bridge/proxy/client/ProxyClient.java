@@ -4,11 +4,8 @@ import com.x.bridge.common.ISender;
 import com.x.bridge.data.ChannelData;
 import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.proxy.core.Command;
-import com.x.bridge.proxy.core.MessageType;
 import com.x.bridge.proxy.core.Proxy;
-import com.x.bridge.proxy.core.Replier;
 import com.x.doraemon.util.ArrayHelper;
-import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -21,28 +18,6 @@ public class ProxyClient extends Proxy<ChannelData> {
     
     public ProxyClient(ProxyConfig config, ISender<ChannelData> sender) {
         super(config, sender);
-    }
-    
-    public void connectSuccess(Replier replier) {
-        ChannelData cd = ChannelData.generate(config.getName(), replier, MessageType.ClientToServer);
-        cd.setCommand(Command.ConnectSuccess);
-        cd.setData(ArrayHelper.EMPTY_BYTE);
-        try {
-            sender.send(cd);
-        } catch (Exception e) {
-            log.error(StringHelper.getExceptionTrace(e));
-        }
-    }
-    
-    public void connectFailed(Replier replier) {
-        ChannelData cd = ChannelData.generate(config.getName(), replier, MessageType.ClientToServer);
-        cd.setCommand(Command.ConnectFailed);
-        cd.setData(ArrayHelper.EMPTY_BYTE);
-        try {
-            sender.send(cd);
-        } catch (Exception e) {
-            log.error(StringHelper.getExceptionTrace(e));
-        }
     }
     
     @Override
@@ -65,7 +40,7 @@ public class ProxyClient extends Proxy<ChannelData> {
                 Command command = data.getCommand();
                 if (command != null) {
                     try {
-                        command.execute(this, data);
+                        command.getActor().execute(this, data);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

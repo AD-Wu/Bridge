@@ -1,8 +1,10 @@
 package com.x.bridge.proxy.server;
 
 import com.x.bridge.common.ISocketListener;
-import com.x.bridge.data.ChannelInfo;
-import com.x.bridge.proxy.core.MessageType;
+import com.x.bridge.data.ChannelData;
+import com.x.bridge.proxy.command.Disconnect;
+import com.x.bridge.proxy.command.SendData;
+import com.x.bridge.proxy.command.SyncConnectRequest;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.util.ProxyHelper;
 import io.netty.buffer.ByteBuf;
@@ -16,92 +18,77 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public final class ProxyServerListener implements ISocketListener{
+public final class ProxyServerListener implements ISocketListener {
     
     private final ProxyServer server;
+    private final SendData sendDataCmd;
     
     public ProxyServerListener(ProxyServer proxyServer) {
         this.server = proxyServer;
+        this.sendDataCmd = new SendData();
     }
     
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
-        // 获取通道信息
-        ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         // 创建应答对象
-        Replier replier = new Replier(ch.getRemoteAddress(), ch.getLocalAddress(), ctx);
-        // 设置app服务端地址
-        replier.setAppSocketServer(server.getConfig().getAppServer());
+        Replier replier = Replier.getServerReplier(ctx);
+        // 设置app服务器地址
+        replier.setAppServer(server.getConfig().getAppServer());
         // 递增接收数据的序号
         replier.receive();
         // 是否允许连接
-        if (server.isAccept(ch.getRemoteIP())) {
+        if (server.isAccept(replier.getAppClient())) {
             // 管理应答对象
-            server.addReplier(ch.getRemoteAddress(), replier);
+            server.addReplier(replier.getAppClient(), replier);
             // 日志记录
             log.info("连接请求建立，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                    replier.getAppSocketClient(), replier.getProxyServer(), replier.getAppSocketServer());
+                    replier.getAppClient(), replier.getProxyServer(), replier.getAppServer());
             // 向代理(客户端)发送连接请求
-            if (!server.connectRequest(replier)) {
-                // 连接建立失败，移除应答者
-                server.removeReplier(ch.getRemoteAddress());
-                // 关闭通道
-                replier.close();
-                // 判断是否连接超时
-                if (!replier.isConnectTimeout()) {
-                    log.info("连接建立失败，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                            ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppServer());
-                }
-            } else {
-                // 连接成功，设置连接状态
-                replier.setConnected(true);
-                log.info("连接建立成功，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                        ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppServer());
-            }
+            SyncConnectRequest serverConnect = new SyncConnectRequest();
+            ChannelData data = serverConnect.get(replier);
+            serverConnect.send(this.server, data);
         } else {
             // 非法连接，关闭通道
             replier.close();
             log.info("非法客户端，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                    ch.getRemoteAddress(), ch.getLocalAddress(), server.getConfig().getAppServer());
+                    replier.getAppClient(), replier.getProxyServer(), server.getConfig().getAppServer());
         }
     }
     
     @Override
     public void inActive(ChannelHandlerContext ctx) throws Exception {
-        // 获取通道信息
-        ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         // 获取socket客户端
-        String remote = ch.getRemoteAddress();
+        String appClient = ProxyHelper.getChannelInfo(ctx).getRemoteAddress();
         // 移除应答者
-        Replier replier = server.removeReplier(remote);
+        Replier replier = server.removeReplier(appClient);
         // 判断是否有效
         if (replier != null) {
             // 已连接状态
             if (replier.isConnected()) {
                 // 日志记录
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，通知代理(客户端)关闭",
-                        remote, ch.getLocalAddress(), server.getConfig().getAppServer());
+                        appClient, replier.getProxyServer(), server.getConfig().getAppServer());
                 // 递增接收序号
                 replier.receive();
                 // 通知代理(客户端)关闭连接
-                server.disconnect(replier, MessageType.ServerToClient);
+                Disconnect disconnect = new Disconnect();
+                ChannelData data = disconnect.get(replier);
+                disconnect.send(this.server, data);
                 // 关闭通道
                 replier.close();
             } else {
                 log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，代理(客户端)未建立连接，无需通知",
-                        remote, ch.getLocalAddress(), server.getConfig().getAppServer());
+                        appClient, replier.getProxyServer(), server.getConfig().getAppServer());
             }
         }
     }
     
     @Override
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
-        // 获取通道信息
-        ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         // 获取socket客户端
-        String remote = ch.getRemoteAddress();
+        String appClient = ProxyHelper.getChannelInfo(ctx).getRemoteAddress();
         // 获取应答者
-        Replier replier = server.getReplier(remote);
+        Replier replier = server.getReplier(appClient);
         // 判断是否有效
         if (replier != null) {
             // 递增接收序号
@@ -110,10 +97,12 @@ public final class ProxyServerListener implements ISocketListener{
             byte[] data = ProxyHelper.readData(buf);
             // 日志记录
             log.info("接收数据，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，序号:[{}],数据长度:[{}]",
-                    remote, ch.getLocalAddress(), server.getConfig().getAppServer(),
+                    appClient, replier.getProxyServer(), server.getConfig().getAppServer(),
                     replier.getRecvSeq(), data.length);
             // 发送给代理(客户端)
-            server.send(replier, MessageType.ServerToClient, data);
+            ChannelData cd = sendDataCmd.get(replier);
+            cd.setData(data);
+            sendDataCmd.send(this.server, cd);
         }
     }
     

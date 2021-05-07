@@ -1,6 +1,8 @@
 package com.x.bridge.proxy.core;
 
 import com.x.bridge.data.ChannelData;
+import com.x.bridge.proxy.command.*;
+import com.x.bridge.proxy.command.core.ICommand;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -10,42 +12,18 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public enum Command {
-    ConnectRequest {
-        @Override
-        public void execute(Proxy<ChannelData> proxy, ChannelData channelData) {
-        
-        }
-    },
-    ConnectSuccess {
-        @Override
-        public void execute(Proxy<ChannelData> proxy, ChannelData channelData) {
-        
-        }
-    },
-    ConnectFailed {
-        @Override
-        public void execute(Proxy<ChannelData> proxy, ChannelData channelData) {
-        
-        }
-    },
-    Disconnect {
-        @Override
-        public void execute(Proxy<ChannelData> proxy, ChannelData channelData) {
-        
-        }
-    },
-    SendData {
-        @Override
-        public void execute(Proxy<ChannelData> proxy, ChannelData channelData) {
-        
-        }
-    },
-    HeartbeatRequest {
-        @Override
-        public void execute(Proxy<ChannelData> proxy, ChannelData channelData) {
-        
-        }
-    };
+    Disconnect(new Disconnect()),
+    Heartbeat(new Heartbeat()),
+    SendData(new SendData()),
+    SyncClientConnect(new SyncConnectResponse()),
+    SyncServerConnect(new SyncConnectRequest());
+    private final ICommand<ChannelData> actor;
     
-    public abstract void execute(Proxy<ChannelData> proxy, ChannelData channelData);
+    private Command(ICommand<ChannelData> actor) {
+        this.actor = actor;
+    }
+    
+    public ICommand<ChannelData> getActor() {
+        return this.actor;
+    }
 }

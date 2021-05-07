@@ -7,7 +7,7 @@ import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
 /**
- * @Desc TODO
+ * @Desc
  * @Date 2021/5/6 19:52
  * @Author AD
  */
@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 public class Heartbeat implements ICommand<ChannelData> {
     
     @Override
-    public void request(Proxy<ChannelData> proxy, ChannelData data) {
+    public void send(Proxy<ChannelData> proxy, ChannelData data) {
         try {
             proxy.send(data);
         } catch (Exception e) {
@@ -25,7 +25,7 @@ public class Heartbeat implements ICommand<ChannelData> {
     }
     
     @Override
-    public void response(Proxy<ChannelData> proxy, ChannelData data) {
+    public void execute(Proxy<ChannelData> proxy, ChannelData data) {
         proxy.setRunning(true);
     }
     

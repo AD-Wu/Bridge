@@ -9,8 +9,8 @@ import com.x.bridge.proxy.core.Proxy;
  */
 public interface ICommand<T> {
     
-    void request(Proxy<T> proxy, T t);
+    void send(Proxy<T> proxy, T t);
     
-    void response(Proxy<T> proxy, T t);
+    void execute(Proxy<T> proxy, T t);
     
 }
