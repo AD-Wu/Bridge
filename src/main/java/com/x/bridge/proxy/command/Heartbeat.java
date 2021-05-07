@@ -1,6 +1,5 @@
 package com.x.bridge.proxy.command;
 
-import com.x.bridge.common.ISender;
 import com.x.bridge.data.ChannelData;
 import com.x.bridge.proxy.command.core.ICommand;
 import com.x.bridge.proxy.core.Proxy;
@@ -17,9 +16,8 @@ public class Heartbeat implements ICommand<ChannelData> {
     
     @Override
     public void request(Proxy<ChannelData> proxy, ChannelData data) {
-        ISender<ChannelData> sender = proxy.getSender();
         try {
-            sender.send(data);
+            proxy.send(data);
         } catch (Exception e) {
             log.error(StringHelper.getExceptionTrace(e));
             proxy.setRunning(false);

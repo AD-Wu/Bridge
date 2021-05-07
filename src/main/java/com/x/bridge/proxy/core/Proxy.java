@@ -4,7 +4,6 @@ import com.x.bridge.common.IReceiver;
 import com.x.bridge.common.ISender;
 import com.x.bridge.common.IService;
 import com.x.bridge.data.ProxyConfig;
-import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Map;
@@ -17,19 +16,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Log4j2
 public abstract class Proxy<T> implements IService, IReceiver<T> {
-    
+
     protected volatile boolean running = false;
     protected final ProxyConfig config;
     protected final ISender<T> sender;
     protected final Map<String, Replier> repliers;
-    
+
     protected Proxy(ProxyConfig config, ISender<T> sender) {
         this.repliers = new ConcurrentHashMap<>();
         this.config = config;
         this.sender = sender;
         sender.setReceiver(this);
     }
-    
+
     // public void send(Replier replier, MessageType type, byte[] data) {
     //     ChannelData cd = ChannelData.generate(config.getName(), replier, type);
     //     cd.setCommand(Command.SendData);
@@ -40,15 +39,16 @@ public abstract class Proxy<T> implements IService, IReceiver<T> {
     //         log.error(StringHelper.getExceptionTrace(e));
     //     }
     // }
-    
-    public void send(T data) {
-        try {
+
+    public void send(T data) throws Exception {
+        if (running) {
             sender.send(data);
-        } catch (Exception e) {
-            log.error(StringHelper.getExceptionTrace(e));
+        } else {
+            throw new RuntimeException("代理未运行");
         }
+
     }
-    
+
     // public void disconnect(Replier replier, MessageType type) {
     //     ChannelData data = ChannelData.generate(config.getName(), replier, type);
     //     data.setCommand(Command.Disconnect);
@@ -59,33 +59,29 @@ public abstract class Proxy<T> implements IService, IReceiver<T> {
     //         log.error(StringHelper.getExceptionTrace(e));
     //     }
     // }
-    
+
     public void addReplier(String appSocketClient, Replier replier) {
         repliers.put(appSocketClient, replier);
     }
-    
+
     public Replier getReplier(String appSocketClient) {
         return repliers.get(appSocketClient);
     }
-    
+
     public Replier removeReplier(String appSocketClient) {
         return repliers.remove(appSocketClient);
     }
-    
-    public ISender<T> getSender() {
-        return sender;
-    }
-    
+
     public ProxyConfig getConfig() {
         return config;
     }
-    
+
     public boolean isRunning() {
         return running;
     }
-    
+
     public void setRunning(boolean running) {
         this.running = running;
     }
-    
+
 }
