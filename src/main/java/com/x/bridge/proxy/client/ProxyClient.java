@@ -17,7 +17,7 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public class ProxyClient extends Proxy {
+public class ProxyClient extends Proxy<ChannelData> {
     
     public ProxyClient(ProxyConfig config, ISender<ChannelData> sender) {
         super(config, sender);
@@ -56,6 +56,22 @@ public class ProxyClient extends Proxy {
     
     @Override
     public void stop() throws Exception {
+    }
+    
+    @Override
+    public void onReceive(ChannelData... datas) {
+        if (!ArrayHelper.isEmpty(datas)) {
+            for (ChannelData data : datas) {
+                Command command = data.getCommand();
+                if (command != null) {
+                    try {
+                        command.execute(this, data);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
     
 }

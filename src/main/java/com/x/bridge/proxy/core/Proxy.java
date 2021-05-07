@@ -3,9 +3,7 @@ package com.x.bridge.proxy.core;
 import com.x.bridge.common.IReceiver;
 import com.x.bridge.common.ISender;
 import com.x.bridge.common.IService;
-import com.x.bridge.data.ChannelData;
 import com.x.bridge.data.ProxyConfig;
-import com.x.doraemon.util.ArrayHelper;
 import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
@@ -18,56 +16,49 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Author AD
  */
 @Log4j2
-public abstract class Proxy implements IService, IReceiver<ChannelData> {
+public abstract class Proxy<T> implements IService, IReceiver<T> {
     
+    protected volatile boolean running = false;
     protected final ProxyConfig config;
-    protected final ISender<ChannelData> sender;
+    protected final ISender<T> sender;
     protected final Map<String, Replier> repliers;
     
-    protected Proxy(ProxyConfig config, ISender<ChannelData> sender) {
+    protected Proxy(ProxyConfig config, ISender<T> sender) {
         this.repliers = new ConcurrentHashMap<>();
         this.config = config;
         this.sender = sender;
         sender.setReceiver(this);
     }
     
-    @Override
-    public void onReceive(ChannelData... datas) {
-        if (!ArrayHelper.isEmpty(datas)) {
-            for (ChannelData data : datas) {
-                Command command = data.getCommand();
-                if (command != null) {
-                    try {
-                        command.execute(this, data);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
+    // public void send(Replier replier, MessageType type, byte[] data) {
+    //     ChannelData cd = ChannelData.generate(config.getName(), replier, type);
+    //     cd.setCommand(Command.SendData);
+    //     cd.setData(data);
+    //     try {
+    //         sender.send(cd);
+    //     } catch (Exception e) {
+    //         log.error(StringHelper.getExceptionTrace(e));
+    //     }
+    // }
     
-    public void send(Replier replier, MessageType type, byte[] data) {
-        ChannelData cd = ChannelData.generate(config.getName(), replier, type);
-        cd.setCommand(Command.SendData);
-        cd.setData(data);
-        try {
-            sender.send(cd);
-        } catch (Exception e) {
-            log.error(StringHelper.getExceptionTrace(e));
-        }
-    }
-    
-    public void disconnect(Replier replier, MessageType type) {
-        ChannelData data = ChannelData.generate(config.getName(), replier, type);
-        data.setCommand(Command.Disconnect);
-        data.setData(ArrayHelper.EMPTY_BYTE);
+    public void send(T data) {
         try {
             sender.send(data);
         } catch (Exception e) {
             log.error(StringHelper.getExceptionTrace(e));
         }
     }
+    
+    // public void disconnect(Replier replier, MessageType type) {
+    //     ChannelData data = ChannelData.generate(config.getName(), replier, type);
+    //     data.setCommand(Command.Disconnect);
+    //     data.setData(ArrayHelper.EMPTY_BYTE);
+    //     try {
+    //         sender.send(data);
+    //     } catch (Exception e) {
+    //         log.error(StringHelper.getExceptionTrace(e));
+    //     }
+    // }
     
     public void addReplier(String appSocketClient, Replier replier) {
         repliers.put(appSocketClient, replier);
@@ -81,9 +72,20 @@ public abstract class Proxy implements IService, IReceiver<ChannelData> {
         return repliers.remove(appSocketClient);
     }
     
+    public ISender<T> getSender() {
+        return sender;
+    }
     
     public ProxyConfig getConfig() {
         return config;
+    }
+    
+    public boolean isRunning() {
+        return running;
+    }
+    
+    public void setRunning(boolean running) {
+        this.running = running;
     }
     
 }

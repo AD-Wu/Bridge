@@ -1,5 +1,6 @@
 package com.x.bridge.proxy.command;
 
+import com.x.bridge.common.ISender;
 import com.x.bridge.data.ChannelData;
 import com.x.bridge.proxy.command.core.ICommand;
 import com.x.bridge.proxy.core.Proxy;
@@ -13,7 +14,17 @@ import com.x.bridge.proxy.core.Replier;
 public class SendData implements ICommand<ChannelData> {
     
     @Override
-    public void execute(Proxy proxy, ChannelData cd) {
+    public void request(Proxy<ChannelData> proxy, ChannelData data) {
+        ISender<ChannelData> sender = proxy.getSender();
+        try {
+            sender.send(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void response(Proxy<ChannelData> proxy, ChannelData cd) {
         // 获取应用客户端地址
         String appSocket = cd.getAppSocketClient();
         // 获取应答者

@@ -70,6 +70,7 @@ public final class ProxyClientListener implements ISocketListener {
             log.info("连接关闭，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，通知代理(服务端)关闭",
                     appSocketClient, ch.getLocalAddress(), ch.getRemoteAddress());
             // 通知另一端（服务端）关闭连接
+            
             proxyClient.disconnect(replier, MessageType.ClientToServer);
         }
     }

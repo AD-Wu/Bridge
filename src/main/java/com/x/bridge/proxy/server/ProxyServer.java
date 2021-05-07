@@ -20,7 +20,7 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public class ProxyServer extends Proxy {
+public class ProxyServer extends Proxy<ChannelData> {
     
     private final SocketServer server;
     
@@ -47,6 +47,23 @@ public class ProxyServer extends Proxy {
         repliers.clear();
     }
     
+    
+    @Override
+    public void onReceive(ChannelData... datas) {
+        if (!ArrayHelper.isEmpty(datas)) {
+            for (ChannelData data : datas) {
+                Command command = data.getCommand();
+                if (command != null) {
+                    try {
+                        command.execute(this, data);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    
     public boolean isAccept(String socket) {
         return config.getAllowClients().contains(socket);
     }
@@ -71,5 +88,6 @@ public class ProxyServer extends Proxy {
             return false;
         }
     }
+   
     
 }
