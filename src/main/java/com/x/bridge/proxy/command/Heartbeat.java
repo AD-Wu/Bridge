@@ -2,10 +2,13 @@ package com.x.bridge.proxy.command;
 
 import com.google.common.cache.*;
 import com.x.bridge.data.ChannelData;
+import com.x.bridge.data.ProxyThreadFactory;
 import com.x.bridge.proxy.command.core.ICommand;
 import com.x.bridge.proxy.core.Proxy;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,9 +19,11 @@ import java.util.concurrent.TimeUnit;
 @Log4j2
 public class Heartbeat implements ICommand<ChannelData> {
 
-    Cache<String, Proxy<ChannelData>> cache;
+    private Cache<String, Proxy<ChannelData>> cache;
+    private ScheduledExecutorService timer;
 
     public Heartbeat() {
+        timer = Executors.newScheduledThreadPool(1, new ProxyThreadFactory("Heartbeat-"));
         cache = CacheBuilder.newBuilder()
                 .maximumSize(2)
                 .expireAfterWrite(30, TimeUnit.SECONDS)
