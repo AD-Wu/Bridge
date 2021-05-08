@@ -19,7 +19,7 @@ public class ChannelData implements Serializable {
     @IColumn(doc = "客户端socket地址", pk = true)
     protected String appClient;
     @IColumn(doc = "数据帧序号", pk = true)
-    protected long seq;
+    protected long recvSeq;
     protected String proxyServer;
     
     protected String proxyClient;
@@ -32,7 +32,7 @@ public class ChannelData implements Serializable {
     public static ChannelData generate(Replier replier) {
         ChannelData cd = new ChannelData();
         cd.setAppClient(replier.getAppClient());
-        cd.setSeq(replier.getRecvSeq());
+        cd.setRecvSeq(replier.getRecvSeq());
         cd.setProxyServer(replier.getProxyServer());
         cd.setProxyClient(replier.getProxyClient());
         cd.setAppServer(replier.getAppServer());
@@ -47,12 +47,12 @@ public class ChannelData implements Serializable {
         this.appClient = appClient;
     }
     
-    public long getSeq() {
-        return seq;
+    public long getRecvSeq() {
+        return recvSeq;
     }
     
-    public void setSeq(long seq) {
-        this.seq = seq;
+    public void setRecvSeq(long recvSeq) {
+        this.recvSeq = recvSeq;
     }
     
     public String getProxyServer() {
@@ -107,7 +107,7 @@ public class ChannelData implements Serializable {
     public String toString() {
         return new StringJoiner(", ", ChannelData.class.getSimpleName() + "[", "]")
                 .add("appSocketClient='" + appClient + "'")
-                .add("seq=" + seq)
+                .add("seq=" + recvSeq)
                 .add("proxyAddress='" + proxyServer + "'")
                 .add("targetAddress='" + appServer + "'")
                 .add("command=" + command)

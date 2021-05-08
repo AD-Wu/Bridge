@@ -13,17 +13,13 @@ import com.x.doraemon.util.ArrayHelper;
  * @Date 2021/5/3 19:25
  * @Author AD
  */
-public class SendData implements ICommand<ChannelData>, IFactory<Replier,ChannelData> {
-    
+public class SendData implements ICommand<ChannelData>, IFactory<Replier, ChannelData> {
+
     @Override
     public void send(Proxy<ChannelData> proxy, ChannelData data) {
-        try {
-            proxy.send(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        proxy.send(data);
     }
-    
+
     @Override
     public void execute(Proxy<ChannelData> proxy, ChannelData cd) {
         // 获取应用客户端地址
@@ -32,10 +28,10 @@ public class SendData implements ICommand<ChannelData>, IFactory<Replier,Channel
         Replier replier = proxy.getReplier(appSocket);
         if (replier != null) {
             // 获取发送数据
-            replier.send(cd.getSeq(), cd.getData());
+            replier.send(cd.getRecvSeq(), cd.getData());
         }
     }
-    
+
     @Override
     public ChannelData get(Replier replier) {
         ChannelData cd = ChannelData.generate(replier);
@@ -43,5 +39,5 @@ public class SendData implements ICommand<ChannelData>, IFactory<Replier,Channel
         cd.setData(ArrayHelper.EMPTY_BYTE);
         return cd;
     }
-    
+
 }

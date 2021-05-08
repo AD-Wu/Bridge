@@ -17,16 +17,12 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class SyncConnectResponse implements ICommand<ChannelData>, IFactory<Replier, ChannelData> {
-    
+
     @Override
     public void send(Proxy<ChannelData> proxy, ChannelData cd) {
-        try {
-            proxy.send(cd);
-        } catch (Exception e) {
-            log.error(StringHelper.getExceptionTrace(e));
-        }
+        proxy.send(cd);
     }
-    
+
     @Override
     public void execute(Proxy<ChannelData> proxy, ChannelData cd) {
         // 获取应用客户端地址
@@ -56,11 +52,11 @@ public class SyncConnectResponse implements ICommand<ChannelData>, IFactory<Repl
                 log.info("连接建立失败，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
                         cd.getAppClient(), cd.getProxyServer(), cd.getAppServer());
             }
-            
+
         }
-        
+
     }
-    
+
     @Override
     public ChannelData get(Replier replier) {
         ChannelData cd = ChannelData.generate(replier);
@@ -68,5 +64,5 @@ public class SyncConnectResponse implements ICommand<ChannelData>, IFactory<Repl
         cd.setData(ArrayHelper.EMPTY_BYTE);
         return cd;
     }
-    
+
 }

@@ -11,7 +11,6 @@ import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.util.ProxyHelper;
 import com.x.doraemon.util.ArrayHelper;
-import com.x.doraemon.util.StringHelper;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -21,28 +20,29 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class SyncConnectRequest implements ICommand<ChannelData>, IFactory<Replier, ChannelData> {
-    
+
     @Override
     public void send(Proxy<ChannelData> proxy, ChannelData cd) {
         Replier replier = proxy.getReplier(cd.getAppClient());
         Object connectLock = replier.getConnectLock();
-        try {
-            synchronized (connectLock) {
-                proxy.send(cd);
+        synchronized (connectLock) {
+            proxy.send(cd);
+            try {
                 connectLock.wait(proxy.getConfig().getConnectTimeout() * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            if (replier.isConnectTimeout()) {
-                log.info("连接超时，配置时间:[{}]秒，连接关闭", proxy.getConfig().getConnectTimeout());
-                // 连接建立失败，移除应答者
-                proxy.removeReplier(cd.getAppClient());
-                // 关闭通道
-                replier.close();
-            }
-        } catch (Exception e) {
-            log.error(StringHelper.getExceptionTrace(e));
         }
+        if (replier.isConnectTimeout()) {
+            log.info("连接超时，配置时间:[{}]秒，连接关闭", proxy.getConfig().getConnectTimeout());
+            // 连接建立失败，移除应答者
+            proxy.removeReplier(cd.getAppClient());
+            // 关闭通道
+            replier.close();
+        }
+
     }
-    
+
     @Override
     public void execute(Proxy<ChannelData> proxy, ChannelData cd) {
         // 获取应用客户端地址
@@ -56,7 +56,7 @@ public class SyncConnectRequest implements ICommand<ChannelData>, IFactory<Repli
             int port = ProxyHelper.getPort(cd.getAppServer());
             SocketClient socket = new SocketClient(
                     proxy.name(),
-                    new SocketConfig(ip, port),
+                    SocketConfig.getClientConfig(ip, port),
                     new ProxyClientListener(appSocket, cd.getProxyServer(), proxy));
             socket.start();
         } else {
@@ -64,7 +64,7 @@ public class SyncConnectRequest implements ICommand<ChannelData>, IFactory<Repli
                     cd.getProxyServer(), cd.getAppClient());
         }
     }
-    
+
     @Override
     public ChannelData get(Replier replier) {
         ChannelData cd = ChannelData.generate(replier);
@@ -72,5 +72,5 @@ public class SyncConnectRequest implements ICommand<ChannelData>, IFactory<Repli
         cd.setData(ArrayHelper.EMPTY_BYTE);
         return cd;
     }
-    
+
 }

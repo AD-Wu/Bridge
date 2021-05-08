@@ -11,31 +11,29 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @Date 2020/10/21 20:16
  * @Author AD
  */
-final class SocketHandler extends SimpleChannelInboundHandler {
-    
+final class SocketHandler extends SimpleChannelInboundHandler<ByteBuf> {
+
     private final ISocketListener listener;
-    
+
     SocketHandler(ISocketListener listener) {
         this.listener = listener;
     }
-    
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         listener.active(ctx);
     }
-    
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         listener.inActive(ctx);
     }
-    
+
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof ByteBuf) {
-            listener.receive(ctx, (ByteBuf) msg);
-        }
+    protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+        listener.receive(ctx, msg);
     }
-    
+
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
@@ -45,10 +43,10 @@ final class SocketHandler extends SimpleChannelInboundHandler {
             }
         }
     }
-    
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         listener.error(ctx, cause);
     }
-    
+
 }

@@ -47,7 +47,7 @@ public class DBSender implements ISender<ChannelData> {
         try {
             this.daoManager = new DaoManager(getDatabaseConfig());
             // 创建数据读取器
-            this.reader = Executors.newScheduledThreadPool(1, new ProxyThreadFactory("DB-Reader-"));
+            this.reader = Executors.newScheduledThreadPool(2, new ProxyThreadFactory("DB-Reader-"));
             // 数据发送器
             this.writer = Executors.newSingleThreadExecutor(new ProxyThreadFactory("DB-Writer-"));
             // 数据删除者
@@ -87,10 +87,11 @@ public class DBSender implements ISender<ChannelData> {
                     e.printStackTrace();
                 }
                 if (!ArrayHelper.isEmpty(datas)) {
-                    // 删除已读
-                    deleteReaded(datas, daoManager, dao);
-                    // 回调接收数据接口
+                    // 异步回调接收数据接口
                     onReceiveData(datas);
+                    // 同步删除已读
+                    deleteReaded(datas, daoManager, dao);
+
                 }
                 
             }
@@ -111,17 +112,17 @@ public class DBSender implements ISender<ChannelData> {
     @Override
     public void send(ChannelData data) throws Exception {
         IDao<ChannelData> dao = daoManager.getDao(ChannelData.class, writeGetter);
-        // dao.add(data);
-        writer.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    dao.add(data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+         dao.add(data);
+        //writer.execute(new Runnable() {
+        //    @Override
+        //    public void run() {
+        //        try {
+        //            dao.add(data);
+        //        } catch (Exception e) {
+        //            e.printStackTrace();
+        //        }
+        //    }
+        //});
     }
     
     @Override
@@ -135,9 +136,7 @@ public class DBSender implements ISender<ChannelData> {
         IDatabase db = daoManager.getDatabaseAccess();
         // 生成sql语句
         StringBuilder sql = new StringBuilder();
-        sql.append("delete from ");
-        sql.append(dao.getTableName());
-        sql.append(" where ");
+        sql.append("delete from ").append(dao.getTableName()).append(" where ");
         String[] pks = dao.getPrimaryKeys();
         for (int i = 0, c = pks.length; i < pks.length; i++) {
             if (i > 0) {

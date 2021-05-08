@@ -5,6 +5,7 @@ import com.x.bridge.data.ChannelData;
 import com.x.bridge.proxy.command.Disconnect;
 import com.x.bridge.proxy.command.SendData;
 import com.x.bridge.proxy.command.SyncConnectRequest;
+import com.x.bridge.proxy.core.Proxy;
 import com.x.bridge.proxy.core.Replier;
 import com.x.bridge.util.ProxyHelper;
 import io.netty.buffer.ByteBuf;
@@ -20,11 +21,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public final class ProxyServerListener implements ISocketListener {
     
-    private final ProxyServer server;
+    private final Proxy<ChannelData> server;
     private final SendData sendDataCmd;
     
-    public ProxyServerListener(ProxyServer proxyServer) {
-        this.server = proxyServer;
+    public ProxyServerListener(Proxy<ChannelData> server) {
+        this.server = server;
         this.sendDataCmd = new SendData();
     }
     

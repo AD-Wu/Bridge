@@ -24,10 +24,10 @@ public final class ProxyClientListener implements ISocketListener {
     
     private final String appClient;
     private final String proxyServer;
-    private final Proxy proxyClient;
+    private final Proxy<ChannelData> proxyClient;
     private final SendData sendDataCmd;
     
-    public ProxyClientListener(String appClient, String proxyServer, Proxy proxyClient) {
+    public ProxyClientListener(String appClient, String proxyServer, Proxy<ChannelData> proxyClient) {
         this.appClient = appClient;
         this.proxyServer = proxyServer;
         this.proxyClient = proxyClient;

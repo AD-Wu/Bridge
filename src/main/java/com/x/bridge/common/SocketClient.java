@@ -70,7 +70,7 @@ public class SocketClient implements IService {
             connected = true;
         } catch (InterruptedException e) {
             log.error(StringHelper.getExceptionTrace(e));
-            connected = false;
+            stop();
         }
     }
     

@@ -32,6 +32,7 @@ public class Replier {
     private volatile boolean connected = false;
     private volatile boolean connectTimeout = true;
     private final Object connectLock = new Object();
+
     private final Map<Long, byte[]> dataCache = new ConcurrentHashMap<>();
     
     public static Replier getServerReplier(ChannelHandlerContext ctx) {
@@ -55,19 +56,19 @@ public class Replier {
         this.channelInfo = ProxyHelper.getChannelInfo(ctx);
     }
     
-    public void send(long sendSeq, byte[] data) {
-        if (sendSeq > nextSendSeq()) {
-            dataCache.put(sendSeq, data);
+    public void send(long recvSeq, byte[] data) {
+        if (recvSeq > nextSendSeq()) {
+            dataCache.put(recvSeq, data);
         } else {
-            if (sendSeq == nextSendSeq()) {
+            if (recvSeq == nextSendSeq()) {
                 synchronized (this) {
-                    if (sendSeq == nextSendSeq()) {
+                    if (recvSeq == nextSendSeq()) {
                         ByteBuf buf = ByteBufAllocator.DEFAULT.buffer();
                         buf.writeBytes(data);
                         ctx.writeAndFlush(buf);
                         this.sendSeq.incrementAndGet();
                         log.info("成功发送数据至:[{}]，序号:[{}],长度:[{}]",
-                                channelInfo.getRemoteAddress(), sendSeq, data.length);
+                                channelInfo.getRemoteAddress(), recvSeq, data.length);
                     }
                 }
                 byte[] next = dataCache.remove(nextSendSeq());

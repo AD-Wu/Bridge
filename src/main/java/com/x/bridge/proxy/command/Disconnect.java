@@ -15,17 +15,13 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public class Disconnect implements ICommand<ChannelData>, IFactory<Replier,ChannelData> {
-    
+public class Disconnect implements ICommand<ChannelData>, IFactory<Replier, ChannelData> {
+
     @Override
     public void send(Proxy<ChannelData> proxy, ChannelData data) {
-        try {
-            proxy.send(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        proxy.send(data);
     }
-    
+
     @Override
     public void execute(Proxy<ChannelData> proxy, ChannelData cd) {
         // 获取应用客户端地址
@@ -35,12 +31,12 @@ public class Disconnect implements ICommand<ChannelData>, IFactory<Replier,Chann
         // 关闭通道
         if (replier != null) {
             // 日志记录
-            log.info("连接关闭:[{}]",appSocket);
+            log.info("连接关闭:[{}]", appSocket);
             replier.setConnected(false);
             replier.close();
         }
     }
-    
+
     @Override
     public ChannelData get(Replier replier) {
         ChannelData cd = ChannelData.generate(replier);
@@ -48,5 +44,5 @@ public class Disconnect implements ICommand<ChannelData>, IFactory<Replier,Chann
         cd.setData(ArrayHelper.EMPTY_BYTE);
         return cd;
     }
-    
+
 }
