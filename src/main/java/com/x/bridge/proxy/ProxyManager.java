@@ -50,11 +50,6 @@ public class ProxyManager {
             client.stop();
         }
     }
-    
-    private void log(ChannelData cd) {
-        log.info("网关收到数据 >>> 消息类型:[{}]，指令:[{}]，客户端:[{}]，代理(客户端):[{}]，服务端:[{}]，序号:[{}]，数据长度:[{}]",
-                cd.getMessageType(), cd.getCommand(), cd.getAppClient(), cd.getProxyServer(),
-                cd.getAppServer(), cd.getRecvSeq(), cd.getData().length);
-    }
+
     
 }
