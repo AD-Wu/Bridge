@@ -1,52 +1,50 @@
-2020-10-27 00:03:32.713 [main] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on sundayMacBook.local with PID 6486 (/Users/sunday/IdeaProjects/Bridge/target/classes started by AD in /Users/sunday/IdeaProjects/Bridge)
-2020-10-27 00:03:32.730 [main] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
-2020-10-27 00:03:33.979 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x04fc7b6e]'
-2020-10-27 00:03:33.979 [pool-7-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x32e7f490]'
-2020-10-27 00:03:33.979 [pool-7-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x32e7f490]'
-2020-10-27 00:03:33.979 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x04fc7b6e]'
-2020-10-27 00:03:34.007 [pool-7-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[127.0.0.1:3333]
-2020-10-27 00:03:34.007 [pool-4-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[127.0.0.1:1111]
-2020-10-27 00:03:34.400 [main] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.401 seconds (JVM running for 3.707)
-2020-10-27 00:06:37.502 [main] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on sundayMacBook.local with PID 6576 (/Users/sunday/IdeaProjects/Bridge/target/classes started by AD in /Users/sunday/IdeaProjects/Bridge)
-2020-10-27 00:06:37.506 [main] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
-2020-10-27 00:06:38.533 [pool-7-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x2bd958dd]'
-2020-10-27 00:06:38.533 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x28be1919]'
-2020-10-27 00:06:38.534 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x28be1919]'
-2020-10-27 00:06:38.534 [pool-7-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x2bd958dd]'
-2020-10-27 00:06:38.553 [pool-7-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:3333]
-2020-10-27 00:06:38.553 [pool-4-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:1111]
-2020-10-27 00:06:38.818 [main] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.343 seconds (JVM running for 4.102)
-2020-10-27 00:58:32.337 [main] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on sundayMacBook.local with PID 7628 (/Users/sunday/IdeaProjects/Bridge/target/classes started by AD in /Users/sunday/IdeaProjects/Bridge)
-2020-10-27 00:58:32.342 [main] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
-2020-10-27 00:58:33.283 [pool-6-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0xa57546d5]'
-2020-10-27 00:58:33.283 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x394245c2]'
-2020-10-27 00:58:33.284 [pool-6-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0xa57546d5]'
-2020-10-27 00:58:33.284 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x394245c2]'
-2020-10-27 00:58:33.305 [pool-4-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:1111]
-2020-10-27 00:58:33.305 [pool-6-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:3333]
-2020-10-27 00:58:33.618 [main] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 1.828 seconds (JVM running for 4.272)
-2020-10-27 00:59:07.360 [nioEventLoopGroup-6-1] INFO  com.x.bridge.proxy.core.ServerListener - 连接请求建立，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]
-2020-10-27 00:59:07.367 [nioEventLoopGroup-6-1] INFO  com.x.bridge.proxy.bridge.impl.QueueBridge - 队列发送数据 >>> 消息类型:[ServerToClient]，指令:[ConnectRequest]，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
-2020-10-27 00:59:07.368 [pool-3-thread-1] INFO  com.x.bridge.proxy.ProxyManager - 网关收到数据 >>> 消息类型:[ServerToClient]，指令:[ConnectRequest]，客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
-2020-10-27 00:59:07.371 [pool-3-thread-1] ERROR com.x.bridge.proxy.ProxyManager - 网关中没有该代理:[A]，通道数据:ChannelData(proxyName=A, appSocketClient=127.0.0.1:51594, proxyAddress=127.0.0.1:1111, targetAddress=127.0.0.1:7777, recvSeq=0, command=ConnectRequest, messageType=ServerToClient, data=[])
-2020-10-27 00:59:07.391 [nioEventLoopGroup-7-1] INFO  com.x.bridge.proxy.core.ClientListener - 连接建立,客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]
-2020-10-27 00:59:07.391 [nioEventLoopGroup-7-1] INFO  com.x.bridge.proxy.bridge.impl.QueueBridge - 队列发送数据 >>> 消息类型:[ClientToServer]，指令:[ConnectSuccess]，客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
-2020-10-27 00:59:07.391 [pool-3-thread-2] INFO  com.x.bridge.proxy.ProxyManager - 网关收到数据 >>> 消息类型:[ClientToServer]，指令:[ConnectSuccess]，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
-2020-10-27 00:59:07.392 [nioEventLoopGroup-6-1] INFO  com.x.bridge.proxy.core.ServerListener - 连接建立成功，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]
-2020-10-27 00:59:07.473 [nioEventLoopGroup-7-1] INFO  com.x.bridge.proxy.core.ClientListener - 接收数据，客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[1],数据长度:[10]
-2020-10-27 00:59:07.473 [nioEventLoopGroup-7-1] INFO  com.x.bridge.proxy.bridge.impl.QueueBridge - 队列发送数据 >>> 消息类型:[ClientToServer]，指令:[SendData]，客户端:[127.0.0.1:51594]，代理(客户端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[1]，数据长度:[10]
-2020-10-27 00:59:07.473 [pool-3-thread-2] INFO  com.x.bridge.proxy.ProxyManager - 网关收到数据 >>> 消息类型:[ClientToServer]，指令:[SendData]，客户端:[127.0.0.1:51594]，代理(服务端):[127.0.0.1:51595]，服务端:[127.0.0.1:7777]，序号:[1]，数据长度:[10]
-2020-10-27 00:59:07.478 [pool-3-thread-2] INFO  com.x.bridge.proxy.core.Replier - 成功发送数据至:[127.0.0.1:51594]，序号:[1],长度:[10]
-2020-10-27 00:59:52.983 [main] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on sundayMacBook.local with PID 7681 (/Users/sunday/IdeaProjects/Bridge/target/classes started by AD in /Users/sunday/IdeaProjects/Bridge)
-2020-10-27 00:59:52.992 [main] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
-2020-10-27 00:59:54.358 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0x70098620]'
-2020-10-27 00:59:54.358 [pool-6-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'SO_KEEPALIVE' for channel '[id: 0xd38745b2]'
-2020-10-27 00:59:54.359 [pool-6-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0xd38745b2]'
-2020-10-27 00:59:54.359 [pool-4-thread-2] WARN  io.netty.bootstrap.ServerBootstrap - Unknown channel option 'TCP_NODELAY' for channel '[id: 0x70098620]'
-2020-10-27 00:59:54.393 [pool-4-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:1111]
-2020-10-27 00:59:54.393 [pool-6-thread-2] INFO  com.x.bridge.proxy.core.ServerListener - 服务启动:[192.168.31.114:3333]
-2020-10-27 00:59:54.845 [main] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.687 seconds (JVM running for 4.903)
-2020-10-27 00:59:59.612 [nioEventLoopGroup-5-1] INFO  com.x.bridge.proxy.core.ServerListener - 连接请求建立，客户端:[127.0.0.1:51613]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]
-2020-10-27 00:59:59.617 [nioEventLoopGroup-5-1] INFO  com.x.bridge.proxy.bridge.impl.QueueBridge - 队列发送数据 >>> 消息类型:[ServerToClient]，指令:[ConnectRequest]，客户端:[127.0.0.1:51613]，代理(服务端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
-2020-10-27 00:59:59.618 [pool-3-thread-1] INFO  com.x.bridge.proxy.ProxyManager - 网关收到数据 >>> 消息类型:[ServerToClient]，指令:[ConnectRequest]，客户端:[127.0.0.1:51613]，代理(客户端):[127.0.0.1:1111]，服务端:[127.0.0.1:7777]，序号:[0]，数据长度:[0]
-2020-10-27 01:00:09.620 [nioEventLoopGroup-5-1] INFO  com.x.bridge.proxy.core.ProxyServer - 连接超时，配置时间:10秒，连接关闭
+2021-04-29 17:03:24.786 [restartedMain] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on Sunday with PID 17796 (D:\IdeaProjects\Bridge\target\classes started by admin in D:\IdeaProjects\Bridge)
+2021-04-29 17:03:24.805 [restartedMain] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2021-04-29 17:03:26.193 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:03:26.193 [restartedMain] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2021-04-29 17:03:26.194 [restartedMain] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.38]
+2021-04-29 17:03:26.322 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2021-04-29 17:03:27.128 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:03:27.173 [restartedMain] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.978 seconds (JVM running for 6.351)
+2021-04-29 17:03:27.459 [restartedMain] INFO  com.x.bridge.web.WebConfig - 打开路径:http://localhost:8080
+2021-04-29 17:03:29.485 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-04-29 17:04:55.557 [restartedMain] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on Sunday with PID 16220 (D:\IdeaProjects\Bridge\target\classes started by admin in D:\IdeaProjects\Bridge)
+2021-04-29 17:04:55.570 [restartedMain] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2021-04-29 17:04:56.784 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:04:56.785 [restartedMain] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2021-04-29 17:04:56.785 [restartedMain] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.38]
+2021-04-29 17:04:56.907 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2021-04-29 17:04:57.605 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:04:57.649 [restartedMain] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.796 seconds (JVM running for 6.076)
+2021-04-29 17:04:57.931 [restartedMain] INFO  com.x.bridge.web.WebConfig - 打开路径:http://localhost:8080
+2021-04-29 17:04:59.920 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-04-29 17:05:30.572 [restartedMain] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on Sunday with PID 16396 (D:\IdeaProjects\Bridge\target\classes started by admin in D:\IdeaProjects\Bridge)
+2021-04-29 17:05:30.585 [restartedMain] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2021-04-29 17:05:31.911 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:05:31.912 [restartedMain] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2021-04-29 17:05:31.912 [restartedMain] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.38]
+2021-04-29 17:05:32.066 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2021-04-29 17:05:32.764 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:05:32.813 [restartedMain] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 2.989 seconds (JVM running for 6.721)
+2021-04-29 17:05:33.096 [restartedMain] INFO  com.x.bridge.web.WebConfig - 打开路径:http://localhost:8080
+2021-04-29 17:05:36.437 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-04-29 17:06:03.714 [restartedMain] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on Sunday with PID 16732 (D:\IdeaProjects\Bridge\target\classes started by admin in D:\IdeaProjects\Bridge)
+2021-04-29 17:06:03.800 [restartedMain] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2021-04-29 17:06:05.189 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:06:05.190 [restartedMain] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2021-04-29 17:06:05.190 [restartedMain] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.38]
+2021-04-29 17:06:05.312 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2021-04-29 17:06:05.952 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:06:06.174 [restartedMain] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 3.165 seconds (JVM running for 6.911)
+2021-04-29 17:06:06.427 [restartedMain] INFO  com.x.bridge.web.WebConfig - 打开路径:http://localhost:8080
+2021-04-29 17:06:08.687 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-04-29 17:06:23.931 [restartedMain] INFO  com.x.bridge.BridgeApp - Starting BridgeApp on Sunday with PID 3744 (D:\IdeaProjects\Bridge\target\classes started by admin in D:\IdeaProjects\Bridge)
+2021-04-29 17:06:23.944 [restartedMain] INFO  com.x.bridge.BridgeApp - No active profile set, falling back to default profiles: default
+2021-04-29 17:06:25.354 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:06:25.355 [restartedMain] INFO  org.apache.catalina.core.StandardService - Starting service [Tomcat]
+2021-04-29 17:06:25.355 [restartedMain] INFO  org.apache.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.38]
+2021-04-29 17:06:25.509 [restartedMain] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2021-04-29 17:06:26.366 [restartedMain] INFO  org.apache.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2021-04-29 17:06:26.417 [restartedMain] INFO  com.x.bridge.BridgeApp - Started BridgeApp in 3.358 seconds (JVM running for 7.466)
+2021-04-29 17:06:26.784 [restartedMain] INFO  com.x.bridge.web.WebConfig - 打开路径:http://localhost:8080
+2021-04-29 17:06:29.249 [http-nio-8080-exec-1] INFO  org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
