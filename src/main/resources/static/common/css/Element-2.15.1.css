@@ -3,7 +3,6 @@
     visibility: hidden
 }
 
-
 .el-input__suffix, .el-tree.is-dragging .el-tree-node__content * {
     pointer-events: none
 }
