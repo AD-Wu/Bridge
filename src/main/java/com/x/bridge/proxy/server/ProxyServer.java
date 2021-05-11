@@ -20,30 +20,31 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class ProxyServer extends Proxy<ChannelData> {
-
+    
     private final SocketServer server;
     private final ProxyHeartbeat heartbeat;
-
+    
     public ProxyServer(ProxyConfig config, ISender<ChannelData> sender) {
         super(config, sender);
         this.server = new SocketServer(config.getName(),
                 SocketConfig.getServerConfig(ProxyHelper.getPort(config.getProxyServer())),
                 new ProxyServerListener(this));
         this.heartbeat = new ProxyHeartbeat(this);
+        
     }
-
+   
     @Override
     public String name() {
         return config.getName();
     }
-
+    
     @Override
     public void start() throws Exception {
         sender.start();
         server.start();
         heartbeat.start();
     }
-
+    
     @Override
     public void stop() throws Exception {
         server.stop();
@@ -51,8 +52,7 @@ public class ProxyServer extends Proxy<ChannelData> {
         heartbeat.stop();
         repliers.clear();
     }
-
-
+    
     @Override
     public void onReceive(ChannelData... datas) {
         if (!ArrayHelper.isEmpty(datas)) {
@@ -69,6 +69,5 @@ public class ProxyServer extends Proxy<ChannelData> {
             }
         }
     }
-
-
+    
 }

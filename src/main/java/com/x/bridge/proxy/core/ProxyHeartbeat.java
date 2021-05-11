@@ -19,13 +19,13 @@ import java.util.concurrent.atomic.AtomicLong;
  * @Author AD
  */
 public class ProxyHeartbeat {
-
+    
     private volatile boolean started;
     private final Proxy<ChannelData> proxy;
     private final AtomicLong cursor;
     private final ScheduledExecutorService timer;
     private final Cache<String, Proxy<ChannelData>> cache;
-
+    
     public ProxyHeartbeat(Proxy<ChannelData> proxy) {
         this.started = false;
         this.proxy = proxy;
@@ -38,14 +38,13 @@ public class ProxyHeartbeat {
                     @Override
                     public void onRemoval(RemovalNotification<String, Proxy<ChannelData>> notification) {
                         if (notification.getCause() == RemovalCause.EXPIRED) {
-                            Proxy<ChannelData> proxy = notification.getValue();
                             proxy.setRunning(false);
                         }
                     }
                 })
                 .build();
     }
-
+    
     public synchronized void start() {
         if (started) {
             return;
@@ -59,14 +58,14 @@ public class ProxyHeartbeat {
         }, 30, Math.max(30, proxy.getConfig().getHeartbeat()), TimeUnit.SECONDS);
         started = true;
     }
-
+    
     public synchronized void stop() {
         if (started) {
             timer.shutdown();
             started = false;
         }
     }
-
+    
     private ChannelData getData() {
         ProxyConfig config = proxy.getConfig();
         ChannelData cd = new ChannelData();
@@ -79,12 +78,12 @@ public class ProxyHeartbeat {
         cd.setData(data);
         return cd;
     }
-
+    
     private long getSeq() {
         if (cursor.get() >= Long.MAX_VALUE) {
             cursor.set(1);
         }
         return cursor.getAndIncrement();
     }
-
+    
 }

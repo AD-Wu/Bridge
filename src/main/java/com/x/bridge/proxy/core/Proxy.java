@@ -17,22 +17,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Log4j2
 public abstract class Proxy<T> implements IService, IReceiver<T> {
-
-    protected volatile boolean running = true;
+    
+    protected volatile boolean running;
     protected final ProxyConfig config;
     protected final ISender<T> sender;
     protected final Map<String, Replier> repliers;
-
+    
     public Proxy(ProxyConfig config, ISender<T> sender) {
         this.repliers = new ConcurrentHashMap<>();
         this.config = config;
         this.sender = sender;
         sender.setReceiver(this);
     }
-
-
+    
     public void send(T data) {
-        if (isRunning()) {
+        if (running) {
             try {
                 sender.send(data);
                 log.info("发送数据:{}", data);
@@ -42,36 +41,32 @@ public abstract class Proxy<T> implements IService, IReceiver<T> {
         } else {
             log.error("代理未运行");
         }
-
+        
     }
-
+    
     public void addReplier(String appClient, Replier replier) {
         repliers.put(appClient, replier);
     }
-
+    
     public Replier getReplier(String appClient) {
         return repliers.get(appClient);
     }
-
+    
     public Replier removeReplier(String appClient) {
         return repliers.remove(appClient);
     }
-
-
+    
     public boolean isAccept(String appClient) {
         return config.getAllowClients().contains(appClient);
     }
-
+    
     public ProxyConfig getConfig() {
         return config;
     }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
+    
+    public void setRunning(boolean running){
         this.running = running;
     }
-
+    
+    
 }

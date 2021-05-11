@@ -30,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer, CommandLineRunner {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         // 当请求"/"时转发到home视图上（可以用于代替LoginController）
-        registry.addViewController("/").setViewName("login");
+        registry.addViewController("/").setViewName("login/login");
         // registry.addViewController("/login");
     }
     
