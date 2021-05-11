@@ -8,6 +8,7 @@ import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.proxy.command.core.ICommand;
 import com.x.bridge.proxy.core.Command;
 import com.x.bridge.proxy.core.Proxy;
+import com.x.bridge.proxy.core.ProxyHeartbeat;
 import com.x.bridge.util.ProxyHelper;
 import com.x.doraemon.util.ArrayHelper;
 import lombok.extern.log4j.Log4j2;
@@ -21,12 +22,14 @@ import lombok.extern.log4j.Log4j2;
 public class ProxyServer extends Proxy<ChannelData> {
 
     private final SocketServer server;
+    private final ProxyHeartbeat heartbeat;
 
     public ProxyServer(ProxyConfig config, ISender<ChannelData> sender) {
         super(config, sender);
         this.server = new SocketServer(config.getName(),
                 SocketConfig.getServerConfig(ProxyHelper.getPort(config.getProxyServer())),
                 new ProxyServerListener(this));
+        this.heartbeat = new ProxyHeartbeat(this);
     }
 
     @Override
@@ -36,14 +39,16 @@ public class ProxyServer extends Proxy<ChannelData> {
 
     @Override
     public void start() throws Exception {
-        server.start();
         sender.start();
+        server.start();
+        heartbeat.start();
     }
 
     @Override
     public void stop() throws Exception {
         server.stop();
         sender.stop();
+        heartbeat.stop();
         repliers.clear();
     }
 
