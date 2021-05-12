@@ -19,11 +19,11 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public final class ProxyServerSyncListener implements ISocketListener {
+public final class ProxyServerAsyncListener implements ISocketListener {
 
     private final Proxy<ChannelData> server;
 
-    public ProxyServerSyncListener(Proxy<ChannelData> server) {
+    public ProxyServerAsyncListener(Proxy<ChannelData> server) {
         this.server = server;
     }
 
@@ -38,20 +38,7 @@ public final class ProxyServerSyncListener implements ISocketListener {
             // 管理应答对象
             server.addReplier(replier.getAppClient(), replier);
             // 日志记录
-            log.info("同步连接请求建立，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]", replier.getAppClient(), replier.getProxyServer(), replier.getAppServer());
-            // 向代理(客户端)发送连接请求
-            server.send(SyncConnectRequest.getChannelData(replier));
-            // 同步等待连接完成
-            synchronized (replier.getConnectLock()) {
-                replier.getConnectLock().wait(server.getConfig().getConnectTimeout() * 1000);
-            }
-            if (replier.isConnectTimeout()) {
-                log.info("连接超时，配置时间:[{}]秒，连接关闭", server.getConfig().getConnectTimeout());
-                // 连接建立失败，移除应答者
-                server.removeReplier(replier.getAppClient());
-                // 关闭通道
-                replier.close();
-            }
+            log.info("异步连接激活，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]", replier.getAppClient(), server.getConfig().getProxyServer(), server.getConfig().getAppServer());
         } else {
             // 非法连接，关闭通道
             ctx.close();
@@ -71,7 +58,7 @@ public final class ProxyServerSyncListener implements ISocketListener {
             // 已连接状态
             if (replier.isConnected()) {
                 // 日志记录
-                log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，通知代理(客户端)关闭",
+                log.info("异步连接关闭（有数据产生），客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，通知代理(客户端)关闭",
                         appClient, replier.getProxyServer(), server.getConfig().getAppServer());
                 // 递增接收序号
                 replier.receive();
@@ -80,7 +67,7 @@ public final class ProxyServerSyncListener implements ISocketListener {
                 // 关闭通道
                 replier.close();
             } else {
-                log.info("连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，代理(客户端)未建立连接，无需通知",
+                log.info("异步连接关闭，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，代理(客户端)未建立连接，无需通知",
                         appClient, replier.getProxyServer(), server.getConfig().getAppServer());
             }
         }
@@ -92,8 +79,32 @@ public final class ProxyServerSyncListener implements ISocketListener {
         String appClient = ProxyHelper.getChannelInfo(ctx).getRemoteAddress();
         // 获取应答者
         Replier replier = server.getReplier(appClient);
-        // 判断是否有效
+        // 判断是否首次接收数据
         if (replier != null) {
+            // 已建立连接
+            if (!replier.isConnected()) {
+                // 首次接收数据，需先同步建立连接
+                synchronized (replier.getConnectLock()) {
+                    if (!replier.isConnected()) {
+                        // 日志记录
+                        log.info("异步连接请求建立，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]", replier.getAppClient(), server.getConfig().getProxyServer(), server.getConfig().getAppServer());
+                        // 向代理(客户端)发送连接请求
+                        server.send(SyncConnectRequest.getChannelData(replier));
+                        // 同步等待连接完成
+                        replier.getConnectLock().wait(server.getConfig().getConnectTimeout() * 1000);
+                        // 判断是否超时
+                        if (replier.isConnectTimeout()) {
+                            log.info("连接超时，配置时间:[{}]秒，连接关闭", server.getConfig().getConnectTimeout());
+                            // 连接建立失败，移除应答者
+                            server.removeReplier(replier.getAppClient());
+                            // 关闭通道
+                            replier.close();
+                            // 结束执行
+                            return;
+                        }
+                    }
+                }
+            }
             // 递增接收序号
             replier.receive();
             // 读取数据
@@ -105,6 +116,7 @@ public final class ProxyServerSyncListener implements ISocketListener {
             // 发送给代理(客户端)
             server.send(SendData.getData(replier, data));
         }
+
     }
 
     @Override
