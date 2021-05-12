@@ -53,7 +53,7 @@ public class ProxyHeartbeat {
             @Override
             public void run() {
                 cache.put(proxy.getConfig().getName(), proxy);
-                Command.Heartbeat.getActor().send(proxy, getData());
+                proxy.send(getData());
             }
         }, 30, Math.max(30, proxy.getConfig().getHeartbeat()), TimeUnit.SECONDS);
         started = true;

@@ -1,6 +1,5 @@
 package com.x.bridge.proxy.command;
 
-import com.x.bridge.common.IFactory;
 import com.x.bridge.data.ChannelData;
 import com.x.bridge.proxy.command.core.ICommand;
 import com.x.bridge.proxy.core.Command;
@@ -15,15 +14,11 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public class Disconnect implements ICommand<ChannelData>, IFactory<Replier, ChannelData> {
+public class Disconnect implements ICommand<ChannelData> {
+
 
     @Override
-    public void send(Proxy<ChannelData> proxy, ChannelData data) {
-        proxy.send(data);
-    }
-
-    @Override
-    public void execute(Proxy<ChannelData> proxy, ChannelData cd) {
+    public void receive(Proxy<ChannelData> proxy, ChannelData cd) {
         // 获取应用客户端地址
         String appSocket = cd.getAppClient();
         // 移除应答者
@@ -37,8 +32,7 @@ public class Disconnect implements ICommand<ChannelData>, IFactory<Replier, Chan
         }
     }
 
-    @Override
-    public ChannelData get(Replier replier) {
+    public static ChannelData getData(Replier replier) {
         ChannelData cd = ChannelData.generate(replier);
         cd.setCommand(Command.Disconnect);
         cd.setData(ArrayHelper.EMPTY_BYTE);

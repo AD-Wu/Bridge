@@ -3,8 +3,11 @@ package com.x.bridge.proxy.core;
 import com.x.bridge.common.IReceiver;
 import com.x.bridge.common.ISender;
 import com.x.bridge.common.IService;
+import com.x.bridge.data.ChannelInfo;
 import com.x.bridge.data.ProxyConfig;
+import com.x.bridge.util.ProxyHelper;
 import com.x.doraemon.util.StringHelper;
+import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Map;
@@ -41,7 +44,6 @@ public abstract class Proxy<T> implements IService, IReceiver<T> {
         } else {
             log.error("代理未运行");
         }
-        
     }
     
     public void addReplier(String appClient, Replier replier) {
@@ -56,8 +58,9 @@ public abstract class Proxy<T> implements IService, IReceiver<T> {
         return repliers.remove(appClient);
     }
     
-    public boolean isAccept(String appClient) {
-        return config.getAllowClients().contains(appClient);
+    public boolean isAccept(ChannelHandlerContext ctx) {
+        ChannelInfo chn = ProxyHelper.getChannelInfo(ctx);
+        return config.getAllowClients().contains(chn.getRemoteAddress());
     }
     
     public ProxyConfig getConfig() {

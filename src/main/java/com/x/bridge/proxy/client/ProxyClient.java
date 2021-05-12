@@ -40,7 +40,7 @@ public class ProxyClient extends Proxy<ChannelData> {
                 Command command = data.getCommand();
                 if (command != null) {
                     try {
-                        command.getActor().execute(this, data);
+                        command.get().receive(this, data);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

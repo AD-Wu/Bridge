@@ -15,15 +15,19 @@ public enum Command {
     Disconnect(new Disconnect()),
     Heartbeat(new Heartbeat()),
     SendData(new SendData()),
-    SyncClientConnect(new SyncConnectResponse()),
-    SyncServerConnect(new SyncConnectRequest());
-    private final ICommand<ChannelData> actor;
-    
-    private Command(ICommand<ChannelData> actor) {
-        this.actor = actor;
+    SyncConnectRequest(new SyncConnectRequest()),
+    SyncConnectSuccess(new SyncConnectSuccess()),
+    SyncConnectError(new SyncConnectError()),
+    SyncConnectTimeout(new SyncConnectTimeout());
+
+    private final ICommand<ChannelData> cmd;
+
+    private Command(ICommand<ChannelData> cmd) {
+        this.cmd = cmd;
     }
-    
-    public ICommand<ChannelData> getActor() {
-        return this.actor;
+
+    public ICommand<ChannelData> get() {
+        return this.cmd;
     }
+
 }

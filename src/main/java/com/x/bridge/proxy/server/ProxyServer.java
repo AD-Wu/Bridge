@@ -28,7 +28,7 @@ public class ProxyServer extends Proxy<ChannelData> {
         super(config, sender);
         this.server = new SocketServer(config.getName(),
                 SocketConfig.getServerConfig(ProxyHelper.getPort(config.getProxyServer())),
-                new ProxyServerListener(this));
+                new ProxyServerSyncListener(this));
         this.heartbeat = new ProxyHeartbeat(this);
         
     }
@@ -60,8 +60,8 @@ public class ProxyServer extends Proxy<ChannelData> {
                 Command command = data.getCommand();
                 if (command != null) {
                     try {
-                        ICommand<ChannelData> actor = command.getActor();
-                        actor.execute(this, data);
+                        ICommand<ChannelData> cmd = command.get();
+                        cmd.receive(this, data);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

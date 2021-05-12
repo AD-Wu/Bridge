@@ -13,14 +13,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class Heartbeat implements ICommand<ChannelData> {
 
-
     @Override
-    public void send(Proxy<ChannelData> proxy, ChannelData data) {
-        proxy.send(data);
-    }
-
-    @Override
-    public void execute(Proxy<ChannelData> proxy, ChannelData data) {
+    public void receive(Proxy<ChannelData> proxy, ChannelData data) {
         proxy.setRunning(true);
     }
 

@@ -19,43 +19,47 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public final class ProxyServerListener implements ISocketListener {
-    
+public final class ProxyServerSyncListener implements ISocketListener {
+
     private final Proxy<ChannelData> server;
-    private final SendData sendDataCmd;
-    
-    public ProxyServerListener(Proxy<ChannelData> server) {
+
+    public ProxyServerSyncListener(Proxy<ChannelData> server) {
         this.server = server;
-        this.sendDataCmd = new SendData();
     }
-    
+
     @Override
     public void active(ChannelHandlerContext ctx) throws Exception {
-        // 创建应答对象
-        Replier replier = Replier.getServerReplier(ctx);
-        // 设置app服务器地址
-        replier.setAppServer(server.getConfig().getAppServer());
-        // 递增接收数据的序号
-        replier.receive();
         // 是否允许连接
-        if (server.isAccept(replier.getAppClient())) {
+        if (server.isAccept(ctx)) {
+            // 创建应答对象
+            Replier replier = Replier.getServerReplier(ctx, server.getConfig());
+            // 递增接收数据的序号
+            replier.receive();
             // 管理应答对象
             server.addReplier(replier.getAppClient(), replier);
             // 日志记录
-            log.info("连接请求建立，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                    replier.getAppClient(), replier.getProxyServer(), replier.getAppServer());
+            log.info("连接请求建立，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]", replier.getAppClient(), replier.getProxyServer(), replier.getAppServer());
             // 向代理(客户端)发送连接请求
-            SyncConnectRequest serverConnect = new SyncConnectRequest();
-            ChannelData data = serverConnect.get(replier);
-            serverConnect.send(this.server, data);
+            server.send(SyncConnectRequest.getChannelData(replier));
+            // 同步等待连接完成
+            synchronized (replier.getConnectLock()) {
+                replier.getConnectLock().wait(server.getConfig().getConnectTimeout() * 1000);
+            }
+            if (replier.isConnectTimeout()) {
+                log.info("连接超时，配置时间:[{}]秒，连接关闭", server.getConfig().getConnectTimeout());
+                // 连接建立失败，移除应答者
+                server.removeReplier(replier.getAppClient());
+                // 关闭通道
+                replier.close();
+            }
         } else {
             // 非法连接，关闭通道
-            replier.close();
+            ctx.close();
             log.info("非法客户端，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]",
-                    replier.getAppClient(), replier.getProxyServer(), server.getConfig().getAppServer());
+                    ctx.channel().remoteAddress(), server.getConfig().getProxyServer(), server.getConfig().getAppServer());
         }
     }
-    
+
     @Override
     public void inActive(ChannelHandlerContext ctx) throws Exception {
         // 获取socket客户端
@@ -72,9 +76,7 @@ public final class ProxyServerListener implements ISocketListener {
                 // 递增接收序号
                 replier.receive();
                 // 通知代理(客户端)关闭连接
-                Disconnect disconnect = new Disconnect();
-                ChannelData data = disconnect.get(replier);
-                disconnect.send(this.server, data);
+                server.send(Disconnect.getData(replier));
                 // 关闭通道
                 replier.close();
             } else {
@@ -83,7 +85,7 @@ public final class ProxyServerListener implements ISocketListener {
             }
         }
     }
-    
+
     @Override
     public void receive(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
         // 获取socket客户端
@@ -101,20 +103,18 @@ public final class ProxyServerListener implements ISocketListener {
                     appClient, replier.getProxyServer(), server.getConfig().getAppServer(),
                     replier.getRecvSeq(), data.length);
             // 发送给代理(客户端)
-            ChannelData cd = sendDataCmd.get(replier);
-            cd.setData(data);
-            sendDataCmd.send(this.server, cd);
+            server.send(SendData.getData(replier, data));
         }
     }
-    
+
     @Override
     public void timeout(ChannelHandlerContext ctx, IdleStateEvent event) throws Exception {
-    
+
     }
-    
+
     @Override
     public void error(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    
+
     }
-    
+
 }

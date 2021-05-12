@@ -1,6 +1,5 @@
 package com.x.bridge.proxy.command;
 
-import com.x.bridge.common.IFactory;
 import com.x.bridge.common.SocketClient;
 import com.x.bridge.common.SocketConfig;
 import com.x.bridge.data.ChannelData;
@@ -19,37 +18,15 @@ import lombok.extern.log4j.Log4j2;
  * @Author AD
  */
 @Log4j2
-public class SyncConnectRequest implements ICommand<ChannelData>, IFactory<Replier, ChannelData> {
+public class SyncConnectRequest implements ICommand<ChannelData>{
 
     @Override
-    public void send(Proxy<ChannelData> proxy, ChannelData cd) {
-        Replier replier = proxy.getReplier(cd.getAppClient());
-        Object connectLock = replier.getConnectLock();
-        synchronized (connectLock) {
-            proxy.send(cd);
-            try {
-                connectLock.wait(proxy.getConfig().getConnectTimeout() * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        if (replier.isConnectTimeout()) {
-            log.info("连接超时，配置时间:[{}]秒，连接关闭", proxy.getConfig().getConnectTimeout());
-            // 连接建立失败，移除应答者
-            proxy.removeReplier(cd.getAppClient());
-            // 关闭通道
-            replier.close();
-        }
-
-    }
-
-    @Override
-    public void execute(Proxy<ChannelData> proxy, ChannelData cd) {
+    public void receive(Proxy<ChannelData> proxy, ChannelData cd) {
         // 获取应用客户端地址
         String appSocket = cd.getAppClient();
         // 获取应答者
         Replier replier = proxy.getReplier(appSocket);
-        // 未建立建立
+        // 未建立连接
         if (replier == null) {
             // 创建socket客户端连接目标服务器
             String ip = ProxyHelper.getIP(cd.getAppServer());
@@ -65,10 +42,9 @@ public class SyncConnectRequest implements ICommand<ChannelData>, IFactory<Repli
         }
     }
 
-    @Override
-    public ChannelData get(Replier replier) {
+    public static ChannelData getChannelData(Replier replier) {
         ChannelData cd = ChannelData.generate(replier);
-        cd.setCommand(Command.SyncServerConnect);
+        cd.setCommand(Command.SyncConnectRequest);
         cd.setData(ArrayHelper.EMPTY_BYTE);
         return cd;
     }

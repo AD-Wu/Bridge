@@ -1,6 +1,7 @@
 package com.x.bridge.proxy.core;
 
 import com.x.bridge.data.ChannelInfo;
+import com.x.bridge.data.ProxyConfig;
 import com.x.bridge.util.ProxyHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -35,17 +36,20 @@ public class Replier {
 
     private final Map<Long, byte[]> dataCache = new ConcurrentHashMap<>();
     
-    public static Replier getServerReplier(ChannelHandlerContext ctx) {
+    public static Replier getServerReplier(ChannelHandlerContext ctx, ProxyConfig config) {
         ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         Replier replier = new Replier(ctx);
         replier.setAppClient(ch.getRemoteAddress());
         replier.setProxyServer(ch.getLocalAddress());
+        replier.setAppServer(config.getAppServer());
         return replier;
     }
     
-    public static Replier getClientReplier(ChannelHandlerContext ctx) {
+    public static Replier getClientReplier(ChannelHandlerContext ctx,String appClient,String proxyServer) {
         ChannelInfo ch = ProxyHelper.getChannelInfo(ctx);
         Replier replier = new Replier(ctx);
+        replier.setAppClient(appClient);
+        replier.setProxyServer(proxyServer);
         replier.setProxyClient(ch.getLocalAddress());
         replier.setAppServer(ch.getRemoteAddress());
         return replier;
