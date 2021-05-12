@@ -1,32 +1,69 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
-    <!-- import CSS -->
-<!--    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">-->
     <link rel="stylesheet" href="common/css/Element-2.15.1.css">
+    <script src="common/js/vue.js"></script>
+    <script src="common/js/Element-2.15.1.js"></script>
 </head>
+
 <body>
 <div id="app">
-    <el-button @click="visible = true">Button</el-button>
+    <el-button round @click="visible = true">圆角按钮</el-button>
+    <br>
     <el-dialog :visible.sync="visible" title="Hello world">
         <p>Try Element</p>
     </el-dialog>
+    <br>
+
+    <el-switch v-model="value1" active-text="按月付费" inactive-text="按年付费">
+    </el-switch>
+    <el-switch style="display: block" v-model="value2" active-color="#13ce66" inactive-color="#ff4949"
+               active-text="按月付费" inactive-text="按年付费">
+    </el-switch>
+
+    <br>
+    <el-time-picker is-range v-model="value1" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间"
+                    placeholder="选择时间范围">
+    </el-time-picker>
+    <el-time-picker is-range arrow-control v-model="value2" range-separator="至" start-placeholder="开始时间"
+                    end-placeholder="结束时间" placeholder="选择时间范围">
+    </el-time-picker>
+    <br>
+
+    <el-progress type="circle" :percentage="0"></el-progress>
+    <el-progress type="circle" :percentage="25"></el-progress>
+    <el-progress type="circle" :percentage="100" status="success"></el-progress>
+    <el-progress type="circle" :percentage="70" status="warning"></el-progress>
+    <el-progress type="circle" :percentage="50" status="exception"></el-progress>
+    <br>
+    <el-row>
+        <el-button icon="el-icon-search" circle></el-button>
+        <el-button type="primary" icon="el-icon-edit" circle></el-button>
+        <el-button type="success" icon="el-icon-check" circle></el-button>
+        <el-button type="info" icon="el-icon-message" circle></el-button>
+        <el-button type="warning" icon="el-icon-star-off" circle></el-button>
+        <el-button type="danger" icon="el-icon-delete" circle></el-button>
+    </el-row>
+    <br>
+    <el-steps :active="1" finish-status="success">
+        <el-step title="已付款"></el-step>
+        <el-step title="退款中"></el-step>
+        <el-step title="已退款"></el-step>
+        <el-step title="待结算"></el-step>
+        <el-step title="已结算"></el-step>
+    </el-steps>
 </div>
 </body>
-<!--&lt;!&ndash; import Vue before Element &ndash;&gt;-->
-<!--<script src="https://unpkg.com/vue/dist/vue.js"></script>-->
-<!--&lt;!&ndash; import JavaScript &ndash;&gt;-->
-<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
-
-<script src="common/js/vue.js"></script>
-<script src="common/js/Element-2.15.1.js"></script>
 <script>
     new Vue({
         el: '#app',
-        data: function() {
+        data: function () {
             return { visible: false }
         }
     })
 </script>
+
 </html>
+

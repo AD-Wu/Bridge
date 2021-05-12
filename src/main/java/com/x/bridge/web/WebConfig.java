@@ -35,8 +35,8 @@ public class WebConfig implements WebMvcConfigurer, CommandLineRunner {
     }
     
     @Override
-    public void run(String... args) throws Exception{
-        String url = "http://localhost:"+serverPort;
+    public void run(String... args) throws Exception {
+        String url = "http://localhost:" + serverPort;
         try {
             // 创建一个URI实例
             URI uri = URI.create(url);
@@ -53,4 +53,5 @@ public class WebConfig implements WebMvcConfigurer, CommandLineRunner {
         }
         
     }
+    
 }
