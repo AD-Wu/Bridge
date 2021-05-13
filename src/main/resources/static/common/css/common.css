@@ -1,0 +1,57 @@
+/*
+Sunday添加
+*/
+.el-table tbody tr:hover > td {
+    font-weight: bold
+}
+
+.el-header {
+    background-color: #FFFFFF;
+    color: #545c64;
+    line-height: 60px;
+}
+
+.el-aside {
+    color: #333;
+}
+
+.el-table .warning-row {
+    background: oldlace;
+}
+
+.el-table .success-row {
+    background: #f0f9eb;
+}
+
+.el-table .stripe-row {
+    background: rgba(218, 222, 222, 0.65);
+    /*background: #DADEDE;*/
+}
+
+.demo-table-expand {
+    font-size: 0;
+}
+
+.demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+}
+
+.el-table th>.cell{
+    display: inline-block;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-overflow: unset;
+}
+
+.el-pagination {
+    /*margin-bottom: 15px;*/
+    margin-top: 18px;
+    text-align: right;
+}
