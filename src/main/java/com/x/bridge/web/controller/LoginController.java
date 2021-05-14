@@ -21,7 +21,7 @@ public class LoginController {
     
     @PostMapping
     public String login(){
-        return "eleHome";
+        return "vue/app";
     }
     
     @GetMapping("hello")

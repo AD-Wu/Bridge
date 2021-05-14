@@ -63,13 +63,14 @@ public class SocketClient implements IService {
                 p.addLast(new SocketHandler(listener));
             }
         });
-        
+
         try {
             ChannelFuture future = boot.connect(config.getIp(), config.getPort()).sync();
             channel = future.channel();
             connected = true;
         } catch (InterruptedException e) {
             log.error(StringHelper.getExceptionTrace(e));
+            Thread.currentThread().interrupt();
             stop();
         }
     }

@@ -26,7 +26,7 @@ public class SyncConnectSuccess implements ICommand<ChannelData> {
                 replier.setConnected(true);
                 replier.setConnectTimeout(false);
                 replier.setProxyClient(cd.getProxyClient());
-                replier.getConnectLock().notify();
+                replier.getConnectLock().notifyAll();
             }
             log.info("连接建立成功，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]", cd.getAppClient(), cd.getProxyServer(), cd.getAppServer());
         }

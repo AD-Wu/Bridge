@@ -26,7 +26,7 @@ public class SyncConnectError implements ICommand<ChannelData> {
                 replier.setConnected(false);
                 replier.setConnectTimeout(false);
                 replier.close();
-                replier.getConnectLock().notify();
+                replier.getConnectLock().notifyAll();
             }
             log.info("连接建立失败，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，失败原因:{}",
                     cd.getAppClient(), cd.getProxyServer(), cd.getAppServer(), cd.getException());

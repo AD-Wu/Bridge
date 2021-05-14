@@ -26,7 +26,7 @@ public class SyncConnectTimeout implements ICommand<ChannelData> {
                 replier.setConnected(false);
                 replier.setConnectTimeout(true);
                 replier.close();
-                replier.getConnectLock().notify();
+                replier.getConnectLock().notifyAll();
             }
             log.info("连接建立超时，客户端:[{}]，代理(服务端):[{}]，服务端:[{}]，超时原因:{}",
                     cd.getAppClient(), cd.getProxyServer(), cd.getAppServer(), cd.getException());

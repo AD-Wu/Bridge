@@ -26,7 +26,7 @@ public abstract class Proxy<T> implements IService, IReceiver<T> {
     protected final ISender<T> sender;
     protected final Map<String, Replier> repliers;
     
-    public Proxy(ProxyConfig config, ISender<T> sender) {
+    protected Proxy(ProxyConfig config, ISender<T> sender) {
         this.repliers = new ConcurrentHashMap<>();
         this.config = config;
         this.sender = sender;

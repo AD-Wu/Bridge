@@ -138,7 +138,7 @@ public class DBSender implements ISender<ChannelData> {
         StringBuilder sql = new StringBuilder();
         sql.append("delete from ").append(dao.getTableName()).append(" where ");
         String[] pks = dao.getPrimaryKeys();
-        for (int i = 0, c = pks.length; i < pks.length; i++) {
+        for (int i = 0, c = pks.length; i < c; i++) {
             if (i > 0) {
                 sql.append(" and ");
             }
