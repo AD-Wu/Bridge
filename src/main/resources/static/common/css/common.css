@@ -7,12 +7,12 @@ Sunday添加
 
 .el-header {
     background-color: #FFFFFF;
-    color: #545c64;
+    color: #1a2b3c;
     line-height: 60px;
 }
 
 .el-aside {
-    color: #333;
+    color: #1a2b3c;
 }
 
 .el-table .warning-row {
@@ -55,3 +55,13 @@ Sunday添加
     margin-top: 18px;
     text-align: right;
 }
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    /*min-height: 400px;*/
+    height: 100vh;
+}
+
+
+
+

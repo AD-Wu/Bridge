@@ -12,66 +12,42 @@
 <body>
 <div id="app" style="height: calc(98vh)">
     <el-container style="height: 100%; border: 1px solid #eee">
-        <el-aside width="200px" style="background-color: #545C64">
+        <el-aside width="initial" style="background-color: #1a2b3c; height: 100%">
             <el-menu
-                    default-active="2"
+                    router
+                    default-active="this.$router.path"
                     class="el-menu-vertical-demo"
-                    background-color="#545c64"
+                    background-color="#1a2b3c"
                     text-color="#fff"
                     active-text-color="#ffd04b"
                     :unique-opened="true"
-                    :router="true">
+                    :collapse="isCollapse">
                 <el-submenu index="1">
                     <template slot="title">
-                        <i class="el-icon-location"></i>
-                        <span>导航一</span>
+                        <i class="el-icon-menu"></i>
+                        <span>菜单</span>
                     </template>
-                    <el-menu-item-group>
-                        <template slot="title">分组一</template>
-                        <el-menu-item index="1-1">选项1</el-menu-item>
-                        <el-menu-item index="1-2">选项2</el-menu-item>
-                    </el-menu-item-group>
-                    <el-menu-item-group title="分组2">
-                        <el-menu-item index="1-3">选项3</el-menu-item>
-                    </el-menu-item-group>
-                    <el-submenu index="1-4">
-                        <template slot="title">选项4</template>
-                        <el-menu-item index="1-4-1">选项1</el-menu-item>
-                    </el-submenu>
+                    <el-menu-item v-for="(item,i) in menuItems" :key="i" :index="item.path">
+                        {{ item.name }}
+                    </el-menu-item>
                 </el-submenu>
-                <el-menu-item index="2">
-                    <i class="el-icon-menu"></i>
-                    <span slot="title">导航二</span>
-                </el-menu-item>
-                <el-menu-item index="3" disabled>
-                    <i class="el-icon-document"></i>
-                    <span slot="title">导航三</span>
-                </el-menu-item>
-                <el-menu-item index="4">
-                    <i class="el-icon-setting"></i>
-                    <span slot="title">导航四</span>
-                </el-menu-item>
             </el-menu>
         </el-aside>
 
         <el-container>
-            <el-header>
+            <el-header @click.native="handleCollapse()">
                 <span class="el-icon-s-fold toggle-button"></span>
                 <span class="system-title">测试系统</span>
-                <div class="welcome">
-                    <span>欢迎</span>&nbsp; &nbsp;
-                    <span>退出</span>
-                </div>
-
             </el-header>
 
             <el-main>
+                <!--:row-class-name="tableRowStripe"-->
                 <el-table
                         fit
+                        stripe
                         style="width: 100%"
                         :max-height="tableHeight"
                         ref="multipleTable"
-                        :row-class-name="tableRowStripe"
                         :data="handleSearch(tableData)"
                         @selection-change="handleSelectionChange">
                     <el-table-column
@@ -192,17 +168,22 @@
                                     size="medium"
                                     v-model="search"
                                     prefix-icon="el-icon-search"
-                                    placeholder="输入关键字搜索"/>
+                                    placeholder="输入关键字搜索" />
                         </template>
                         <template slot-scope="scope">
                             <el-button
+                                    circle
+                                    icon="el-icon-edit"
+                                    type="primary"
                                     size="mini"
-                                    @click="handleEdit(scope.$index, scope.row)">编辑
+                                    @click="handleEdit(scope.$index, scope.row)">
                             </el-button>
                             <el-button
-                                    size="mini"
+                                    circle
+                                    icon="el-icon-delete"
                                     type="danger"
-                                    @click.native.prevent="deleteRow(scope.$index, tableData)">删除
+                                    size="mini"
+                                    @click.native.prevent="deleteRow(scope.$index, tableData)">
                             </el-button>
                         </template>
                     </el-table-column>
@@ -220,253 +201,7 @@
 
 </div>
 </body>
-<script>
-    const vm = new Vue({
-        el: '#app',
-        data: {
-            tableData: [
-                {
-                    date: '1000-01-01',
-                    name: '张三',
-                    province: '北京',
-                    city: '朝阳区',
-                    address: '天安门广场1号',
-                    zip: 101010
-                },
-                {
-                    date: '2000-02-02',
-                    name: '李四',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 202020
-                },
-                {
-                    date: '3000-03-03',
-                    name: '王五',
-                    province: '深圳',
-                    city: '湾仔',
-                    address: '深圳123号',
-                    zip: 303030
-                },
-                {
-                    date: '4000-04-04',
-                    name: '赵六',
-                    province: '福建',
-                    city: '厦门',
-                    address: '厦门市湖里坂上社369号',
-                    zip: 404040
-                },
-                {
-                    date: '5000-05-05',
-                    name: '钱七',
-                    province: '浙江',
-                    city: '杭州',
-                    address: '杭州市文三路90号',
-                    zip: 505050
-                },
-                {
-                    date: '6000-06-06',
-                    name: '周八',
-                    province: '江苏省',
-                    city: '南京',
-                    address: '江苏南通456号',
-                    zip: 606060
-                }, {
-                    date: '1000-01-01',
-                    name: '张三',
-                    province: '北京',
-                    city: '朝阳区',
-                    address: '天安门广场1号',
-                    zip: 101010
-                },
-                {
-                    date: '2000-02-02',
-                    name: '李四',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 202020
-                },
-                {
-                    date: '3000-03-03',
-                    name: '王五',
-                    province: '深圳',
-                    city: '湾仔',
-                    address: '深圳123号',
-                    zip: 303030
-                },
-                {
-                    date: '4000-04-04',
-                    name: '赵六',
-                    province: '福建',
-                    city: '厦门',
-                    address: '厦门市湖里坂上社369号',
-                    zip: 404040
-                },
-                {
-                    date: '5000-05-05',
-                    name: '钱七',
-                    province: '浙江',
-                    city: '杭州',
-                    address: '杭州市文三路90号',
-                    zip: 505050
-                },
-                {
-                    date: '6000-06-06',
-                    name: '周八',
-                    province: '江苏省',
-                    city: '南京',
-                    address: '江苏南通456号',
-                    zip: 606060
-                }, {
-                    date: '1000-01-01',
-                    name: '张三',
-                    province: '北京',
-                    city: '朝阳区',
-                    address: '天安门广场1号',
-                    zip: 101010
-                },
-                {
-                    date: '2000-02-02',
-                    name: '李四',
-                    province: '上海',
-                    city: '普陀区',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    zip: 202020
-                },
-                {
-                    date: '3000-03-03',
-                    name: '王五',
-                    province: '深圳',
-                    city: '湾仔',
-                    address: '深圳123号',
-                    zip: 303030
-                },
-                {
-                    date: '4000-04-04',
-                    name: '赵六',
-                    province: '福建',
-                    city: '厦门',
-                    address: '厦门市湖里坂上社369号',
-                    zip: 404040
-                },
-                {
-                    date: '5000-05-05',
-                    name: '钱七',
-                    province: '浙江',
-                    city: '杭州',
-                    address: '杭州市文三路90号',
-                    zip: 505050
-                },
-                {
-                    date: '6000-06-06',
-                    name: '周八',
-                    province: '江苏省',
-                    city: '南京',
-                    address: '江苏南通456号',
-                    zip: 606060
-                }],
-            multipleSelection: [],
-            tableHeight: 700,
-            search: '',
-            pageSize: 10,//默认每页数据量
-            currentPage: 1,//当前页码
-            start: 1, //查询的页码
-            totalCount: 0, //默认数据总数
-        },
-        created() {
-            Vue.nextTick(() => {
-                //载入表格数据
-                vm.loadData(vm.currentPage, vm.pageSize);
-                //初始化websocket
-                // vm.initWS();
-            });
-        },
-        mounted() {
-            this.$nextTick(() => {
-                this.tableHeight = window.innerHeight - 170;
-            })
-        },
-        methods: {
-            deleteRow(index, rows) {
-                rows.splice(index, 1);
-            },
-
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
-            tableRowClassName({row, rowIndex}) {
-                if (rowIndex === 1) {
-                    return 'warning-row';
-                } else if (rowIndex === 3) {
-                    return 'success-row';
-                }
-                return '';
-            },
-            tableRowStripe({row, rowIndex}) {
-                if ((rowIndex + 1) % 2 === 0) {
-                    return 'stripe-row';
-                }
-            },
-            handleSearch: function () {
-                if (this.search === '') {
-                    return this.tableData;
-                } else {
-                    return this.tableData.filter(data => {
-                        // filter()对象遍历,true 返回对象参数值,如果多条数据,自动使用数组拼接
-                        for (let k in data) {
-                            let v = data[k] + '';
-                            if (v.toLowerCase().includes(this.search.toLowerCase())) {
-                                return data;
-                            }
-                        }
-                    })
-                }
-            },
-            //每页显示数据量变更
-            handleSizeChange: function (val) {
-                vm.pageSize = val;
-                vm.loadData(vm.currentPage, vm.pageSize);
-            },
-            //页码变更
-            handleCurrentChange: function (val) {
-                vm.currentPage = val;
-                vm.loadData(vm.currentPage, vm.pageSize);
-            },
-            //从后台获取数据
-            loadData: function (page, pageSize) {
-                // let {word, disable} = vm.sensitiveWordForm;
-                // const params = {page, pageSize, word, disable};
-                // this.loading = true;
-                // $.ajax({
-                //     type: "POST",
-                //     url: baseUrl + "/sms/sensitiveController/tableQuery",
-                //     contentType: "application/json",
-                //     data: JSON.stringify(params),
-                //     success: function (r) {
-                //         vm.tableData = r.resultValue.items;
-                //         vm.totalCount = r.resultValue.itemCount;
-                //         vm.loading = false;
-                //     },
-                //     error: function () {
-                //         vm.loading = false;
-                //     }
-                // });
-            },
-            // toggleSelection(rows) {
-            //     if (rows) {
-            //         rows.forEach(row => {
-            //             this.$refs.multipleTable.toggleRowSelection(row);
-            //         });
-            //     } else {
-            //         this.$refs.multipleTable.clearSelection();
-            //     }
-            // }
-        }
-
-    })
-</script>
+<script src="eleHome.js"></script>
 
 </html>
 
