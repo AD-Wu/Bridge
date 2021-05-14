@@ -178,7 +178,7 @@ const vm = new Vue({
     created() {
         Vue.nextTick(() => {
             //载入表格数据
-            vm.loadData(vm.currentPage, vm.pageSize);
+            this.loadData(this.currentPage, this.pageSize);
             //初始化websocket
             // vm.initWS();
         });

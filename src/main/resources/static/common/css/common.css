@@ -12,7 +12,8 @@ Sunday添加
 }
 
 .el-aside {
-    color: #1a2b3c;
+    /*color: #1a2b3c;*/
+    height: 100%;
 }
 
 .el-table .warning-row {
@@ -43,7 +44,7 @@ Sunday添加
     width: 50%;
 }
 
-.el-table th>.cell{
+.el-table th > .cell {
     display: inline-block;
     white-space: nowrap;
     word-break: keep-all;
@@ -59,7 +60,16 @@ Sunday添加
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     /*min-height: 400px;*/
-    height: 100vh;
+    height: 100%;
+}
+
+.el-menu-vertical-demo {
+    border-right: solid 1px #1a2b3c;
+    height: 100%;
+    list-style: none;
+    position: relative;
+    margin: 0;
+    padding-left: 0;
 }
 
 

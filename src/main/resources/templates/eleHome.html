@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="common/css/common.css">
     <link rel="stylesheet" href="common/css/Element-2.15.1.css">
+    <link rel="stylesheet" href="common/css/common.css">
     <script src="common/js/vue.js"></script>
     <script src="common/js/Element-2.15.1.js"></script>
 </head>
@@ -12,14 +12,15 @@
 <body>
 <div id="app" style="height: calc(98vh)">
     <el-container style="height: 100%; border: 1px solid #eee">
-        <el-aside width="initial" style="background-color: #1a2b3c; height: 100%">
+        <el-aside width="initial" style="background-color: #1a2b3c;">
             <el-menu
-                    router
-                    default-active="this.$router.path"
                     class="el-menu-vertical-demo"
                     background-color="#1a2b3c"
                     text-color="#fff"
                     active-text-color="#ffd04b"
+
+                    router
+                    default-active="this.$router.path"
                     :unique-opened="true"
                     :collapse="isCollapse">
                 <el-submenu index="1">
@@ -168,7 +169,7 @@
                                     size="medium"
                                     v-model="search"
                                     prefix-icon="el-icon-search"
-                                    placeholder="输入关键字搜索" />
+                                    placeholder="输入关键字搜索"/>
                         </template>
                         <template slot-scope="scope">
                             <el-button

@@ -269,7 +269,8 @@ ul.list-login-bottom li:nth-child(2) {
 /*/////////////// FORM STYLES ////////////////////*/
 
 form .field-group {
-    background: #fff;
+    /*background: #fff;*/
+    background: rgba(0, 0, 0, 0.28);
     margin-bottom: 20px;
     padding: 0px 10px 0px 0;
     border-radius: 35px;
@@ -322,6 +323,7 @@ ul.list-login {
     background: #fc636b;
     cursor: not-allowed;
 }
+
 .wthree-field button.btn:hover:disabled {
     background: #bb4e54;
     cursor: not-allowed;
@@ -452,8 +454,9 @@ input:focus + .slider {
 }
 
 input:focus::-webkit-input-placeholder {
-    color:#fff;
+    color: #fff;
 }
+
 input:focus::-moz-placeholder {
     color: #fff;
 }
